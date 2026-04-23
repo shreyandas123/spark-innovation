@@ -4,7 +4,11 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import 'dotenv/config'
 
-console.log('[SYSTEM] Imports successful. Connecting to DB...')
+console.log('[SYSTEM] Imports successful. Verifying environment...')
+if (!process.env.MONGO_URI) console.error('[CRITICAL] MONGO_URI is missing!')
+if (!process.env.JWT_SECRET) console.error('[CRITICAL] JWT_SECRET is missing!')
+if (!process.env.GOOGLE_CLIENT_ID) console.error('[CRITICAL] GOOGLE_CLIENT_ID is missing!')
+
 import authRoutes from './routes/auth.js'
 import categoryRoutes from './routes/categories.js'
 import productRoutes from './routes/products.js'
