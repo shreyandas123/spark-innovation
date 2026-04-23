@@ -18,6 +18,7 @@ app.use(express.json())
 app.use(cors())
 
 // routes
+app.get('/', (req, res) => res.json({ message: 'Sparkel Sales API is running' }))
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 app.use('/api/auth', authRoutes)
 app.use('/api/categories', categoryRoutes)
