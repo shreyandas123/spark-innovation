@@ -29,6 +29,15 @@ app.use(cors())
 
 // routes
 app.get('/', (req, res) => res.json({ message: 'Sparkel Sales API is running' }))
+app.get('/api/debug-db', (req, res) => {
+  const states = ['disconnected', 'connected', 'connecting', 'disconnecting']
+  res.json({
+    status: states[mongoose.connection.readyState],
+    readyState: mongoose.connection.readyState,
+    dbName: mongoose.connection.name,
+    hasUri: !!process.env.MONGO_URI
+  })
+})
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 app.use('/api/auth', authRoutes)
 app.use('/api/categories', categoryRoutes)
