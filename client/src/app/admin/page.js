@@ -1,0 +1,176 @@
+"use client";
+
+import { 
+  Package, 
+  MessageSquare, 
+  Users, 
+  ArrowUpRight, 
+  TrendingUp, 
+  Clock,
+  Eye,
+  Image as ImageIcon,
+  Settings
+} from "lucide-react";
+import Link from "next/link";
+
+export default function AdminDashboard() {
+  const stats = [
+    { 
+      label: "Total Products", 
+      value: "42", 
+      icon: <Package size={24} />, 
+      color: "bg-blue-500",
+      trend: "+3 this week"
+    },
+    { 
+      label: "New Inquiries", 
+      value: "18", 
+      icon: <MessageSquare size={24} />, 
+      color: "bg-brand",
+      trend: "+12% vs last month"
+    },
+    { 
+      label: "Active Banners", 
+      value: "5", 
+      icon: <Eye size={24} />, 
+      color: "bg-indigo-500",
+      trend: "All active"
+    },
+    { 
+      label: "Total Users", 
+      value: "128", 
+      icon: <Users size={24} />, 
+      color: "bg-slate-800",
+      trend: "+5 today"
+    },
+  ];
+
+  const recentInquiries = [
+    { id: 1, name: "Rahul Sharma", product: "Flora 90 Chimney", date: "2 hours ago", status: "New" },
+    { id: 2, name: "Anita Gupta", product: "Atlas 3B Hob", date: "5 hours ago", status: "Contacted" },
+    { id: 3, name: "Vikram Singh", product: "Aqua Fresh Purifier", date: "Yesterday", status: "New" },
+    { id: 4, name: "Sanjay Mehra", product: "Vento DX Dishwasher", date: "2 days ago", status: "Closed" },
+  ];
+
+  return (
+    <div className="space-y-10">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-white p-6 rounded-sm border border-slate-200 shadow-sm group hover:border-brand transition-all">
+            <div className="flex justify-between items-start mb-4">
+              <div className={`${stat.color} text-white p-3 rounded-sm`}>
+                {stat.icon}
+              </div>
+              <div className="text-[10px] font-black text-emerald-500 flex items-center gap-1 uppercase tracking-widest">
+                <TrendingUp size={12} />
+                {stat.trend}
+              </div>
+            </div>
+            <h3 className="text-3xl font-black text-brand-blue mb-1">{stat.value}</h3>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-10">
+        {/* Recent Inquiries */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Recent Inquiries</h2>
+            <Link href="/admin/inquiries" className="text-[10px] font-black text-brand uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+              View All <ArrowUpRight size={14} />
+            </Link>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
+            <table className="w-full text-left">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Customer</th>
+                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Product</th>
+                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Date</th>
+                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {recentInquiries.map((inquiry) => (
+                  <tr key={inquiry.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-blue">{inquiry.name}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-xs font-medium text-slate-600">{inquiry.product}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-slate-400">
+                        <Clock size={12} />
+                        <span className="text-[10px] font-bold uppercase">{inquiry.date}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                        inquiry.status === 'New' ? 'bg-brand/10 text-brand' :
+                        inquiry.status === 'Contacted' ? 'bg-blue-100 text-blue-600' :
+                        'bg-slate-100 text-slate-500'
+                      }`}>
+                        {inquiry.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-6">
+          <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Quick Actions</h2>
+          <div className="space-y-4">
+            <button className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-sm hover:border-brand transition-all group text-left">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-brand/10 text-brand flex items-center justify-center rounded-sm">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black text-brand-blue uppercase tracking-widest">Add Product</h4>
+                  <p className="text-[8px] text-slate-400 font-medium uppercase mt-0.5">Upload to catalogue</p>
+                </div>
+              </div>
+              <ArrowUpRight size={16} className="text-slate-300 group-hover:text-brand transition-colors" />
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-sm hover:border-brand transition-all group text-left">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-indigo-50 text-indigo-500 flex items-center justify-center rounded-sm">
+                  <ImageIcon size={20} />
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black text-brand-blue uppercase tracking-widest">New Banner</h4>
+                  <p className="text-[8px] text-slate-400 font-medium uppercase mt-0.5">Promote an offer</p>
+                </div>
+              </div>
+              <ArrowUpRight size={16} className="text-slate-300 group-hover:text-brand transition-colors" />
+            </button>
+          </div>
+
+          <div className="bg-brand-blue text-white p-8 rounded-sm relative overflow-hidden">
+            <div className="relative z-10">
+              <h3 className="text-sm font-black uppercase tracking-widest mb-2">System Status</h3>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-emerald-500">All systems operational</p>
+              </div>
+              <p className="text-[10px] text-white/50 leading-relaxed uppercase tracking-widest">
+                Last synced: Today, 5:42 PM
+              </p>
+            </div>
+            <div className="absolute -bottom-10 -right-10 opacity-5">
+               <Settings size={150} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
