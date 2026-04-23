@@ -1,0 +1,10 @@
+{
+  "name": "sparkel-sales-root",
+  "private": true,
+  "description": "Root package for Sparkel Sales monorepo to help deployment platforms detect the project.",
+  "scripts": {
+    "start": "npm start --prefix server",
+    "build": "npm install --prefix server",
+    "server": "npm run server --prefix server"
+  }
+}
