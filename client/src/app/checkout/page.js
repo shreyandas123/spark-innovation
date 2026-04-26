@@ -18,8 +18,8 @@ import Image from "next/image";
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart();
-  const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Success
-  const [paymentMethod, setPaymentMethod] = useState("qr"); // "qr" or "cod"
+  const [step, setStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState("qr");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -30,9 +30,21 @@ export default function CheckoutPage() {
     pincode: ""
   });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleProcessOrder = () => {
-    if (step === 1) setStep(2);
-    else if (step === 2) setStep(3);
+    if (step === 1) {
+      if (!formData.name || !formData.email || !formData.phone || !formData.address) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+      setStep(2);
+    } else if (step === 2) {
+      setStep(3);
+    }
   };
 
   if (cartItems.length === 0 && step !== 3) {
@@ -78,10 +90,10 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-16 items-start">
-          {/* Main Checkout Flow */}
+          {}
           <div className="lg:col-span-2 space-y-12">
             
-            {/* Step 1: Shipping Details */}
+            {}
             <div className={`space-y-8 ${step > 1 ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
                 <div className="w-8 h-8 bg-brand-blue text-white rounded-full flex items-center justify-center text-xs font-black">1</div>
@@ -91,30 +103,65 @@ export default function CheckoutPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Full Name</label>
-                  <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" placeholder="Enter your name" />
+                  <input 
+                    type="text" 
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" 
+                    placeholder="Enter your name" 
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Phone Number</label>
-                  <input type="tel" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" placeholder="+91" />
+                  <input 
+                    type="tel" 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" 
+                    placeholder="+91" 
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Detailed Address</label>
-                <textarea rows="3" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium resize-none" placeholder="House/Flat No, Landmark, Area"></textarea>
+                <textarea 
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  rows="3" 
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium resize-none" 
+                  placeholder="House/Flat No, Landmark, Area"
+                ></textarea>
               </div>
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">City</label>
-                  <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" placeholder="Kolkata" />
+                  <input 
+                    type="text" 
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" 
+                    placeholder="Kolkata" 
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">Pincode</label>
-                  <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" placeholder="700001" />
+                  <input 
+                    type="text" 
+                    name="pincode"
+                    value={formData.pincode}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" 
+                    placeholder="700001" 
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Step 2: Payment Selection */}
+            {}
             <div className={`space-y-8 ${step < 2 ? 'opacity-30' : ''}`}>
               <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
                 <div className="w-8 h-8 bg-brand-blue text-white rounded-full flex items-center justify-center text-xs font-black">2</div>
@@ -123,7 +170,7 @@ export default function CheckoutPage() {
 
               {step >= 2 && (
                 <div className="grid md:grid-cols-2 gap-6">
-                  {/* QR Option */}
+                  {}
                   <div 
                     onClick={() => setPaymentMethod("qr")}
                     className={`p-6 border-2 rounded-sm cursor-pointer transition-all ${paymentMethod === 'qr' ? 'border-brand bg-brand/5 shadow-md' : 'border-slate-100 bg-white hover:border-slate-300'}`}
@@ -138,7 +185,7 @@ export default function CheckoutPage() {
                     <p className="text-[10px] text-slate-500 font-medium">Scan and pay using any UPI app</p>
                   </div>
 
-                  {/* COD Option */}
+                  {}
                   <div 
                     onClick={() => setPaymentMethod("cod")}
                     className={`p-6 border-2 rounded-sm cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-brand bg-brand/5 shadow-md' : 'border-slate-100 bg-white hover:border-slate-300'}`}
@@ -155,7 +202,7 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* QR Display Area */}
+              {}
               {step === 2 && paymentMethod === "qr" && (
                 <div className="bg-white border border-brand/20 rounded-sm p-8 flex flex-col items-center animate-reveal">
                   <div className="text-center mb-8">
@@ -179,7 +226,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order Summary Sidebar */}
+          {}
           <div className="lg:col-span-1 bg-white border border-slate-200 rounded-sm p-8 shadow-sm sticky top-32">
             <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-8 pb-4 border-b border-slate-100">Order Summary</h3>
             
@@ -234,3 +281,5 @@ export default function CheckoutPage() {
     </main>
   );
 }
+
+

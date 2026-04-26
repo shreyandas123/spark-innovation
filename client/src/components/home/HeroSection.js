@@ -37,7 +37,7 @@ export default function HeroSection() {
   };
 
   useEffect(() => {
-    const timer = setInterval(nextSlide, 8000); // Slowed down to 8 seconds
+    const timer = setInterval(nextSlide, 8000);
     return () => clearInterval(timer);
   }, [nextSlide]);
 
@@ -46,7 +46,7 @@ export default function HeroSection() {
       <div className="container-wide">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
-          {/* Content Side */}
+          {}
           <div className="space-y-8 animate-reveal">
             <div className="space-y-4">
               <p className="text-brand font-bold uppercase tracking-[0.3em] text-[10px] animate-reveal delay-100">
@@ -61,7 +61,7 @@ export default function HeroSection() {
             </button>
           </div>
 
-          {/* Image Side */}
+          {}
           <div className="relative aspect-square w-full max-w-md mx-auto bg-slate-50 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200/50 animate-reveal delay-500">
             <Image 
               key={HERO_SLIDES[currentSlide].id}
@@ -74,7 +74,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Controls */}
+        {}
         <div className="flex items-center justify-center gap-6 mt-16">
           <button onClick={prevSlide} className="p-3 text-slate-300 hover:text-brand transition-colors">
             <ChevronLeft size={20} />
@@ -98,4 +98,6 @@ export default function HeroSection() {
     </section>
   );
 }
+
+
 

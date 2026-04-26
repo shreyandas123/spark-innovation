@@ -8,21 +8,13 @@ import { AlertCircle } from 'lucide-react'
 export default function AdminGuard({ children }) {
   const { user, loading } = useAuth()
   const router = useRouter()
-  const [canAccess, setCanAccess] = useState(false)
+  const canAccess = user?.role === 'admin';
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.push('/auth/login')
-        return
-      }
-      if (user.role !== 'admin') {
-        setCanAccess(false)
-      } else {
-        setCanAccess(true)
-      }
+    if (!loading && !user) {
+      router.push('/auth/login');
     }
-  }, [user, loading, router])
+  }, [user, loading, router]);
 
   if (loading) {
     return (
@@ -43,7 +35,7 @@ export default function AdminGuard({ children }) {
             <AlertCircle size={32} className="text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2">Access Denied</h1>
-          <p className="text-slate-600 mb-6">You don't have permission to access the admin panel.</p>
+          <p className="text-slate-600 mb-6">You don&apos;t have permission to access the admin panel.</p>
           <div className="flex gap-3">
             <button
               onClick={() => router.push('/')}
@@ -65,3 +57,5 @@ export default function AdminGuard({ children }) {
 
   return children
 }
+
+

@@ -20,29 +20,31 @@ export default function AdminProductsPage() {
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [productsData, categoriesData] = await Promise.all([
-        fetchProducts(),
-        fetchCategories()
-      ]);
-      setProducts(productsData.products);
-      setCategories(categoriesData.categories);
-    } catch (err) {
-      console.error("Error loading admin products:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadData();
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const [productsData, categoriesData] = await Promise.all([
+          fetchProducts(),
+          fetchCategories()
+        ]);
+        if (isMounted) {
+          setProducts(productsData.products || []);
+          setCategories(categoriesData.categories || []);
+        }
+      } catch (err) {
+        console.error("Error loading admin products:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    load();
+    return () => { isMounted = false; };
   }, []);
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.category.toLowerCase().includes(searchQuery.toLowerCase())
+    p.category?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleDelete = (slug) => {
@@ -196,3 +198,4 @@ export default function AdminProductsPage() {
     </div>
   );
 }
+

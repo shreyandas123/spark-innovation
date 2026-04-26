@@ -31,7 +31,19 @@ export default function AdminCategoriesPage() {
   };
 
   useEffect(() => {
-    loadCategories();
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const data = await fetchCategories();
+        if (isMounted) setCategories(data.categories || []);
+      } catch (err) {
+        console.error("Error loading categories:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    load();
+    return () => { isMounted = false; };
   }, []);
 
   const filteredCategories = categories.filter(c => 
@@ -129,3 +141,5 @@ export default function AdminCategoriesPage() {
     </div>
   );
 }
+
+

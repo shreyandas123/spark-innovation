@@ -35,7 +35,20 @@ export default function AdminInquiriesPage() {
   };
 
   useEffect(() => {
-    fetchInquiries();
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const res = await fetch('/api/inquiries');
+        const data = await res.json();
+        if (isMounted) setInquiries(data.inquiries || []);
+      } catch (err) {
+        console.error("Failed to fetch inquiries", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    load();
+    return () => { isMounted = false; };
   }, []);
 
   const handleDelete = async (id) => {
@@ -115,7 +128,7 @@ export default function AdminInquiriesPage() {
                     {inquiry.status}
                   </span>
                 </div>
-                <p className="text-sm text-slate-600 line-clamp-2 italic">"{inquiry.message}"</p>
+                <p className="text-sm text-slate-600 line-clamp-2 italic">&quot;{inquiry.message}&quot;</p>
               </div>
             ))}
             {filteredInquiries.length === 0 && (
@@ -165,7 +178,7 @@ export default function AdminInquiriesPage() {
               <div>
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Inquiry Message</label>
                 <div className="bg-slate-50 p-6 rounded-sm border border-slate-100 italic text-slate-600 text-sm leading-relaxed">
-                  "{selectedInquiry.message}"
+                  &quot;{selectedInquiry.message}&quot;
                 </div>
               </div>
 
@@ -204,3 +217,5 @@ export default function AdminInquiriesPage() {
     </div>
   );
 }
+
+

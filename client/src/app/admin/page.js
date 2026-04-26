@@ -54,7 +54,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-10">
-      {/* Stats Grid */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <div key={index} className="bg-white p-6 rounded-sm border border-slate-200 shadow-sm group hover:border-brand transition-all">
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-10">
-        {/* Recent Inquiries */}
+        {}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Recent Inquiries</h2>
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {}
         <div className="space-y-6">
           <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Quick Actions</h2>
           <div className="space-y-4">
@@ -174,3 +174,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+

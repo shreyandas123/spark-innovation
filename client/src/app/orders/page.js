@@ -19,7 +19,7 @@ export default function OrderHistory() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div></div>
   if (!isAuthenticated) return null
 
-  const orders = [] // Will be populated from backend
+  const orders = []
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
@@ -35,7 +35,7 @@ export default function OrderHistory() {
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <ShoppingBag size={48} className="text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-slate-900 mb-2">No Orders Yet</h3>
-            <p className="text-slate-600 mb-6">You haven't placed any orders yet. Start shopping now!</p>
+            <p className="text-slate-600 mb-6">You haven&apos;t placed any orders yet. Start shopping now!</p>
             <Link href="/products" className="inline-block px-6 py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark transition">
               Browse Products
             </Link>
@@ -86,3 +86,5 @@ export default function OrderHistory() {
     </div>
   )
 }
+
+

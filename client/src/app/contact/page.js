@@ -15,7 +15,7 @@ export default function ContactPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In a real app, this would call the backend API
+
     alert("Thank you for your inquiry! We will get back to you soon.");
     setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
   };
@@ -46,12 +46,12 @@ export default function ContactPage() {
       <div className="container-wide">
         <SectionHeader 
           badge="Contact Us"
-          title={<>LET'S START A <span className="text-brand">CONVERSATION.</span></>}
-          description="Have questions about our products or need a quote? Reach out to us and we'll be happy to help."
+          title={<>LET&apos;S START A <span className="text-brand">CONVERSATION.</span></>}
+          description="Have questions about our products or need a quote? Reach out to us and we&apos;ll be happy to help."
         />
 
         <div className="grid lg:grid-cols-5 gap-16 lg:gap-24">
-          {/* Left: Contact Info */}
+          {}
           <div className="lg:col-span-2 space-y-12">
             <div className="space-y-8">
               {contactInfo.map((item, index) => (
@@ -82,7 +82,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right: Contact Form */}
+          {}
           <div className="lg:col-span-3 bg-white border border-slate-200 rounded-sm p-8 md:p-12 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
@@ -164,3 +164,5 @@ export default function ContactPage() {
     </main>
   );
 }
+
+

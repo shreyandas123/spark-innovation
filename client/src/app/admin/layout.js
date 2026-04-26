@@ -30,7 +30,7 @@ export default function AdminLayout({ children }) {
   return (
     <AdminGuard>
       <div className="flex min-h-screen bg-slate-50">
-      {/* Sidebar */}
+      {}
       <aside className="w-64 bg-brand-blue text-white fixed h-full flex flex-col">
         <div className="p-8">
           <h2 className="text-xl font-black tracking-tighter uppercase">Sparkel <span className="text-brand">Admin</span></h2>
@@ -70,7 +70,7 @@ export default function AdminLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main Content */}
+      {}
       <main className="ml-64 flex-1 p-10">
         <header className="flex justify-between items-center mb-10 pb-6 border-b border-slate-200">
           <div>
@@ -94,3 +94,5 @@ export default function AdminLayout({ children }) {
     </AdminGuard>
   );
 }
+
+

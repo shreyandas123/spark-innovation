@@ -12,7 +12,7 @@ export default function GoogleLoginComponent() {
     setError(null)
 
     try {
-      // Send the Google token to your backend
+
       const response = await fetch('/api/auth/google', {
         method: 'POST',
         headers: {
@@ -29,12 +29,12 @@ export default function GoogleLoginComponent() {
         throw new Error(data.message || 'Authentication failed')
       }
 
-      // Store the JWT token received from backend
+
       if (data.token) {
         localStorage.setItem('authToken', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
 
-        // Redirect to dashboard or home
+
         window.location.href = '/'
       }
     } catch (err) {
@@ -61,3 +61,5 @@ export default function GoogleLoginComponent() {
     </div>
   )
 }
+
+

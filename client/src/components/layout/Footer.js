@@ -8,14 +8,14 @@ export default function Footer() {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
-  // Hide footer on admin routes
+
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
   return (
     <footer className="bg-gradient-to-br from-brand-blue to-[#051c36] text-white pt-24 pb-12 relative overflow-hidden">
-      {/* Top Accent Line */}
+      {}
       <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-brand via-brand-blue to-brand" />
       
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
@@ -94,3 +94,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+

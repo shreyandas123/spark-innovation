@@ -30,7 +30,7 @@ export default function ProductMarquee() {
 
   return (
     <section className="relative py-12 bg-white overflow-hidden">
-      {/* Subtle Background Text */}
+      {}
       <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 pointer-events-none opacity-[0.02] select-none">
         <p className="text-[20rem] font-black whitespace-nowrap">NEW ARRIVALS • SMART LIVING • INNOVATION • </p>
       </div>
@@ -42,7 +42,7 @@ export default function ProductMarquee() {
             key={`${product.slug}-${idx}`} 
             className="inline-flex items-center gap-8 px-16 group relative"
           >
-            {/* Hover Glow */}
+            {}
             <div className="absolute inset-0 bg-brand/0 group-hover:bg-brand/5 blur-3xl transition-all duration-700 rounded-full scale-50 group-hover:scale-100"></div>
             
             <div className="relative z-10 flex items-center gap-8">
@@ -79,3 +79,5 @@ export default function ProductMarquee() {
     </section>
   );
 }
+
+

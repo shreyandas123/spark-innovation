@@ -106,23 +106,23 @@ export default function FAQ() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+        {}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-black text-brand-blue uppercase tracking-tight mb-3">Frequently Asked Questions</h1>
           <p className="text-slate-600 text-lg">Find answers to common questions about our products and services</p>
         </div>
 
-        {/* FAQ Categories */}
+        {}
         <div className="space-y-8">
           {faqCategories.map((category, catIndex) => (
             <div key={catIndex} className="bg-white rounded-lg shadow-sm overflow-hidden">
-              {/* Category Header */}
+              {}
               <div className="bg-linear-to-r from-brand to-brand-dark p-6 text-white flex items-center gap-4">
                 <div className="opacity-80">{category.icon}</div>
                 <h2 className="text-2xl font-bold">{category.title}</h2>
               </div>
 
-              {/* FAQ Items */}
+              {}
               <div className="divide-y divide-slate-200">
                 {category.items.map((item, itemIndex) => (
                   <div
@@ -142,7 +142,7 @@ export default function FAQ() {
                       />
                     </div>
 
-                    {/* Answer */}
+                    {}
                     {openIndex === `${catIndex}-${itemIndex}` && (
                       <div className="mt-4 pt-4 border-t border-slate-200 text-slate-600 leading-relaxed">
                         {item.a}
@@ -155,7 +155,7 @@ export default function FAQ() {
           ))}
         </div>
 
-        {/* Contact Support */}
+        {}
         <div className="mt-12 bg-linear-to-r from-brand to-brand-dark rounded-lg shadow-lg p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-3">Still have questions?</h3>
           <p className="mb-6 opacity-90">Our support team is here to help. Contact us anytime!</p>
@@ -175,3 +175,5 @@ export default function FAQ() {
     </div>
   )
 }
+
+

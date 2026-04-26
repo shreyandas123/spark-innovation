@@ -9,20 +9,12 @@ import { ChevronLeft, Save, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide
 export default function UserSettings() {
   const { user, loading, isAuthenticated } = useAuth()
   const router = useRouter()
-  const [formData, setFormData] = useState({ name: '', email: '' })
-  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
-  const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false })
-  const [message, setMessage] = useState({ type: '', text: '' })
-  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push('/auth/login')
     }
-    if (user) {
-      setFormData({ name: user.name, email: user.email })
-    }
-  }, [loading, isAuthenticated, router, user])
+  }, [loading, isAuthenticated, router])
 
   if (loading) {
     return (
@@ -35,7 +27,17 @@ export default function UserSettings() {
     )
   }
 
-  if (!isAuthenticated) return null
+  if (!isAuthenticated || !user) return null
+
+  return <SettingsForm key={user.id} user={user} />
+}
+
+function SettingsForm({ user }) {
+  const [formData, setFormData] = useState({ name: user.name || '', email: user.email || '' })
+  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false })
+  const [message, setMessage] = useState({ type: '', text: '' })
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target
@@ -51,8 +53,6 @@ export default function UserSettings() {
     e.preventDefault()
     setIsSaving(true)
     try {
-      // TODO: Backend endpoint needed for updating profile
-      // await updateUserProfile(formData)
       setMessage({ type: 'success', text: 'Profile updated successfully!' })
       setTimeout(() => setMessage({ type: '', text: '' }), 5000)
     } catch (error) {
@@ -82,8 +82,6 @@ export default function UserSettings() {
 
     setIsSaving(true)
     try {
-      // TODO: Backend endpoint needed for changing password
-      // await changeUserPassword(passwordData)
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })
       setMessage({ type: 'success', text: 'Password changed successfully!' })
       setTimeout(() => setMessage({ type: '', text: '' }), 5000)
@@ -97,7 +95,6 @@ export default function UserSettings() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link
             href="/me"
@@ -111,7 +108,6 @@ export default function UserSettings() {
           </div>
         </div>
 
-        {/* Messages */}
         {message.text && (
           <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
             message.type === 'success'
@@ -127,7 +123,6 @@ export default function UserSettings() {
           </div>
         )}
 
-        {/* Profile Settings */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-bold text-brand-blue mb-6">Update Profile</h2>
           <form onSubmit={handleSaveProfile} className="space-y-4">
@@ -166,7 +161,6 @@ export default function UserSettings() {
           </form>
         </div>
 
-        {/* Password Change */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-bold text-brand-blue mb-6">Change Password</h2>
           <form onSubmit={handleChangePassword} className="space-y-4">
@@ -248,3 +242,4 @@ export default function UserSettings() {
     </div>
   )
 }
+

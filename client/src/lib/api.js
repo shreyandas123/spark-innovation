@@ -102,9 +102,16 @@ export const loginUser = async (credentials) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
   });
+  
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'Login failed');
+    let errorMessage = 'Login failed';
+    try {
+      const error = await res.json();
+      errorMessage = error.message || errorMessage;
+    } catch (e) {
+      errorMessage = `Server error (${res.status}). Please ensure the backend is running.`;
+    }
+    throw new Error(errorMessage);
   }
   return res.json();
 };
@@ -115,9 +122,16 @@ export const registerUser = async (userData) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
   });
+  
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'Registration failed');
+    let errorMessage = 'Registration failed';
+    try {
+      const error = await res.json();
+      errorMessage = error.message || errorMessage;
+    } catch (e) {
+      errorMessage = `Server error (${res.status}). Please ensure the backend is running.`;
+    }
+    throw new Error(errorMessage);
   }
   return res.json();
 };
@@ -129,3 +143,5 @@ export const fetchUserMe = async (token) => {
   if (!res.ok) throw new Error('Failed to fetch user');
   return res.json();
 };
+
+

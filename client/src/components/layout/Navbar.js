@@ -16,11 +16,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Hide navbar on admin routes
-  if (pathname?.startsWith("/admin")) {
-    return null;
-  }
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -28,6 +23,11 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <nav
@@ -191,5 +191,7 @@ export default function Navbar() {
     </nav>
   );
 }
+
+
 
 

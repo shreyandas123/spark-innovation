@@ -9,17 +9,17 @@ export default function WhatsAppFloat() {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
-  // Hide on admin routes
-  if (pathname?.startsWith("/admin")) {
-    return null;
-  }
-
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isDismissed) setIsVisible(true);
     }, 5000);
     return () => clearTimeout(timer);
   }, [isDismissed]);
+
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const handleClick = () => {
     window.open(
@@ -55,4 +55,6 @@ export default function WhatsAppFloat() {
     </div>
   );
 }
+
+
 

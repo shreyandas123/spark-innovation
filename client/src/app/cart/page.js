@@ -25,7 +25,7 @@ export default function CartPage() {
             <ShoppingBag size={40} />
           </div>
           <h1 className="text-3xl font-black text-brand-blue uppercase tracking-tight mb-4">Your cart is empty</h1>
-          <p className="text-slate-500 mb-10 font-medium">Looks like you haven't added anything to your cart yet.</p>
+          <p className="text-slate-500 mb-10 font-medium">Looks like you haven&apos;t added anything to your cart yet.</p>
           <Link 
             href="/products" 
             className="inline-flex bg-brand-blue text-white py-4 px-10 rounded-sm font-black uppercase tracking-widest text-[10px] hover:bg-brand transition-all shadow-lg"
@@ -47,7 +47,7 @@ export default function CartPage() {
         />
 
         <div className="grid lg:grid-cols-3 gap-16 items-start">
-          {/* Cart Items List */}
+          {}
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white border border-slate-200 rounded-sm overflow-hidden shadow-sm">
               <div className="hidden md:grid grid-cols-5 gap-6 p-6 bg-slate-50 border-b border-slate-200 text-[9px] font-black uppercase tracking-widest text-slate-400">
@@ -115,7 +115,7 @@ export default function CartPage() {
             </Link>
           </div>
 
-          {/* Cart Summary */}
+          {}
           <div className="lg:col-span-1 bg-white border border-slate-200 rounded-sm p-10 shadow-sm sticky top-32">
             <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-10 pb-4 border-b border-slate-100">Order Summary</h3>
             
@@ -159,3 +159,5 @@ export default function CartPage() {
     </main>
   );
 }
+
+

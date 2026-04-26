@@ -46,7 +46,7 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+        {}
         <div className="mb-8">
           <h1 className="text-3xl font-black text-brand-blue uppercase tracking-tight mb-2">
             Welcome Back, {user?.name?.split(' ')[0]}!
@@ -55,10 +55,10 @@ export default function UserDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar */}
+          {}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden sticky top-6">
-              {/* Profile Card */}
+              {}
               <div className="bg-linear-to-br from-brand to-brand-dark p-6 text-white text-center">
                 <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User size={32} />
@@ -72,7 +72,7 @@ export default function UserDashboard() {
                 </div>
               </div>
 
-              {/* Navigation */}
+              {}
               <nav className="p-4 space-y-2">
                 <button
                   onClick={() => setActiveTab('overview')}
@@ -120,7 +120,7 @@ export default function UserDashboard() {
                 </button>
               </nav>
 
-              {/* Logout */}
+              {}
               <div className="p-4 border-t border-slate-200">
                 <button
                   onClick={() => {
@@ -136,9 +136,9 @@ export default function UserDashboard() {
             </div>
           </div>
 
-          {/* Main Content */}
+          {}
           <div className="lg:col-span-3">
-            {/* Overview Tab */}
+            {}
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -173,7 +173,7 @@ export default function UserDashboard() {
                   </div>
                 </div>
 
-                {/* Recent Activity */}
+                {}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="font-bold text-lg text-brand-blue mb-4">Recent Activity</h3>
                   <div className="text-center py-12">
@@ -190,7 +190,7 @@ export default function UserDashboard() {
               </div>
             )}
 
-            {/* Profile Tab */}
+            {}
             {activeTab === 'profile' && (
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -225,7 +225,7 @@ export default function UserDashboard() {
                   </div>
                 </div>
 
-                {/* Saved Addresses */}
+                {}
                 <div className="mt-8 pt-8 border-t border-slate-200">
                   <h4 className="font-bold text-brand-blue mb-4">Saved Addresses</h4>
                   <div className="text-center py-8 bg-slate-50 rounded-lg">
@@ -239,7 +239,7 @@ export default function UserDashboard() {
               </div>
             )}
 
-            {/* Security Tab */}
+            {}
             {activeTab === 'security' && (
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h3 className="font-bold text-lg text-brand-blue mb-6">Security Settings</h3>
@@ -278,7 +278,7 @@ export default function UserDashboard() {
               </div>
             )}
 
-            {/* Preferences Tab */}
+            {}
             {activeTab === 'preferences' && (
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h3 className="font-bold text-lg text-brand-blue mb-6">Preferences</h3>
@@ -325,3 +325,5 @@ export default function UserDashboard() {
     </div>
   )
 }
+
+

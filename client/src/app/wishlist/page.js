@@ -19,7 +19,7 @@ export default function Wishlist() {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div></div>
   if (!isAuthenticated) return null
 
-  const wishlistItems = [] // Will be populated from backend
+  const wishlistItems = []
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
@@ -78,3 +78,5 @@ export default function Wishlist() {
     </div>
   )
 }
+
+
