@@ -33,7 +33,7 @@ export const login = async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required' })
 
   const user = await User.findOne({ email })
-  if (!user)
+  if (!user || !user.password)
     return res.status(401).json({ message: 'Invalid credentials' })
 
   const match = await user.comparePassword(password)
