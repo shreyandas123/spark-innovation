@@ -31,106 +31,70 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-4 md:px-8 lg:px-12 ${
-        isScrolled 
-          ? "pt-4" 
-          : "pt-8"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
+        isScrolled ? "py-3 shadow-md" : "py-6"
+      } border-b border-slate-100`}
     >
-      <div 
-        className={`mx-auto max-w-7xl transition-all duration-500 ease-in-out border ${
-          isScrolled 
-            ? "bg-white/80 backdrop-blur-xl py-3 px-6 md:px-10 rounded-2xl border-white/20 shadow-2xl shadow-brand-blue/10" 
-            : "bg-white/10 backdrop-blur-md py-2 px-6 md:px-10 rounded-xl border-white/10"
-        }`}
-      >
+      <div className="container-wide">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-9 h-9 bg-brand flex items-center justify-center rounded-sm transition-transform duration-500 group-hover:rotate-12">
-              <span className="text-white font-black text-lg">S</span>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-8 h-8 bg-brand flex items-center justify-center rounded">
+              <span className="text-white font-bold text-lg">S</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black text-brand-blue uppercase tracking-tighter leading-none">
+              <span className="text-xl font-bold text-brand-blue uppercase tracking-tighter leading-none">
                 Sparkel<span className="text-brand">Sales</span>
-              </span>
-              <span className="text-[7px] font-black text-slate-500 uppercase tracking-[0.4em] mt-1">
-                Kutchina Distributor
               </span>
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-10">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href || "#"}
-                className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand-blue transition-colors duration-300 relative group py-2"
+                className="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-brand transition-colors"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-brand transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </div>
 
-          <div className="hidden lg:flex items-center gap-6">
-            <Link href="/cart" className="relative group">
-              <div className="w-10 h-10 flex items-center justify-center text-brand-blue hover:text-brand transition-colors">
-                <ShoppingBag size={20} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-brand text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white animate-reveal">
-                    {cartCount}
-                  </span>
-                )}
-              </div>
+          <div className="hidden lg:flex items-center gap-8">
+            <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors">
+              <ShoppingBag size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                  {cartCount}
+                </span>
+              )}
             </Link>
-            <a 
-              href={`tel:${SITE_CONFIG.phone}`}
-              className="flex items-center gap-3 group"
-            >
-              <div className="w-8 h-8 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-full transition-colors group-hover:border-brand/50 group-hover:bg-brand/10">
-                <Phone size={12} className="text-brand-blue group-hover:text-brand transition-colors" />
-              </div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-brand-blue">{SITE_CONFIG.phone}</span>
-            </a>
 
             {isAuthenticated ? (
-              <div className="flex items-center gap-4">
-                <Link href="/admin" className="flex items-center gap-2 group">
-                   <div className="w-9 h-9 bg-brand-blue text-white rounded-full flex items-center justify-center border-2 border-white shadow-md">
-                     <User size={16} />
-                   </div>
-                   <div className="hidden xl:block">
-                     <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">Account</p>
-                     <p className="text-[10px] font-black text-brand-blue uppercase">{user?.name || 'User'}</p>
-                   </div>
-                </Link>
-                <button 
-                  onClick={logout}
-                  className="text-[8px] font-black uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
+              <Link href="/me" className="flex items-center gap-2" title={`My Dashboard - ${user?.name}`}>
+                <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center border-2 border-brand-dark hover:bg-brand-dark transition-colors">
+                  <User size={16} />
+                </div>
+              </Link>
             ) : (
               <Link 
                 href="/auth/login"
-                className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-brand-blue hover:text-brand transition-colors group"
+                className="text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand transition-colors"
               >
-                <User size={16} className="text-brand group-hover:scale-110 transition-transform" />
-                Login / Register
+                Login
               </Link>
             )}
 
-            <div className="py-2.5 px-8 bg-brand hover:bg-brand-dark text-white font-black uppercase tracking-[0.2em] text-[9px] rounded-full transition-all duration-300 cursor-pointer shadow-lg shadow-brand/20 hover:shadow-brand/40 active:scale-95 border border-brand/20">
-              Inquire
-            </div>
+            <button className="px-6 py-2 bg-brand text-white font-bold uppercase tracking-widest text-[9px] rounded hover:bg-brand-dark transition-all">
+              Inquiry
+            </button>
           </div>
 
           <button
-            className="lg:hidden w-10 h-10 flex items-center justify-center text-brand-blue bg-white rounded-full border border-slate-200"
+            className="lg:hidden p-2 text-brand-blue"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
@@ -178,23 +142,45 @@ export default function Navbar() {
               <a href={`tel:${SITE_CONFIG.phone}`} className="text-2xl font-black text-brand-blue hover:text-brand transition-colors">{SITE_CONFIG.phone}</a>
               <div className="mt-8 grid grid-cols-2 gap-3">
                 {isAuthenticated ? (
-                  <Link 
-                    href="/admin"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="py-4 bg-brand-blue text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm shadow-lg"
-                  >
-                    My Dashboard
-                  </Link>
+                  <>
+                    <Link 
+                      href="/me"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-4 bg-brand-blue text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm shadow-lg"
+                    >
+                      My Account
+                    </Link>
+                    {user?.role === 'admin' && (
+                      <Link 
+                        href="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="py-4 bg-slate-800 text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm shadow-lg"
+                      >
+                        Admin Panel
+                      </Link>
+                    )}
+                    {user?.role !== 'admin' && (
+                      <button 
+                        onClick={() => {
+                          logout()
+                          setMobileMenuOpen(false)
+                        }}
+                        className="py-4 bg-red-600 text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm shadow-lg"
+                      >
+                        Logout
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <Link 
                     href="/auth/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="py-4 bg-brand-blue text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm shadow-lg"
+                    className="py-4 bg-brand-blue text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm shadow-lg col-span-2"
                   >
                     Login / Register
                   </Link>
                 )}
-                <div className="py-4 bg-brand text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm cursor-pointer shadow-lg shadow-brand/20">
+                <div className="py-4 bg-brand text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm cursor-pointer shadow-lg shadow-brand/20 {user?.role !== 'admin' ? 'col-span-2' : ''}">
                   Request Quote
                 </div>
               </div>

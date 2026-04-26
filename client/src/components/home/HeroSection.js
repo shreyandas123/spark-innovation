@@ -1,73 +1,98 @@
 "use client";
 
-import { ArrowRight, Play } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+
+const HERO_SLIDES = [
+  {
+    id: 1,
+    title: "Beyond Purification",
+    subtitle: "Advanced Water Healthifier",
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    id: 2,
+    title: "i-Auto Clean Technology",
+    subtitle: "Modern Smart Chimneys",
+    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    id: 3,
+    title: "Modular Elegance",
+    subtitle: "Bespoke Kitchen Solutions",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+  }
+];
 
 export default function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+  }, []);
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 8000); // Slowed down to 8 seconds
+    return () => clearInterval(timer);
+  }, [nextSlide]);
+
   return (
-    <section className="relative bg-white overflow-hidden min-h-[90vh] flex items-center">
-      <div className="container-wide relative z-10 pt-32 pb-20">
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-7 animate-reveal">
-            <div className="inline-flex items-center gap-3 mb-6 md:mb-8">
-              <span className="w-8 md:w-12 h-[2px] bg-brand"></span>
-              <span className="text-brand font-black uppercase tracking-[0.3em] text-[8px] md:text-[10px]">
-                Kutchina Platinum Partner
-              </span>
+    <section className="relative bg-white min-h-[50vh] md:min-h-[65vh] flex items-center overflow-hidden pt-32 pb-12">
+      <div className="container-wide">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          {/* Content Side */}
+          <div className="space-y-8 animate-reveal">
+            <div className="space-y-4">
+              <p className="text-brand font-bold uppercase tracking-[0.3em] text-[10px] animate-reveal delay-100">
+                {HERO_SLIDES[currentSlide].subtitle}
+              </p>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-brand-blue leading-[1.1] tracking-tight animate-reveal delay-200">
+                {HERO_SLIDES[currentSlide].title}
+              </h1>
             </div>
-            
-            <h1 className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-black text-brand-blue mb-6 md:mb-8 leading-[0.9] tracking-tighter">
-              KITCHEN <br />
-              <span className="text-brand">FUTURE</span> <br />
-              DEFINED.
-            </h1>
-            
-            <p className="text-slate-600 font-medium text-base md:text-xl max-w-xl mb-8 md:mb-12 leading-relaxed">
-              Experience India&apos;s first i-Auto Clean technology. 
-              Smart appliances designed for the soulful Indian kitchen.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-              <div className="px-8 md:px-12 py-4 md:py-5 bg-brand hover:bg-brand-dark text-white font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px] rounded-sm cursor-pointer transition-all flex items-center justify-center shadow-xl shadow-brand/20 hover:shadow-brand/40 group">
-                Explore Catalog 
-                <ArrowRight size={14} className="ml-2 transition-transform group-hover:translate-x-1" />
-              </div>
-              <div className="px-8 md:px-12 py-4 md:py-5 border border-brand-blue/20 hover:border-brand-blue text-brand-blue font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px] rounded-sm cursor-pointer transition-all flex items-center justify-center group">
-                <div className="w-5 h-5 bg-brand-blue/10 rounded-full flex items-center justify-center mr-2 group-hover:bg-brand-blue group-hover:text-white transition-colors">
-                  <Play size={10} fill="currentColor" />
-                </div>
-                Inquire Now
-              </div>
-            </div>
-
-            <div className="mt-12 md:mt-16 grid grid-cols-3 gap-4 md:gap-8 border-t border-slate-200 pt-8 md:pt-10">
-              <div>
-                <p className="text-xl md:text-3xl font-black text-brand-blue">20+</p>
-                <p className="text-[7px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">Years of Trust</p>
-              </div>
-              <div>
-                <p className="text-xl md:text-3xl font-black text-brand-blue">100%</p>
-                <p className="text-[7px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">Auto Clean</p>
-              </div>
-              <div>
-                <p className="text-xl md:text-3xl font-black text-brand-blue">Expert</p>
-                <p className="text-[7px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">Installation</p>
-              </div>
-            </div>
+            <button className="px-10 py-4 bg-brand text-white font-bold uppercase tracking-widest text-[10px] rounded hover:bg-brand-dark transition-all shadow-xl shadow-brand/10 animate-reveal delay-300">
+              Discover More
+            </button>
           </div>
 
-          <div className="lg:col-span-5 relative flex items-center justify-center mt-12 lg:mt-0">
-            <div className="relative w-full aspect-square md:aspect-[4/5] bg-slate-100 rounded-lg overflow-hidden shadow-2xl animate-reveal delay-200 border border-slate-200 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center grayscale scale-110 transition-transform duration-[2s] group-hover:scale-100" />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/70 via-brand-blue/10 to-transparent opacity-80" />
-              
-              <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10">
-                <div className="p-4 md:p-6 bg-white/70 backdrop-blur-xl border border-white/40 rounded-sm">
-                  <p className="text-brand text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-1">Modern Collection</p>
-                  <p className="text-brand-blue text-lg md:text-2xl font-black uppercase tracking-tighter">FLORA i-AUTO CLEAN</p>
-                </div>
-              </div>
-            </div>
+          {/* Image Side */}
+          <div className="relative aspect-square w-full max-w-md mx-auto bg-slate-50 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200/50 animate-reveal delay-500">
+            <Image 
+              key={HERO_SLIDES[currentSlide].id}
+              src={HERO_SLIDES[currentSlide].image} 
+              alt={HERO_SLIDES[currentSlide].title} 
+              fill 
+              className="object-cover transition-all duration-1000 ease-in-out"
+              priority
+            />
           </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center justify-center gap-6 mt-16">
+          <button onClick={prevSlide} className="p-3 text-slate-300 hover:text-brand transition-colors">
+            <ChevronLeft size={20} />
+          </button>
+          
+          <div className="flex gap-3">
+            {HERO_SLIDES.map((_, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-1.5 transition-all duration-500 rounded-full ${idx === currentSlide ? 'w-10 bg-brand' : 'w-3 bg-slate-100'}`}
+              />
+            ))}
+          </div>
+
+          <button onClick={nextSlide} className="p-3 text-slate-300 hover:text-brand transition-colors">
+            <ChevronRight size={20} />
+          </button>
         </div>
       </div>
     </section>

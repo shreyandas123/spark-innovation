@@ -13,6 +13,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import AdminGuard from "@/components/AdminGuard";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
@@ -27,7 +28,8 @@ export default function AdminLayout({ children }) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <AdminGuard>
+      <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar */}
       <aside className="w-64 bg-brand-blue text-white fixed h-full flex flex-col">
         <div className="p-8">
@@ -89,5 +91,6 @@ export default function AdminLayout({ children }) {
         {children}
       </main>
     </div>
+    </AdminGuard>
   );
 }

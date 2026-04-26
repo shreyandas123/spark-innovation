@@ -75,7 +75,7 @@ export default function Footer() {
 
         <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em]">
-            © {currentYear} {SITE_CONFIG.name}. Kutchina Authorized Distributor.
+            made by computer software solutions | all rights rrseevred
           </p>
           <div className="flex items-center gap-12">
             <div className="flex gap-12">

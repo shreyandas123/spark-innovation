@@ -1,16 +1,25 @@
 const API_URL = '/api';
 
 export const fetchProducts = async (params = {}) => {
-  const query = new URLSearchParams(params).toString();
-  const res = await fetch(`${API_URL}/products?${query}`);
-  if (!res.ok) throw new Error('Failed to fetch products');
-  return res.json();
+  try {
+    const query = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_URL}/products?${query}`);
+    if (!res.ok) return { products: [], total: 0 };
+    return res.json();
+  } catch (error) {
+    console.warn("Backend not reachable, using fallback data.");
+    return { products: [], total: 0 };
+  }
 };
 
 export const fetchProductBySlug = async (slug) => {
-  const res = await fetch(`${API_URL}/products/${slug}`);
-  if (!res.ok) throw new Error('Failed to fetch product');
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/products/${slug}`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    return null;
+  }
 };
 
 export const createProduct = async (productData) => {
@@ -42,9 +51,13 @@ export const deleteProduct = async (slug) => {
 };
 
 export const fetchCategories = async () => {
-  const res = await fetch(`${API_URL}/categories`);
-  if (!res.ok) throw new Error('Failed to fetch categories');
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/categories`);
+    if (!res.ok) return { categories: [] };
+    return res.json();
+  } catch (error) {
+    return { categories: [] };
+  }
 };
 
 export const createCategory = async (categoryData) => {
@@ -66,9 +79,13 @@ export const deleteCategory = async (slug) => {
 };
 
 export const fetchInquiries = async () => {
-  const res = await fetch(`${API_URL}/inquiries`);
-  if (!res.ok) throw new Error('Failed to fetch inquiries');
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/inquiries`);
+    if (!res.ok) return { inquiries: [] };
+    return res.json();
+  } catch (error) {
+    return { inquiries: [] };
+  }
 };
 
 export const deleteInquiry = async (id) => {

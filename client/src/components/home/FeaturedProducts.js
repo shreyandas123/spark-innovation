@@ -1,14 +1,37 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowRight, IndianRupee } from "lucide-react";
 import { SAMPLE_PRODUCTS } from "@/lib/constants";
+import { fetchProducts } from "@/lib/api";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
 
 export default function FeaturedProducts() {
-  const products = SAMPLE_PRODUCTS.slice(0, 4);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const data = await fetchProducts({ featured: true });
+        if (data && data.products && data.products.length > 0) {
+          setProducts(data.products.slice(0, 4));
+        } else {
+          setProducts(SAMPLE_PRODUCTS.slice(0, 4));
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts(SAMPLE_PRODUCTS.slice(0, 4));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getProducts();
+  }, []);
 
   return (
     <section className="section-padding bg-white border-t border-slate-200">
@@ -30,9 +53,17 @@ export default function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12">
-          {products.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
+          {loading ? (
+            [...Array(4)].map((_, i) => (
+              <div key={i} className="aspect-[4/5] bg-slate-50 animate-pulse rounded-sm"></div>
+            ))
+          ) : (
+            products.map((product, idx) => (
+              <div key={product.slug || product._id} className={`animate-reveal delay-${(idx + 1) * 100}`}>
+                <ProductCard product={product} />
+              </div>
+            ))
+          )}
         </div>
 
         <div className="mt-12 md:hidden">

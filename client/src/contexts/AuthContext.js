@@ -36,11 +36,15 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = (token, userData) => {
-    setToken(token)
-    setUser(userData)
-    localStorage.setItem('authToken', token)
-    localStorage.setItem('user', JSON.stringify(userData))
-  }
+    setToken(token);
+    setUser(userData);
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  const register = (token, userData) => {
+    login(token, userData);
+  };
 
   return (
     <AuthContext.Provider value={{ 
@@ -48,8 +52,10 @@ export function AuthProvider({ children }) {
       token, 
       loading, 
       login, 
+      register,
       logout,
-      isAuthenticated: !!user 
+      isAuthenticated: !!user,
+      isAdmin: user?.role === 'admin'
     }}>
       {children}
     </AuthContext.Provider>
