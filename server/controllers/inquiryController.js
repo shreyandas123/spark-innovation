@@ -14,11 +14,10 @@ export const createInquiry = async (req, res) => {
   res.status(201).json({ inquiry })
 }
 
-export const updateInquiryStatus = async (req, res) => {
-  const { status } = req.body
+export const updateInquiry = async (req, res) => {
   const inquiry = await Inquiry.findByIdAndUpdate(
     req.params.id,
-    { status },
+    req.body,
     { new: true, runValidators: true }
   )
   if (!inquiry) return res.status(404).json({ message: 'Inquiry not found' })
