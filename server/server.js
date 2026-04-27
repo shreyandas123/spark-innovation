@@ -5,6 +5,7 @@ import 'dotenv/config'
 import authRoutes from './routes/auth.js'
 import categoryRoutes from './routes/categories.js'
 import productRoutes from './routes/products.js'
+import inquiryRoutes from './routes/inquiries.js'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -18,18 +19,20 @@ app.use(express.json())
 app.use(cors())
 
 // routes
-app.get('/', (req, res) => res.json({ message: 'Sparkel Sales API is running', status: 'healthy' }))
 app.use('/api/auth', authRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)
+app.use('/api/inquiries', inquiryRoutes)
 
-// Error handling middleware
+// global error handler — returns JSON instead of HTML for all unhandled errors
 app.use((err, req, res, next) => {
-  console.error('SERVER_ERROR:', err.stack)
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || 'Internal Server Error'
-  })
+  console.error(err.stack)
+  res.status(err.status || 500).json({ message: err.message || 'Internal server error' })
 })
 
-app.listen(port, () => console.log(`Server running on port ${port}`))
+app.listen(port, () => {
+  console.log('================================')
+  console.log(`  Sparkel Sales API`)
+  console.log(`  Running on http://localhost:${port}`)
+  console.log('================================')
+})

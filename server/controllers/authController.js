@@ -33,7 +33,7 @@ export const login = async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required' })
 
   const user = await User.findOne({ email })
-  if (!user || !user.password)
+  if (!user)
     return res.status(401).json({ message: 'Invalid credentials' })
 
   const match = await user.comparePassword(password)
@@ -45,7 +45,7 @@ export const login = async (req, res) => {
 }
 
 export const googleAuth = async (req, res) => {
-  const { idToken } = req.body
+  const idToken = req.body.token || req.body.idToken
   if (!idToken)
     return res.status(400).json({ message: 'Google ID token is required' })
 
