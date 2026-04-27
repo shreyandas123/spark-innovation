@@ -9,6 +9,21 @@ export const getProducts = async (req, res) => {
   res.json({ products })
 }
 
+export const searchProducts = async (req, res) => {
+  const { q } = req.query
+  if (!q) return res.status(400).json({ message: 'Search query q is required' })
+
+  const products = await Product.find({
+    $or: [
+      { name: { $regex: q, $options: 'i' } },
+      { description: { $regex: q, $options: 'i' } },
+      { category: { $regex: q, $options: 'i' } },
+    ],
+  }).sort({ createdAt: -1 })
+
+  res.json({ products })
+}
+
 export const getProductBySlug = async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug })
   if (!product) return res.status(404).json({ message: 'Product not found' })
