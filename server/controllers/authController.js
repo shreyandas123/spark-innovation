@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import { OAuth2Client } from 'google-auth-library'
 import User from '../models/User.js'
 
@@ -33,7 +34,7 @@ export const login = async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required' })
 
   const user = await User.findOne({ email })
-  if (!user)
+  if (!user || !user.password)
     return res.status(401).json({ message: 'Invalid credentials' })
 
   const match = await user.comparePassword(password)
@@ -73,4 +74,43 @@ export const googleAuth = async (req, res) => {
 
 export const getMe = (req, res) => {
   res.json({ user: req.user })
+}
+
+export const updateProfile = async (req, res) => {
+  const { name, email } = req.body
+
+  if (email && email !== req.user.email) {
+    const existing = await User.findOne({ email })
+    if (existing) return res.status(409).json({ message: 'Email already in use' })
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { ...(name && { name }), ...(email && { email }) },
+    { new: true, runValidators: true }
+  )
+  res.json({ user })
+}
+
+export const updatePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body
+
+  if (!currentPassword || !newPassword)
+    return res.status(400).json({ message: 'Current and new password are required' })
+
+  if (newPassword.length < 6)
+    return res.status(400).json({ message: 'New password must be at least 6 characters' })
+
+  const user = await User.findById(req.user._id)
+  if (!user.password)
+    return res.status(400).json({ message: 'Account uses Google login — no password to update' })
+
+  const match = await user.comparePassword(currentPassword)
+  if (!match)
+    return res.status(401).json({ message: 'Current password is incorrect' })
+
+  user.password = newPassword
+  await user.save()
+
+  res.json({ message: 'Password updated successfully' })
 }

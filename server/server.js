@@ -6,6 +6,11 @@ import authRoutes from './routes/auth.js'
 import categoryRoutes from './routes/categories.js'
 import productRoutes from './routes/products.js'
 import inquiryRoutes from './routes/inquiries.js'
+import orderRoutes from './routes/orders.js'
+import adminRoutes from './routes/admin.js'
+import wishlistRoutes from './routes/wishlist.js'
+import jobRoutes from './routes/jobs.js'
+import settingsRoutes from './routes/settings.js'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -23,6 +28,11 @@ app.use('/api/auth', authRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/inquiries', inquiryRoutes)
+app.use('/api/orders', orderRoutes)
+app.use('/api/admin', adminRoutes)
+app.use('/api/wishlist', wishlistRoutes)
+app.use('/api/jobs', jobRoutes)
+app.use('/api/settings', settingsRoutes)
 
 // global error handler — returns JSON instead of HTML for all unhandled errors
 app.use((err, req, res, next) => {
