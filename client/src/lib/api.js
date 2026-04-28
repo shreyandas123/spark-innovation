@@ -244,6 +244,26 @@ export const updateSiteSettings = async (token, settingsData) => {
   return res.json();
 };
 
+export const loginWithGoogle = async (idToken) => {
+  const res = await fetch(`${API_URL}/auth/google`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: idToken }),
+  });
+  
+  if (!res.ok) {
+    let errorMessage = 'Google login failed';
+    try {
+      const error = await res.json();
+      errorMessage = error.message || errorMessage;
+    } catch (e) {
+      errorMessage = `Server error (${res.status}).`;
+    }
+    throw new Error(errorMessage);
+  }
+  return res.json();
+};
+
 
 
 

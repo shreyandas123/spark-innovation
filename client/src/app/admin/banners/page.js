@@ -37,8 +37,7 @@ export default function BannersPage() {
               <tr key={banner.id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4 w-64">
                   <div className="aspect-[3/1] bg-slate-100 rounded-sm border border-slate-200 flex items-center justify-center relative overflow-hidden group">
-                     {/* Placeholder for image */}
-                     <ImageIcon size={24} className="text-slate-300" />
+                    <ImageIcon size={24} className="text-slate-300" />
                      <div className="absolute inset-0 bg-brand/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                        <span className="text-[10px] font-black text-brand uppercase">View Full</span>
                      </div>
