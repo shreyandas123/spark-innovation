@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { Phone, Menu, X, ArrowRight, ShoppingBag, User } from "lucide-react";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 import Link from "next/link";
@@ -15,6 +15,7 @@ export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,14 +64,14 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-8">
             <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors">
               <ShoppingBag size={20} />
-              {cartCount > 0 && (
+              {mounted && cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
                   {cartCount}
                 </span>
               )}
             </Link>
 
-            {isAuthenticated ? (
+            {mounted && isAuthenticated ? (
               <Link href="/me" className="flex items-center gap-2" title={`My Dashboard - ${user?.name}`}>
                 <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center border-2 border-brand-dark hover:bg-brand-dark transition-colors">
                   <User size={16} />
@@ -115,7 +116,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-4xl font-black text-brand uppercase tracking-tighter hover:text-brand-blue transition-colors flex items-center justify-between group"
               >
-                Cart ({cartCount})
+                Cart ({mounted ? cartCount : 0})
                 <ShoppingBag className="opacity-0 -translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0" size={24} />
               </Link>
             </div>
@@ -141,7 +142,7 @@ export default function Navbar() {
               <p className="text-slate-500 font-black uppercase tracking-widest text-[8px] mb-4">Connect With Us</p>
               <a href={`tel:${SITE_CONFIG.phone}`} className="text-2xl font-black text-brand-blue hover:text-brand transition-colors">{SITE_CONFIG.phone}</a>
               <div className="mt-8 grid grid-cols-2 gap-3">
-                {isAuthenticated ? (
+                {mounted && isAuthenticated ? (
                   <>
                     <Link 
                       href="/me"
