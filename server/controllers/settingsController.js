@@ -16,9 +16,13 @@ export const createBanner = async (req, res) => {
 }
 
 export const updateBanner = async (req, res) => {
+  const { title, image, link, active, order } = req.body
+  const updates = { title, image, link, active, order }
+  Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k])
+
   const banner = await Banner.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    updates,
     { new: true, runValidators: true }
   )
   if (!banner) return res.status(404).json({ message: 'Banner not found' })
@@ -38,9 +42,13 @@ export const getSiteSettings = async (req, res) => {
 }
 
 export const updateSiteSettings = async (req, res) => {
+  const { websiteName, metaDescription, heroHeadline, heroSubheadline, phone, email, address, mapsUrl, social } = req.body
+  const updates = { websiteName, metaDescription, heroHeadline, heroSubheadline, phone, email, address, mapsUrl, social }
+  Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k])
+
   const settings = await SiteSettings.findOneAndUpdate(
     {},
-    req.body,
+    updates,
     { new: true, upsert: true, runValidators: true }
   )
   res.json({ settings })
