@@ -5,23 +5,40 @@ export const getProducts = async (req, res) => {
   if (req.query.category) filter.category = req.query.category
   if (req.query.featured === 'true') filter.featured = true
 
-  const products = await Product.find(filter).sort({ createdAt: -1 })
-  res.json({ products })
+  const page = Math.max(1, parseInt(req.query.page) || 1)
+  const limit = Math.min(100, parseInt(req.query.limit) || 20)
+  const skip = (page - 1) * limit
+
+  const [products, total] = await Promise.all([
+    Product.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Product.countDocuments(filter),
+  ])
+
+  res.json({ products, total, page, pages: Math.ceil(total / limit) })
 }
 
 export const searchProducts = async (req, res) => {
   const { q } = req.query
   if (!q) return res.status(400).json({ message: 'Search query q is required' })
 
-  const products = await Product.find({
+  const page = Math.max(1, parseInt(req.query.page) || 1)
+  const limit = Math.min(100, parseInt(req.query.limit) || 20)
+  const skip = (page - 1) * limit
+
+  const filter = {
     $or: [
       { name: { $regex: q, $options: 'i' } },
       { description: { $regex: q, $options: 'i' } },
       { category: { $regex: q, $options: 'i' } },
     ],
-  }).sort({ createdAt: -1 })
+  }
 
-  res.json({ products })
+  const [products, total] = await Promise.all([
+    Product.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Product.countDocuments(filter),
+  ])
+
+  res.json({ products, total, page, pages: Math.ceil(total / limit) })
 }
 
 export const getProductBySlug = async (req, res) => {
@@ -43,9 +60,13 @@ export const createProduct = async (req, res) => {
 }
 
 export const updateProduct = async (req, res) => {
+  const { name, slug, category, price, description, specs, images, featured, inStock } = req.body
+  const updates = { name, slug, category, price, description, specs, images, featured, inStock }
+  Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k])
+
   const product = await Product.findOneAndUpdate(
     { slug: req.params.slug },
-    req.body,
+    updates,
     { new: true, runValidators: true }
   )
   if (!product) return res.status(404).json({ message: 'Product not found' })
