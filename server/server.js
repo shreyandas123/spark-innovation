@@ -35,7 +35,12 @@ mongoose.connect(process.env.MONGO_URI)
 app.use(helmet())
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000' }))
 app.use(express.json())
-app.use(mongoSanitize())
+// express-mongo-sanitize can't reassign req.query in Express 5 (read-only getter)
+// so we manually sanitize only req.body
+app.use((req, res, next) => {
+  if (req.body) req.body = mongoSanitize.sanitize(req.body)
+  next()
+})
 
 // rate limit auth routes — 20 requests per 15 minutes per IP
 const authLimiter = rateLimit({
