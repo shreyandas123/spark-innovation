@@ -5,6 +5,7 @@ import { protect } from '../middleware/auth.js'
 const router = Router()
 
 router.post('/', protect, placeOrder)
+router.get('/me', protect, getMyOrders)
 router.get('/', protect, getMyOrders)
 router.get('/:id', protect, getOrderById)
 
