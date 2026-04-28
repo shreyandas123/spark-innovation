@@ -11,7 +11,6 @@ import {
   ShoppingBag, 
   MapPin, 
   LogOut,
-  LogOut,
   Calendar,
   Edit2
 } from 'lucide-react'
