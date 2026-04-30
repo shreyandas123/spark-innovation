@@ -1,0 +1,26 @@
+{
+  "name": "sparkel-sales",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"cyan,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run server",
+    "dev:client": "cd client && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Computer-Software-Solutions/sparkel-sales.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Computer-Software-Solutions/sparkel-sales/issues"
+  },
+  "homepage": "https://github.com/Computer-Software-Solutions/sparkel-sales#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
