@@ -17,6 +17,25 @@ export const createCategory = async (req, res) => {
   res.status(201).json({ category })
 }
 
+export const updateCategory = async (req, res) => {
+  const { name, slug, icon, description } = req.body
+  const updates = { name, slug, icon, description }
+  Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k])
+
+  if (updates.slug && updates.slug !== req.params.slug) {
+    const existing = await Category.findOne({ slug: updates.slug })
+    if (existing) return res.status(409).json({ message: 'Slug already exists' })
+  }
+
+  const category = await Category.findOneAndUpdate(
+    { slug: req.params.slug },
+    updates,
+    { new: true, runValidators: true }
+  )
+  if (!category) return res.status(404).json({ message: 'Category not found' })
+  res.json({ category })
+}
+
 export const deleteCategory = async (req, res) => {
   const category = await Category.findOneAndDelete({ slug: req.params.slug })
   if (!category) return res.status(404).json({ message: 'Category not found' })
