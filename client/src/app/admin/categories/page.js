@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchCategories } from "@/lib/api";
+import { fetchCategories, createCategory, deleteCategory } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Plus, 
   Search, 
@@ -17,6 +18,14 @@ export default function AdminCategoriesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { token } = useAuth();
+  
+  const [newCategory, setNewCategory] = useState({
+    name: "",
+    slug: "",
+    description: ""
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   const loadCategories = async () => {
     try {
@@ -45,6 +54,38 @@ export default function AdminCategoriesPage() {
     load();
     return () => { isMounted = false; };
   }, []);
+
+  const handleSaveCategory = async () => {
+    if (!newCategory.name || !newCategory.slug) {
+      alert("Name and Slug are required");
+      return;
+    }
+    
+    try {
+      setIsSaving(true);
+      const data = await createCategory(token, newCategory);
+      setCategories([...categories, data.category]);
+      setIsAddingCategory(false);
+      setNewCategory({ name: "", slug: "", description: "" });
+    } catch (err) {
+      console.error("Error creating category:", err);
+      alert(err.message || "Failed to create category");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteCategory = async (slug) => {
+    if (!confirm(`Are you sure you want to delete category: ${slug}?`)) return;
+    
+    try {
+      await deleteCategory(token, slug);
+      setCategories(categories.filter(c => c.slug !== slug));
+    } catch (err) {
+      console.error("Error deleting category:", err);
+      alert(err.message || "Failed to delete category");
+    }
+  };
 
   const filteredCategories = (categories || []).filter(c => 
     (c.name || "").toLowerCase().includes(searchQuery.toLowerCase())
@@ -89,7 +130,10 @@ export default function AdminCategoriesPage() {
                   <button className="p-2 text-slate-300 hover:text-brand transition-colors">
                     <Edit2 size={14} />
                   </button>
-                  <button className="p-2 text-slate-300 hover:text-red-500 transition-colors">
+                  <button 
+                    onClick={() => handleDeleteCategory(category.slug)}
+                    className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+                  >
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -120,20 +164,50 @@ export default function AdminCategoriesPage() {
             <div className="p-8 space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category Name</label>
-                <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" placeholder="e.g. Kitchen Chimneys" />
+                <input 
+                  type="text" 
+                  value={newCategory.name}
+                  onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                  placeholder="e.g. Kitchen Chimneys" 
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Slug</label>
-                <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" placeholder="e.g. kitchen-chimneys" />
+                <input 
+                  type="text" 
+                  value={newCategory.slug}
+                  onChange={(e) => setNewCategory({ ...newCategory, slug: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                  placeholder="e.g. kitchen-chimneys" 
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Description</label>
-                <textarea rows="3" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium resize-none" placeholder="Category details..."></textarea>
+                <textarea 
+                  rows="3" 
+                  value={newCategory.description}
+                  onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium resize-none" 
+                  placeholder="Category details..."
+                ></textarea>
               </div>
             </div>
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
-              <button onClick={() => setIsAddingCategory(false)} className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors">Cancel</button>
-              <button className="px-8 py-3 bg-brand text-white text-[10px] font-black uppercase tracking-widest rounded-sm shadow-lg shadow-brand/20 hover:bg-brand-dark transition-all">Save Category</button>
+              <button 
+                onClick={() => setIsAddingCategory(false)} 
+                className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors"
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSaveCategory}
+                disabled={isSaving}
+                className="px-8 py-3 bg-brand text-white text-[10px] font-black uppercase tracking-widest rounded-sm shadow-lg shadow-brand/20 hover:bg-brand-dark transition-all disabled:opacity-50"
+              >
+                {isSaving ? "Saving..." : "Save Category"}
+              </button>
             </div>
           </div>
         </div>

@@ -36,29 +36,38 @@ export const fetchProductBySlug = async (slug) => {
   }
 };
 
-export const createProduct = async (productData) => {
+export const createProduct = async (token, productData) => {
   const res = await fetch(`${API_URL}/products`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify(productData),
   });
   if (!res.ok) throw new Error('Failed to create product');
   return res.json();
 };
 
-export const updateProduct = async (slug, productData) => {
+export const updateProduct = async (token, slug, productData) => {
   const res = await fetch(`${API_URL}/products/${slug}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify(productData),
   });
   if (!res.ok) throw new Error('Failed to update product');
   return res.json();
 };
 
-export const deleteProduct = async (slug) => {
+export const deleteProduct = async (token, slug) => {
   const res = await fetch(`${API_URL}/products/${slug}`, {
     method: 'DELETE',
+    headers: { 
+      'Authorization': `Bearer ${token}`
+    }
   });
   if (!res.ok) throw new Error('Failed to delete product');
   return res.json();
@@ -74,19 +83,25 @@ export const fetchCategories = async () => {
   }
 };
 
-export const createCategory = async (categoryData) => {
+export const createCategory = async (token, categoryData) => {
   const res = await fetch(`${API_URL}/categories`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify(categoryData),
   });
   if (!res.ok) throw new Error('Failed to create category');
   return res.json();
 };
 
-export const deleteCategory = async (slug) => {
+export const deleteCategory = async (token, slug) => {
   const res = await fetch(`${API_URL}/categories/${slug}`, {
     method: 'DELETE',
+    headers: { 
+      'Authorization': `Bearer ${token}`
+    }
   });
   if (!res.ok) throw new Error('Failed to delete category');
   return res.json();

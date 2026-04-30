@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchProducts, fetchCategories } from "@/lib/api";
+import { fetchProducts, fetchCategories, createProduct, deleteProduct } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Plus, 
   Search, 
@@ -19,6 +20,17 @@ export default function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { token } = useAuth();
+
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    slug: "",
+    category: "",
+    price: "",
+    description: "",
+    images: [""]
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -47,9 +59,38 @@ export default function AdminProductsPage() {
     (p.category || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (slug) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter(p => p.slug !== slug));
+  const handleSaveProduct = async () => {
+    if (!newProduct.name || !newProduct.slug || !newProduct.category) {
+      alert("Name, Slug, and Category are required");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      const data = await createProduct(token, {
+        ...newProduct,
+        price: Number(newProduct.price)
+      });
+      setProducts([...products, data.product]);
+      setIsAddingProduct(false);
+      setNewProduct({ name: "", slug: "", category: "", price: "", description: "", images: [""] });
+    } catch (err) {
+      console.error("Error creating product:", err);
+      alert(err.message || "Failed to create product");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async (slug) => {
+    if (confirm(`Are you sure you want to delete product: ${slug}?`)) {
+      try {
+        await deleteProduct(token, slug);
+        setProducts(products.filter(p => p.slug !== slug));
+      } catch (err) {
+        console.error("Error deleting product:", err);
+        alert(err.message || "Failed to delete product");
+      }
     }
   };
 
@@ -164,33 +205,84 @@ export default function AdminProductsPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Product Name</label>
-                  <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" placeholder="e.g. Flora 90 Chimney" />
+                  <input 
+                    type="text" 
+                    value={newProduct.name}
+                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                    placeholder="e.g. Flora 90 Chimney" 
+                  />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</label>
-                  <select className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium">
-                    {categories.map(cat => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
-                  </select>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Slug</label>
+                  <input 
+                    type="text" 
+                    value={newProduct.slug}
+                    onChange={(e) => setNewProduct({ ...newProduct, slug: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                    placeholder="e.g. flora-90-chimney" 
+                  />
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price (INR)</label>
-                  <input type="number" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" placeholder="0.00" />
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</label>
+                  <select 
+                    value={newProduct.category}
+                    onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map(cat => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
+                  </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Image URL</label>
-                  <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" placeholder="https://..." />
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price (INR)</label>
+                  <input 
+                    type="number" 
+                    value={newProduct.price}
+                    onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                    placeholder="0.00" 
+                  />
                 </div>
               </div>
               <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Image URL</label>
+                <input 
+                  type="text" 
+                  value={newProduct.images[0]}
+                  onChange={(e) => setNewProduct({ ...newProduct, images: [e.target.value] })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                  placeholder="https://..." 
+                />
+              </div>
+              <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Description</label>
-                <textarea rows="4" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium resize-none" placeholder="Product details..."></textarea>
+                <textarea 
+                  rows="4" 
+                  value={newProduct.description}
+                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium resize-none" 
+                  placeholder="Product details..."
+                ></textarea>
               </div>
             </div>
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
-              <button onClick={() => setIsAddingProduct(false)} className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors">Cancel</button>
-              <button className="px-8 py-3 bg-brand text-white text-[10px] font-black uppercase tracking-widest rounded-sm shadow-lg shadow-brand/20 hover:bg-brand-dark transition-all">Save Product</button>
+              <button 
+                onClick={() => setIsAddingProduct(false)} 
+                className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors"
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSaveProduct}
+                disabled={isSaving}
+                className="px-8 py-3 bg-brand text-white text-[10px] font-black uppercase tracking-widest rounded-sm shadow-lg shadow-brand/20 hover:bg-brand-dark transition-all disabled:opacity-50"
+              >
+                {isSaving ? "Saving..." : "Save Product"}
+              </button>
             </div>
           </div>
         </div>
