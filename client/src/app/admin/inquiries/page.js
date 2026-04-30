@@ -30,7 +30,7 @@ export default function AdminInquiriesPage() {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
-      setInquiries(data.inquiries);
+      setInquiries(data.inquiries || []);
     } catch (err) {
       console.error("Failed to fetch inquiries", err);
     } finally {
@@ -82,10 +82,10 @@ export default function AdminInquiriesPage() {
     }
   };
 
-  const filteredInquiries = inquiries.filter(i => 
-    i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.product.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.message.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredInquiries = (inquiries || []).filter(i => 
+    (i.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (i.product || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (i.message || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -195,11 +195,47 @@ export default function AdminInquiriesPage() {
               <div className="pt-8 border-t border-slate-100">
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Update Status</label>
                 <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center justify-center gap-2 py-3 bg-blue-500 text-white text-[9px] font-black uppercase tracking-widest rounded-sm hover:bg-blue-600 transition-colors">
+                  <button 
+                    onClick={async () => {
+                      try {
+                        await fetch(`/api/inquiries/${selectedInquiry._id}`, {
+                          method: 'PUT',
+                          headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                          },
+                          body: JSON.stringify({ status: 'Contacted' })
+                        });
+                        setInquiries(inquiries.map(i => i._id === selectedInquiry._id ? { ...i, status: 'Contacted' } : i));
+                        setSelectedInquiry({ ...selectedInquiry, status: 'Contacted' });
+                      } catch (err) {
+                        console.error("Failed to update status", err);
+                      }
+                    }}
+                    className="flex items-center justify-center gap-2 py-3 bg-blue-500 text-white text-[9px] font-black uppercase tracking-widest rounded-sm hover:bg-blue-600 transition-colors"
+                  >
                     <CheckCircle2 size={14} />
                     Contacted
                   </button>
-                  <button className="flex items-center justify-center gap-2 py-3 bg-slate-800 text-white text-[9px] font-black uppercase tracking-widest rounded-sm hover:bg-black transition-colors">
+                  <button 
+                    onClick={async () => {
+                      try {
+                        await fetch(`/api/inquiries/${selectedInquiry._id}`, {
+                          method: 'PUT',
+                          headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                          },
+                          body: JSON.stringify({ status: 'Closed' })
+                        });
+                        setInquiries(inquiries.map(i => i._id === selectedInquiry._id ? { ...i, status: 'Closed' } : i));
+                        setSelectedInquiry({ ...selectedInquiry, status: 'Closed' });
+                      } catch (err) {
+                        console.error("Failed to update status", err);
+                      }
+                    }}
+                    className="flex items-center justify-center gap-2 py-3 bg-slate-800 text-white text-[9px] font-black uppercase tracking-widest rounded-sm hover:bg-black transition-colors"
+                  >
                     <XCircle size={14} />
                     Close
                   </button>

@@ -22,7 +22,7 @@ export default function AdminCategoriesPage() {
     try {
       setLoading(true);
       const data = await fetchCategories();
-      setCategories(data.categories);
+      setCategories(data.categories || []);
     } catch (err) {
       console.error("Error loading categories:", err);
     } finally {
@@ -46,8 +46,8 @@ export default function AdminCategoriesPage() {
     return () => { isMounted = false; };
   }, []);
 
-  const filteredCategories = categories.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCategories = (categories || []).filter(c => 
+    (c.name || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (

@@ -42,9 +42,9 @@ export default function AdminProductsPage() {
     return () => { isMounted = false; };
   }, []);
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = (products || []).filter(p => 
+    (p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.category || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleDelete = (slug) => {
