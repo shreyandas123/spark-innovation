@@ -96,6 +96,19 @@ export const createCategory = async (token, categoryData) => {
   return res.json();
 };
 
+export const updateCategory = async (token, slug, categoryData) => {
+  const res = await fetch(`${API_URL}/categories/${slug}`, {
+    method: 'PUT',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(categoryData),
+  });
+  if (!res.ok) throw new Error('Failed to update category');
+  return res.json();
+};
+
 export const deleteCategory = async (token, slug) => {
   const res = await fetch(`${API_URL}/categories/${slug}`, {
     method: 'DELETE',
@@ -253,6 +266,30 @@ export const updateBanner = async (token, id, bannerData) => {
     body: JSON.stringify(bannerData),
   });
   if (!res.ok) throw new Error('Failed to update banner');
+  return res.json();
+};
+
+export const createBanner = async (token, bannerData) => {
+  const res = await fetch(`${API_URL}/settings/banners`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    },
+    body: JSON.stringify(bannerData),
+  });
+  if (!res.ok) throw new Error('Failed to create banner');
+  return res.json();
+};
+
+export const deleteBanner = async (token, id) => {
+  const res = await fetch(`${API_URL}/settings/banners/${id}`, {
+    method: 'DELETE',
+    headers: { 
+      'Authorization': `Bearer ${token}` 
+    }
+  });
+  if (!res.ok) throw new Error('Failed to delete banner');
   return res.json();
 };
 

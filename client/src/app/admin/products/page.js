@@ -19,6 +19,7 @@ export default function AdminProductsPage() {
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingProduct, setIsAddingProduct] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
@@ -67,16 +68,25 @@ export default function AdminProductsPage() {
 
     try {
       setIsSaving(true);
-      const data = await createProduct(token, {
-        ...newProduct,
-        price: Number(newProduct.price)
-      });
-      setProducts([...products, data.product]);
+      if (editingProduct) {
+        const data = await updateProduct(token, editingProduct.slug, {
+          ...newProduct,
+          price: Number(newProduct.price)
+        });
+        setProducts(products.map(p => p.slug === editingProduct.slug ? data.product : p));
+      } else {
+        const data = await createProduct(token, {
+          ...newProduct,
+          price: Number(newProduct.price)
+        });
+        setProducts([...products, data.product]);
+      }
       setIsAddingProduct(false);
+      setEditingProduct(null);
       setNewProduct({ name: "", slug: "", category: "", price: "", description: "", images: [""] });
     } catch (err) {
-      console.error("Error creating product:", err);
-      alert(err.message || "Failed to create product");
+      console.error("Error saving product:", err);
+      alert(err.message || "Failed to save product");
     } finally {
       setIsSaving(false);
     }
@@ -108,7 +118,11 @@ export default function AdminProductsPage() {
           />
         </div>
         <button 
-          onClick={() => setIsAddingProduct(true)}
+          onClick={() => {
+            setEditingProduct(null);
+            setNewProduct({ name: "", slug: "", category: "", price: "", description: "", images: [""] });
+            setIsAddingProduct(true);
+          }}
           className="bg-brand text-white py-3 px-6 rounded-sm font-black uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-brand-dark transition-all shadow-lg shadow-brand/20"
         >
           <Plus size={16} />
@@ -170,7 +184,21 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
-                        <button className="p-2 text-slate-400 hover:text-brand transition-colors">
+                        <button 
+                          onClick={() => {
+                            setEditingProduct(product);
+                            setNewProduct({
+                              name: product.name,
+                              slug: product.slug,
+                              category: product.category,
+                              price: product.price,
+                              description: product.description || "",
+                              images: product.images || [""]
+                            });
+                            setIsAddingProduct(true);
+                          }}
+                          className="p-2 text-slate-400 hover:text-brand transition-colors"
+                        >
                           <Edit2 size={16} />
                         </button>
                         <button 
@@ -196,8 +224,16 @@ export default function AdminProductsPage() {
         <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-2xl rounded-sm shadow-2xl overflow-hidden animate-reveal">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">Add New Product</h2>
-              <button onClick={() => setIsAddingProduct(false)} className="text-slate-400 hover:text-brand">
+              <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">
+                {editingProduct ? "Edit Product" : "Add New Product"}
+              </h2>
+              <button 
+                onClick={() => {
+                  setIsAddingProduct(false);
+                  setEditingProduct(null);
+                }} 
+                className="text-slate-400 hover:text-brand"
+              >
                 <X size={20} />
               </button>
             </div>

@@ -9,48 +9,77 @@ import {
   Clock,
   Eye,
   Image as ImageIcon,
-  Settings
+  Settings,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { fetchProducts, fetchInquiries, fetchBanners } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AdminDashboard() {
-  const stats = [
-    { 
-      label: "Total Products", 
-      value: "42", 
-      icon: <Package size={24} />, 
-      color: "bg-blue-500",
-      trend: "+3 this week"
-    },
-    { 
-      label: "New Inquiries", 
-      value: "18", 
-      icon: <MessageSquare size={24} />, 
-      color: "bg-brand",
-      trend: "+12% vs last month"
-    },
-    { 
-      label: "Active Banners", 
-      value: "5", 
-      icon: <Eye size={24} />, 
-      color: "bg-indigo-500",
-      trend: "All active"
-    },
-    { 
-      label: "Total Users", 
-      value: "128", 
-      icon: <Users size={24} />, 
-      color: "bg-slate-800",
-      trend: "+5 today"
-    },
-  ];
+  const [stats, setStats] = useState([
+    { label: "Total Products", value: "0", icon: <Package size={24} />, color: "bg-blue-500", trend: "Loading..." },
+    { label: "New Inquiries", value: "0", icon: <MessageSquare size={24} />, color: "bg-brand", trend: "Loading..." },
+    { label: "Active Banners", value: "0", icon: <Eye size={24} />, color: "bg-indigo-500", trend: "Loading..." },
+    { label: "Total Users", value: "128", icon: <Users size={24} />, color: "bg-slate-800", trend: "Static" },
+  ]);
+  const [recentInquiries, setRecentInquiries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { token } = useAuth();
 
-  const recentInquiries = [
-    { id: 1, name: "Rahul Sharma", product: "Flora 90 Chimney", date: "2 hours ago", status: "New" },
-    { id: 2, name: "Anita Gupta", product: "Atlas 3B Hob", date: "5 hours ago", status: "Contacted" },
-    { id: 3, name: "Vikram Singh", product: "Aqua Fresh Purifier", date: "Yesterday", status: "New" },
-    { id: 4, name: "Sanjay Mehra", product: "Vento DX Dishwasher", date: "2 days ago", status: "Closed" },
-  ];
+  useEffect(() => {
+    loadDashboardData();
+  }, [token]);
+
+  const loadDashboardData = async () => {
+    if (!token) return;
+    try {
+      setLoading(true);
+      const [productsData, inquiriesData, bannersData] = await Promise.all([
+        fetchProducts(),
+        fetchInquiries(token), // Need to ensure fetchInquiries takes token
+        fetchBanners()
+      ]);
+
+      const liveStats = [
+        { 
+          label: "Total Products", 
+          value: productsData.total || productsData.products?.length || "0", 
+          icon: <Package size={24} />, 
+          color: "bg-blue-500",
+          trend: "Live"
+        },
+        { 
+          label: "New Inquiries", 
+          value: (inquiriesData.inquiries || []).filter(i => i.status === 'New').length, 
+          icon: <MessageSquare size={24} />, 
+          color: "bg-brand",
+          trend: `${(inquiriesData.inquiries || []).length} Total`
+        },
+        { 
+          label: "Active Banners", 
+          value: (bannersData.banners || []).filter(b => b.active).length, 
+          icon: <Eye size={24} />, 
+          color: "bg-indigo-500",
+          trend: "Live"
+        },
+        { 
+          label: "Total Users", 
+          value: "128", 
+          icon: <Users size={24} />, 
+          color: "bg-slate-800",
+          trend: "Static"
+        },
+      ];
+      setStats(liveStats);
+      setRecentInquiries((inquiriesData.inquiries || []).slice(0, 5));
+    } catch (err) {
+      console.error("Error loading dashboard data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-10">
@@ -94,7 +123,7 @@ export default function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {recentInquiries.map((inquiry) => (
-                  <tr key={inquiry.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={inquiry._id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4">
                       <p className="text-sm font-bold text-brand-blue">{inquiry.name}</p>
                     </td>
@@ -104,7 +133,9 @@ export default function AdminDashboard() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-slate-400">
                         <Clock size={12} />
-                        <span className="text-[10px] font-bold uppercase">{inquiry.date}</span>
+                        <span className="text-[10px] font-bold uppercase">
+                          {inquiry.createdAt ? new Date(inquiry.createdAt).toLocaleDateString() : "Recently"}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -127,31 +158,31 @@ export default function AdminDashboard() {
         <div className="space-y-6">
           <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Quick Actions</h2>
           <div className="space-y-4">
-            <button className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-sm hover:border-brand transition-all group text-left">
+            <Link href="/admin/products" className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-sm hover:border-brand transition-all group text-left">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-brand/10 text-brand flex items-center justify-center rounded-sm">
                   <Package size={20} />
                 </div>
                 <div>
-                  <h4 className="text-[10px] font-black text-brand-blue uppercase tracking-widest">Add Product</h4>
+                  <h4 className="text-[10px] font-black text-brand-blue uppercase tracking-widest">Manage Products</h4>
                   <p className="text-[8px] text-slate-400 font-medium uppercase mt-0.5">Upload to catalogue</p>
                 </div>
               </div>
               <ArrowUpRight size={16} className="text-slate-300 group-hover:text-brand transition-colors" />
-            </button>
+            </Link>
             
-            <button className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-sm hover:border-brand transition-all group text-left">
+            <Link href="/admin/banners" className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-sm hover:border-brand transition-all group text-left">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-indigo-50 text-indigo-500 flex items-center justify-center rounded-sm">
                   <ImageIcon size={20} />
                 </div>
                 <div>
-                  <h4 className="text-[10px] font-black text-brand-blue uppercase tracking-widest">New Banner</h4>
+                  <h4 className="text-[10px] font-black text-brand-blue uppercase tracking-widest">Manage Banners</h4>
                   <p className="text-[8px] text-slate-400 font-medium uppercase mt-0.5">Promote an offer</p>
                 </div>
               </div>
               <ArrowUpRight size={16} className="text-slate-300 group-hover:text-brand transition-colors" />
-            </button>
+            </Link>
           </div>
 
           <div className="bg-brand-blue text-white p-8 rounded-sm relative overflow-hidden">

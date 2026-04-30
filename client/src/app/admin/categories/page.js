@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchCategories, createCategory, deleteCategory } from "@/lib/api";
+import { fetchCategories, createCategory, updateCategory, deleteCategory } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Plus, 
@@ -17,6 +17,7 @@ export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
   
@@ -63,13 +64,19 @@ export default function AdminCategoriesPage() {
     
     try {
       setIsSaving(true);
-      const data = await createCategory(token, newCategory);
-      setCategories([...categories, data.category]);
+      if (editingCategory) {
+        const data = await updateCategory(token, editingCategory.slug, newCategory);
+        setCategories(categories.map(c => c.slug === editingCategory.slug ? data.category : c));
+      } else {
+        const data = await createCategory(token, newCategory);
+        setCategories([...categories, data.category]);
+      }
       setIsAddingCategory(false);
+      setEditingCategory(null);
       setNewCategory({ name: "", slug: "", description: "" });
     } catch (err) {
-      console.error("Error creating category:", err);
-      alert(err.message || "Failed to create category");
+      console.error("Error saving category:", err);
+      alert(err.message || "Failed to save category");
     } finally {
       setIsSaving(false);
     }
@@ -105,7 +112,11 @@ export default function AdminCategoriesPage() {
           />
         </div>
         <button 
-          onClick={() => setIsAddingCategory(true)}
+          onClick={() => {
+            setEditingCategory(null);
+            setNewCategory({ name: "", slug: "", description: "" });
+            setIsAddingCategory(true);
+          }}
           className="bg-brand text-white py-3 px-6 rounded-sm font-black uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-brand-dark transition-all shadow-lg shadow-brand/20"
         >
           <Plus size={16} />
@@ -127,7 +138,18 @@ export default function AdminCategoriesPage() {
                   <Layers size={24} />
                 </div>
                 <div className="flex gap-2">
-                  <button className="p-2 text-slate-300 hover:text-brand transition-colors">
+                  <button 
+                    onClick={() => {
+                      setEditingCategory(category);
+                      setNewCategory({
+                        name: category.name,
+                        slug: category.slug,
+                        description: category.description || ""
+                      });
+                      setIsAddingCategory(true);
+                    }}
+                    className="p-2 text-slate-300 hover:text-brand transition-colors"
+                  >
                     <Edit2 size={14} />
                   </button>
                   <button 
@@ -156,8 +178,16 @@ export default function AdminCategoriesPage() {
         <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-lg rounded-sm shadow-2xl overflow-hidden animate-reveal">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">Add New Category</h2>
-              <button onClick={() => setIsAddingCategory(false)} className="text-slate-400 hover:text-brand">
+              <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">
+                {editingCategory ? "Edit Category" : "Add New Category"}
+              </h2>
+              <button 
+                onClick={() => {
+                  setIsAddingCategory(false);
+                  setEditingCategory(null);
+                }} 
+                className="text-slate-400 hover:text-brand"
+              >
                 <X size={20} />
               </button>
             </div>
