@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { updateUserProfile } from '@/lib/api'
 import { ChevronLeft, Save, AlertCircle, CheckCircle } from 'lucide-react'
 
 export default function UserSettings() {
@@ -33,6 +34,7 @@ export default function UserSettings() {
 }
 
 function SettingsForm({ user }) {
+  const { token, login } = useAuth()
   const [formData, setFormData] = useState({ name: user.name || '', email: user.email || '' })
   const [message, setMessage] = useState({ type: '', text: '' })
   const [isSaving, setIsSaving] = useState(false)
@@ -58,10 +60,15 @@ function SettingsForm({ user }) {
     e.preventDefault()
     setIsSaving(true)
     try {
+      const updatedUser = await updateUserProfile(token, {
+        ...formData,
+        address: addressData
+      })
+      login(token, updatedUser.user || updatedUser) // Update context
       setMessage({ type: 'success', text: 'Profile updated successfully!' })
       setTimeout(() => setMessage({ type: '', text: '' }), 5000)
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to update profile' })
+      setMessage({ type: 'error', text: error.message || 'Failed to update profile' })
     } finally {
       setIsSaving(false)
     }
@@ -190,10 +197,12 @@ function SettingsForm({ user }) {
 
             <button
               type="button"
+              onClick={handleSaveProfile}
+              disabled={isSaving}
               className="flex items-center gap-2 px-6 py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark transition disabled:opacity-50"
             >
               <Save size={18} />
-              Save Address
+              {isSaving ? 'Saving...' : 'Save Address'}
             </button>
           </form>
         </div>

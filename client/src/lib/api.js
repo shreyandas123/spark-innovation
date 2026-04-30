@@ -2,8 +2,22 @@ const API_URL = '/api';
 
 export const fetchProducts = async (params = {}) => {
   try {
+    if (!params.limit) params.limit = 100;
     const query = new URLSearchParams(params).toString();
     const res = await fetch(`${API_URL}/products?${query}`);
+    if (!res.ok) return { products: [], total: 0 };
+    return res.json();
+  } catch (error) {
+    console.warn("Backend not reachable, using fallback data.");
+    return { products: [], total: 0 };
+  }
+};
+
+export const searchProducts = async (params = {}) => {
+  try {
+    if (!params.limit) params.limit = 100;
+    const query = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_URL}/products/search?${query}`);
     if (!res.ok) return { products: [], total: 0 };
     return res.json();
   } catch (error) {
@@ -104,6 +118,9 @@ export const loginUser = async (credentials) => {
   });
   
   if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error('Too many requests. Please try again later.');
+    }
     let errorMessage = 'Login failed';
     try {
       const error = await res.json();
@@ -124,6 +141,9 @@ export const registerUser = async (userData) => {
   });
   
   if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error('Too many requests. Please try again later.');
+    }
     let errorMessage = 'Registration failed';
     try {
       const error = await res.json();

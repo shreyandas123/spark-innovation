@@ -3,12 +3,15 @@
 import Link from 'next/link'
 import { ShoppingBag, ChevronRight, Calendar, DollarSign, Truck } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { fetchUserOrders } from '@/lib/api'
 
 export default function OrderHistory() {
-  const { isAuthenticated, loading } = useAuth()
+  const { isAuthenticated, loading, token } = useAuth()
   const router = useRouter()
+  const [orders, setOrders] = useState([])
+  const [fetchingOrders, setFetchingOrders] = useState(true)
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -16,10 +19,29 @@ export default function OrderHistory() {
     }
   }, [loading, isAuthenticated, router])
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div></div>
-  if (!isAuthenticated) return null
+  useEffect(() => {
+    let isMounted = true
+    const loadOrders = async () => {
+      if (!token) return
+      try {
+        const data = await fetchUserOrders(token)
+        if (isMounted) setOrders(data.orders || [])
+      } catch (error) {
+        console.error('Failed to fetch orders:', error)
+      } finally {
+        if (isMounted) setFetchingOrders(false)
+      }
+    }
+    
+    if (isAuthenticated) {
+      loadOrders()
+    }
+    
+    return () => { isMounted = false }
+  }, [token, isAuthenticated])
 
-  const orders = []
+  if (loading || fetchingOrders) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand"></div></div>
+  if (!isAuthenticated) return null
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
@@ -43,12 +65,12 @@ export default function OrderHistory() {
         ) : (
           <div className="space-y-4">
             {orders.map(order => (
-              <div key={order.id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition">
+              <div key={order._id || order.id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-3">
                       <div className="bg-blue-100 px-3 py-1 rounded-lg">
-                        <p className="text-sm font-bold text-blue-600">Order #{order.id}</p>
+                        <p className="text-sm font-bold text-blue-600">Order #{order._id ? order._id.substring(order._id.length - 6) : order.id}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase ${
                         order.status === 'delivered' ? 'bg-green-100 text-green-700' :
@@ -73,7 +95,7 @@ export default function OrderHistory() {
                       </div>
                     </div>
                   </div>
-                  <Link href={`/orders/${order.id}`} className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition">
+                  <Link href={`/orders/${order._id || order.id}`} className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition">
                     View Details
                     <ChevronRight size={18} />
                   </Link>

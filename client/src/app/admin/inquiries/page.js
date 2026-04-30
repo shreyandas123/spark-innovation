@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   MessageSquare, 
   Search, 
@@ -18,13 +19,16 @@ import {
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
+  const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchInquiries = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/inquiries');
+      const res = await fetch('/api/inquiries', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       setInquiries(data.inquiries);
     } catch (err) {
@@ -37,8 +41,11 @@ export default function AdminInquiriesPage() {
   useEffect(() => {
     let isMounted = true;
     const load = async () => {
+      if (!token) return;
       try {
-        const res = await fetch('/api/inquiries');
+        const res = await fetch('/api/inquiries', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         const data = await res.json();
         if (isMounted) setInquiries(data.inquiries || []);
       } catch (err) {
@@ -49,15 +56,18 @@ export default function AdminInquiriesPage() {
     };
     load();
     return () => { isMounted = false; };
-  }, []);
+  }, [token]);
 
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this inquiry?")) return;
     
     try {
-      await fetch(`/api/inquiries/${id}`, { method: 'DELETE' });
-      setInquiries(inquiries.filter(i => i.id !== id));
-      if (selectedInquiry?.id === id) setSelectedInquiry(null);
+      await fetch(`/api/inquiries/${id}`, { 
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setInquiries(inquiries.filter(i => i._id !== id));
+      if (selectedInquiry?._id === id) setSelectedInquiry(null);
     } catch (err) {
       console.error("Failed to delete inquiry", err);
     }
@@ -107,9 +117,9 @@ export default function AdminInquiriesPage() {
           <div className="space-y-4">
             {filteredInquiries.map((inquiry) => (
               <div 
-                key={inquiry.id}
+                key={inquiry._id}
                 onClick={() => setSelectedInquiry(inquiry)}
-                className={`bg-white border p-6 rounded-sm cursor-pointer transition-all hover:shadow-lg group ${selectedInquiry?.id === inquiry.id ? 'border-brand shadow-md' : 'border-slate-200'}`}
+                className={`bg-white border p-6 rounded-sm cursor-pointer transition-all hover:shadow-lg group ${selectedInquiry?._id === inquiry._id ? 'border-brand shadow-md' : 'border-slate-200'}`}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -197,7 +207,7 @@ export default function AdminInquiriesPage() {
               </div>
 
               <button 
-                onClick={() => handleDelete(selectedInquiry.id)}
+                onClick={() => handleDelete(selectedInquiry._id)}
                 className="w-full flex items-center justify-center gap-2 py-4 text-red-500 text-[9px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-50 transition-colors rounded-sm mt-4"
               >
                 <Trash2 size={14} />
