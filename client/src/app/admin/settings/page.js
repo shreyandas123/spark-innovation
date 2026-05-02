@@ -28,10 +28,6 @@ export default function SettingsPage() {
     }
   });
 
-  useEffect(() => {
-    loadSettings();
-  }, []);
-
   const loadSettings = async () => {
     try {
       setLoading(true);
@@ -52,6 +48,10 @@ export default function SettingsPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
 
   const handleSaveSettings = async () => {
     try {
@@ -278,6 +278,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+    )}
     </div>
   );
 }

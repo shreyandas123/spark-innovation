@@ -16,6 +16,7 @@ import {
   Loader2,
   Package
 } from "lucide-react";
+import Image from "next/image";
 import { fetchAllOrders, updateOrderStatus } from "@/lib/api";
 
 export default function AdminOrdersPage() {

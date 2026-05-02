@@ -42,7 +42,7 @@ export default function UserDashboard() {
     if (isAuthenticated) {
       loadOrders()
     }
-  }, [token, isAuthenticated])
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
