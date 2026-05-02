@@ -6,6 +6,7 @@ import {
   LayoutDashboard, 
   Package, 
   Tags, 
+  ShoppingBag,
   MessageSquare, 
   Image as ImageIcon, 
   Settings, 
