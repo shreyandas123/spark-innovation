@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useEffect, useSyncExternalStore } from "react";
-import { Phone, Menu, X, ArrowRight, ShoppingBag, User } from "lucide-react";
+import { Phone, Menu, X, ArrowRight, ShoppingBag, User, Heart } from "lucide-react";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,6 +64,15 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-8">
+            <Link href="/wishlist" className="relative text-brand-blue hover:text-brand transition-colors">
+              <Heart size={20} />
+              {mounted && wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
             <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors">
               <ShoppingBag size={20} />
               {mounted && cartCount > 0 && (
@@ -72,11 +83,21 @@ export default function Navbar() {
             </Link>
 
             {mounted && isAuthenticated ? (
-              <Link href="/me" className="flex items-center gap-2" title={`My Dashboard - ${user?.name}`}>
-                <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center border-2 border-brand-dark hover:bg-brand-dark transition-colors">
-                  <User size={16} />
-                </div>
-              </Link>
+              <div className="flex items-center gap-4">
+                {user?.role === 'admin' && (
+                  <Link 
+                    href="/admin" 
+                    className="text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
+                <Link href="/me" className="flex items-center gap-2" title={`My Dashboard - ${user?.name}`}>
+                  <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center border-2 border-brand-dark hover:bg-brand-dark transition-colors">
+                    <User size={16} />
+                  </div>
+                </Link>
+              </div>
             ) : (
               <Link 
                 href="/auth/login"

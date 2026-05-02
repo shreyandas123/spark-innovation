@@ -15,12 +15,34 @@ import {
   Edit2
 } from 'lucide-react'
 import { useWishlist } from '@/contexts/WishlistContext'
+import { fetchUserOrders } from '@/lib/api'
 
 export default function UserDashboard() {
   const { user, loading, logout, isAuthenticated } = useAuth()
   const { wishlistCount } = useWishlist()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('overview')
+  const [orders, setOrders] = useState([])
+  const [fetchingOrders, setFetchingOrders] = useState(false)
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      if (!token) return
+      try {
+        setFetchingOrders(true)
+        const data = await fetchUserOrders(token)
+        setOrders(data.orders || [])
+      } catch (error) {
+        console.error('Failed to fetch orders:', error)
+      } finally {
+        setFetchingOrders(false)
+      }
+    }
+    
+    if (isAuthenticated) {
+      loadOrders()
+    }
+  }, [token, isAuthenticated])
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -115,7 +137,7 @@ export default function UserDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-slate-600 text-sm font-medium">Total Orders</p>
-                        <p className="text-3xl font-black text-brand-blue mt-1">0</p>
+                        <p className="text-3xl font-black text-brand-blue mt-1">{orders.length}</p>
                       </div>
                       <ShoppingBag size={40} className="text-slate-200" />
                     </div>
@@ -144,16 +166,45 @@ export default function UserDashboard() {
 
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="font-bold text-lg text-brand-blue mb-4">Recent Activity</h3>
-                  <div className="text-center py-12">
-                    <ShoppingBag size={48} className="text-slate-200 mx-auto mb-3" />
-                    <p className="text-slate-500">No orders yet</p>
-                    <Link
-                      href="/products"
-                      className="inline-block mt-4 px-6 py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark transition"
-                    >
-                      Browse Products
-                    </Link>
-                  </div>
+                  {orders.length === 0 ? (
+                    <div className="text-center py-12">
+                      <ShoppingBag size={48} className="text-slate-200 mx-auto mb-3" />
+                      <p className="text-slate-500">No orders yet</p>
+                      <Link
+                        href="/products"
+                        className="inline-block mt-4 px-6 py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark transition"
+                      >
+                        Browse Products
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {orders.slice(0, 3).map(order => (
+                        <div key={order._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-brand/10 text-brand rounded-full flex items-center justify-center">
+                              <ShoppingBag size={20} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-brand-blue">Order #{order._id.substring(order._id.length - 6).toUpperCase()}</p>
+                              <p className="text-xs text-slate-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                            order.status === 'delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-brand/10 text-brand border-brand/20'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                      ))}
+                      <button 
+                        onClick={() => setActiveTab('orders')}
+                        className="w-full py-3 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors"
+                      >
+                        View All Orders
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

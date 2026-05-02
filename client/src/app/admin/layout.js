@@ -23,6 +23,7 @@ export default function AdminLayout({ children }) {
     { icon: <LayoutDashboard size={20} />, label: "Dashboard", href: "/admin" },
     { icon: <Package size={20} />, label: "Products", href: "/admin/products" },
     { icon: <Tags size={20} />, label: "Categories", href: "/admin/categories" },
+    { icon: <ShoppingBag size={20} />, label: "Orders", href: "/admin/orders" },
     { icon: <MessageSquare size={20} />, label: "Inquiries", href: "/admin/inquiries" },
     { icon: <ImageIcon size={20} />, label: "Banners", href: "/admin/banners" },
     { icon: <Settings size={20} />, label: "Site Settings", href: "/admin/settings" },

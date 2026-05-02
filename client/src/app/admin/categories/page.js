@@ -28,31 +28,21 @@ export default function AdminCategoriesPage() {
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  const loadCategories = async () => {
+  const loadCategories = async (isMounted = true) => {
     try {
       setLoading(true);
       const data = await fetchCategories();
-      setCategories(data.categories || []);
+      if (isMounted) setCategories(data.categories || []);
     } catch (err) {
       console.error("Error loading categories:", err);
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
   useEffect(() => {
     let isMounted = true;
-    const load = async () => {
-      try {
-        const data = await fetchCategories();
-        if (isMounted) setCategories(data.categories || []);
-      } catch (err) {
-        console.error("Error loading categories:", err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    load();
+    loadCategories(isMounted);
     return () => { isMounted = false; };
   }, []);
 

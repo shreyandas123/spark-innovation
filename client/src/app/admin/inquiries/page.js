@@ -15,6 +15,7 @@ import {
   XCircle,
   Loader2
 } from "lucide-react";
+import { fetchInquiries, updateInquiryStatus, deleteInquiry } from "@/lib/api";
 
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
@@ -23,13 +24,11 @@ export default function AdminInquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchInquiries = async () => {
+  const loadInquiries = async () => {
+    if (!token) return;
     try {
       setLoading(true);
-      const res = await fetch('/api/inquiries', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const data = await fetchInquiries(token);
       setInquiries(data.inquiries || []);
     } catch (err) {
       console.error("Failed to fetch inquiries", err);
@@ -39,37 +38,19 @@ export default function AdminInquiriesPage() {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch('/api/inquiries', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (isMounted) setInquiries(data.inquiries || []);
-      } catch (err) {
-        console.error("Failed to fetch inquiries", err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    load();
-    return () => { isMounted = false; };
+    loadInquiries();
   }, [token]);
 
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this inquiry?")) return;
     
     try {
-      await fetch(`/api/inquiries/${id}`, { 
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      await deleteInquiry(token, id);
       setInquiries(inquiries.filter(i => i._id !== id));
       if (selectedInquiry?._id === id) setSelectedInquiry(null);
     } catch (err) {
       console.error("Failed to delete inquiry", err);
+      alert(err.message || "Failed to delete inquiry");
     }
   };
 
@@ -126,7 +107,7 @@ export default function AdminInquiriesPage() {
                     <h3 className="text-base font-black text-brand-blue uppercase tracking-tight mb-1">{inquiry.name}</h3>
                     <div className="flex items-center gap-3 text-slate-400">
                       <span className="text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
-                        <Calendar size={12} /> {inquiry.date}
+                        <Calendar size={12} /> {inquiry.createdAt ? new Date(inquiry.createdAt).toLocaleDateString() : "N/A"}
                       </span>
                       <span className="text-slate-200">|</span>
                       <span className="text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
@@ -198,14 +179,7 @@ export default function AdminInquiriesPage() {
                   <button 
                     onClick={async () => {
                       try {
-                        await fetch(`/api/inquiries/${selectedInquiry._id}`, {
-                          method: 'PUT',
-                          headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                          },
-                          body: JSON.stringify({ status: 'Contacted' })
-                        });
+                        await updateInquiryStatus(token, selectedInquiry._id, 'Contacted');
                         setInquiries(inquiries.map(i => i._id === selectedInquiry._id ? { ...i, status: 'Contacted' } : i));
                         setSelectedInquiry({ ...selectedInquiry, status: 'Contacted' });
                       } catch (err) {
@@ -220,14 +194,7 @@ export default function AdminInquiriesPage() {
                   <button 
                     onClick={async () => {
                       try {
-                        await fetch(`/api/inquiries/${selectedInquiry._id}`, {
-                          method: 'PUT',
-                          headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                          },
-                          body: JSON.stringify({ status: 'Closed' })
-                        });
+                        await updateInquiryStatus(token, selectedInquiry._id, 'Closed');
                         setInquiries(inquiries.map(i => i._id === selectedInquiry._id ? { ...i, status: 'Closed' } : i));
                         setSelectedInquiry({ ...selectedInquiry, status: 'Closed' });
                       } catch (err) {

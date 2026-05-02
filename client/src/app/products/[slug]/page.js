@@ -4,8 +4,11 @@ import { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchProductBySlug } from "@/lib/api";
-import { ArrowLeft, Check, IndianRupee, MessageSquare, Phone, ShieldCheck, Zap, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, IndianRupee, MessageSquare, Phone, ShieldCheck, Zap, Loader2, Heart, ShoppingBag, Plus, Minus } from "lucide-react";
 import { notFound } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
+import InquiryModal from "@/components/ui/InquiryModal";
 
 export default function ProductDetailPage({ params }) {
   const resolvedParams = use(params);
@@ -14,6 +17,11 @@ export default function ProductDetailPage({ params }) {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+  
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -82,9 +90,21 @@ export default function ProductDetailPage({ params }) {
               <h1 className="text-3xl md:text-5xl font-black text-brand-blue uppercase leading-tight mb-6 tracking-tight">
                 {product.name}
               </h1>
-              <div className="flex items-center gap-2 text-brand font-black text-4xl mb-8">
-                <IndianRupee size={28} strokeWidth={4} />
-                <span>{product.price?.toLocaleString("en-IN")}</span>
+              <div className="flex items-center justify-between gap-4 mb-8">
+                <div className="flex items-center gap-2 text-brand font-black text-4xl">
+                  <IndianRupee size={28} strokeWidth={4} />
+                  <span>{product.price?.toLocaleString("en-IN")}</span>
+                </div>
+                <button 
+                  onClick={() => toggleWishlist(product)}
+                  className={`p-4 rounded-sm border transition-all ${
+                    isInWishlist(product.slug) 
+                    ? "bg-red-50 border-red-100 text-red-500" 
+                    : "bg-slate-50 border-slate-100 text-slate-400 hover:text-red-500"
+                  }`}
+                >
+                  <Heart size={24} fill={isInWishlist(product.slug) ? "currentColor" : "none"} />
+                </button>
               </div>
               <p className="text-slate-600 leading-relaxed text-lg font-medium">
                 {product.description}
@@ -112,15 +132,48 @@ export default function ProductDetailPage({ params }) {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mt-auto">
-              <button className="flex-1 bg-brand-blue text-white py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand transition-all group">
-                <MessageSquare size={18} className="group-hover:scale-110 transition-transform" />
-                Inquire Now
-              </button>
-              <button className="flex-1 border-2 border-brand-blue text-brand-blue py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand-blue hover:text-white transition-all group">
-                <Phone size={18} />
-                Contact Sales
-              </button>
+            <div className="flex flex-col gap-8">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center border border-slate-200 rounded-sm">
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="p-4 hover:bg-slate-50 transition-colors text-slate-400"
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="w-12 text-center font-black text-brand-blue">{quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="p-4 hover:bg-slate-50 transition-colors text-slate-400"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+                <button 
+                  onClick={() => addToCart({ ...product, quantity })}
+                  className="flex-1 bg-brand text-white py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand-dark transition-all shadow-xl shadow-brand/20 group"
+                >
+                  <ShoppingBag size={18} className="group-hover:scale-110 transition-transform" />
+                  Add to Cart
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button 
+                  onClick={() => setIsInquiryModalOpen(true)}
+                  className="flex-1 bg-brand-blue text-white py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand transition-all group"
+                >
+                  <MessageSquare size={18} className="group-hover:scale-110 transition-transform" />
+                  Inquire Now
+                </button>
+                <a 
+                  href="tel:+919831012345"
+                  className="flex-1 border-2 border-brand-blue text-brand-blue py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand-blue hover:text-white transition-all group"
+                >
+                  <Phone size={18} />
+                  Contact Sales
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -152,7 +205,10 @@ export default function ProductDetailPage({ params }) {
                     </li>
                   ))}
                 </ul>
-                <button className="w-full bg-brand py-4 px-6 rounded-sm font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-brand-blue transition-all">
+                <button 
+                  onClick={() => setIsInquiryModalOpen(true)}
+                  className="w-full bg-brand py-4 px-6 rounded-sm font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-brand-blue transition-all"
+                >
                   Request Call Back
                 </button>
               </div>
@@ -163,6 +219,12 @@ export default function ProductDetailPage({ params }) {
           </div>
         </div>
       </div>
+
+      <InquiryModal 
+        isOpen={isInquiryModalOpen} 
+        onClose={() => setIsInquiryModalOpen(false)} 
+        product={product} 
+      />
     </main>
   );
 }

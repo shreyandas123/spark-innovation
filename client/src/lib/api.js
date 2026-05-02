@@ -120,9 +120,11 @@ export const deleteCategory = async (token, slug) => {
   return res.json();
 };
 
-export const fetchInquiries = async () => {
+export const fetchInquiries = async (token) => {
   try {
-    const res = await fetch(`${API_URL}/inquiries`);
+    const res = await fetch(`${API_URL}/inquiries`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
     if (!res.ok) return { inquiries: [] };
     return res.json();
   } catch (error) {
@@ -130,9 +132,10 @@ export const fetchInquiries = async () => {
   }
 };
 
-export const deleteInquiry = async (id) => {
+export const deleteInquiry = async (token, id) => {
   const res = await fetch(`${API_URL}/inquiries/${id}`, {
     method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to delete inquiry');
   return res.json();
@@ -202,10 +205,13 @@ export const createInquiry = async (inquiryData) => {
   return res.json();
 };
 
-export const updateInquiryStatus = async (id, status) => {
+export const updateInquiryStatus = async (token, id, status) => {
   const res = await fetch(`${API_URL}/inquiries/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify({ status }),
   });
   if (!res.ok) throw new Error('Failed to update inquiry status');
@@ -336,6 +342,70 @@ export const loginWithGoogle = async (idToken) => {
   return res.json();
 };
 
+export const fetchStats = async (token) => {
+  const res = await fetch(`${API_URL}/admin/stats`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to fetch stats');
+  return res.json();
+};
 
+export const fetchWishlist = async (token) => {
+  const res = await fetch(`${API_URL}/wishlist`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!res.ok) return { items: [] };
+  return res.json();
+};
 
+export const addToWishlist = async (token, product) => {
+  const res = await fetch(`${API_URL}/wishlist`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    },
+    body: JSON.stringify(product),
+  });
+  if (!res.ok) throw new Error('Failed to add to wishlist');
+  return res.json();
+};
 
+export const removeFromWishlist = async (token, slug) => {
+  const res = await fetch(`${API_URL}/wishlist/${slug}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to remove from wishlist');
+  return res.json();
+};
+
+export const clearWishlistApi = async (token) => {
+  const res = await fetch(`${API_URL}/wishlist/clear`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to clear wishlist');
+  return res.json();
+};
+
+export const updateOrderStatus = async (token, id, status) => {
+  const res = await fetch(`${API_URL}/admin/orders/${id}/status`, {
+    method: 'PATCH',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error('Failed to update order status');
+  return res.json();
+};
+
+export const fetchAllOrders = async (token) => {
+  const res = await fetch(`${API_URL}/admin/orders`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to fetch all orders');
+  return res.json();
+};

@@ -1,30 +1,74 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { fetchWishlist, addToWishlist, removeFromWishlist } from "@/lib/api";
+import { useAuth } from "./AuthContext";
 
 const WishlistContext = createContext(null);
 
 export function WishlistProvider({ children }) {
-  const [wishlistItems, setWishlistItems] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("wishlist");
-      return saved ? JSON.parse(saved) : [];
-    }
-    return [];
-  });
+  const { token, isAuthenticated } = useAuth();
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  useEffect(() => {
+    const syncWishlist = async () => {
+      if (isAuthenticated && token) {
+        try {
+          setIsSyncing(true);
+          const data = await fetchWishlist(token);
+          setWishlistItems(data.items || []);
+        } catch (err) {
+          console.error("Failed to sync wishlist:", err);
+        } finally {
+          setIsSyncing(false);
+        }
+      } else {
+        const saved = localStorage.getItem("wishlist");
+        if (saved) setWishlistItems(JSON.parse(saved));
+      }
+    };
+    syncWishlist();
+  }, [token, isAuthenticated]);
 
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
   }, [wishlistItems]);
 
-  const toggleWishlist = (product) => {
-    setWishlistItems((prevItems) => {
-      const exists = prevItems.find((item) => item.slug === product.slug);
-      if (exists) {
-        return prevItems.filter((item) => item.slug !== product.slug);
+  const toggleWishlist = async (product) => {
+    const exists = wishlistItems.find((item) => item.slug === product.slug);
+    
+    // Update local state immediately for snappy UI
+    if (exists) {
+      setWishlistItems(prev => prev.filter(item => item.slug !== product.slug));
+    } else {
+      setWishlistItems(prev => [...prev, product]);
+    }
+
+    // Sync with backend if logged in
+    if (isAuthenticated && token) {
+      try {
+        if (exists) {
+          await removeFromWishlist(token, product.slug);
+        } else {
+          // Normalize for backend which expects 'image' string, not 'images' array
+          await addToWishlist(token, {
+            slug: product.slug,
+            name: product.name,
+            price: product.price,
+            image: product.images?.[0] || product.image
+          });
+        }
+      } catch (err) {
+        console.error("Failed to sync wishlist action:", err);
+        // Rollback on error
+        if (exists) {
+          setWishlistItems(prev => [...prev, product]);
+        } else {
+          setWishlistItems(prev => prev.filter(item => item.slug !== product.slug));
+        }
       }
-      return [...prevItems, product];
-    });
+    }
   };
 
   const isInWishlist = (slug) => {

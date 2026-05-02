@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { createOrder } from "@/lib/api";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { 
   CreditCard, 
@@ -11,31 +13,58 @@ import {
   CheckCircle2, 
   QrCode, 
   Smartphone,
-  IndianRupee
+  IndianRupee,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { user, token, isAuthenticated, loading: authLoading } = useAuth();
+  const router = useRouter();
+  
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState("qr");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    pincode: ""
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    address: user?.address?.street || "",
+    city: user?.address?.city || "",
+    pincode: user?.address?.zipCode || ""
   });
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/auth/login?redirect=/checkout");
+    }
+  }, [authLoading, isAuthenticated, router]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
+        address: user.address?.street || prev.address,
+        city: user.address?.city || prev.city,
+        pincode: user.address?.zipCode || prev.pincode
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleProcessOrder = () => {
+  const handleProcessOrder = async () => {
     if (step === 1) {
       if (!formData.name || !formData.email || !formData.phone || !formData.address) {
         alert("Please fill in all required fields.");
@@ -43,7 +72,26 @@ export default function CheckoutPage() {
       }
       setStep(2);
     } else if (step === 2) {
-      setStep(3);
+      try {
+        setIsProcessing(true);
+        await createOrder(token, {
+          items: cartItems.map(item => ({
+            slug: item.slug,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.images[0]
+          })),
+          shipping: formData,
+          paymentMethod,
+          total: cartTotal
+        });
+        setStep(3);
+      } catch (err) {
+        alert(err.message || "Failed to place order. Please try again.");
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -267,10 +315,17 @@ export default function CheckoutPage() {
 
             <button 
               onClick={handleProcessOrder}
-              className="w-full bg-brand-blue text-white py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand transition-all group"
+              disabled={isProcessing}
+              className="w-full bg-brand-blue text-white py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand transition-all group disabled:opacity-50"
             >
-              {step === 1 ? "Continue to Payment" : "Confirm Order"}
-              <ShieldCheck size={18} className="group-hover:scale-110 transition-transform" />
+              {isProcessing ? (
+                <Loader2 className="animate-spin" size={18} />
+              ) : (
+                <>
+                  {step === 1 ? "Continue to Payment" : "Confirm Order"}
+                  <ShieldCheck size={18} className="group-hover:scale-110 transition-transform" />
+                </>
+              )}
             </button>
             <p className="text-[8px] text-slate-400 text-center mt-6 uppercase tracking-widest font-medium">
               Secure Checkout • Authorized Distributor

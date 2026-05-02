@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { fetchProducts, fetchInquiries, fetchBanners } from "@/lib/api";
+import { fetchProducts, fetchInquiries, fetchBanners, fetchStats } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function AdminDashboard() {
@@ -28,48 +28,43 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
-  useEffect(() => {
-    loadDashboardData();
-  }, [token]);
-
   const loadDashboardData = async () => {
     if (!token) return;
     try {
       setLoading(true);
-      const [productsData, inquiriesData, bannersData] = await Promise.all([
-        fetchProducts(),
-        fetchInquiries(token), // Need to ensure fetchInquiries takes token
-        fetchBanners()
+      const [statsData, inquiriesData] = await Promise.all([
+        fetchStats(token),
+        fetchInquiries(token)
       ]);
 
       const liveStats = [
         { 
           label: "Total Products", 
-          value: productsData.total || productsData.products?.length || "0", 
+          value: statsData.products?.total || "0", 
           icon: <Package size={24} />, 
           color: "bg-blue-500",
-          trend: "Live"
+          trend: `${statsData.products?.inStock || 0} In Stock`
         },
         { 
           label: "New Inquiries", 
-          value: (inquiriesData.inquiries || []).filter(i => i.status === 'New').length, 
+          value: statsData.inquiries?.byStatus?.New || "0", 
           icon: <MessageSquare size={24} />, 
           color: "bg-brand",
-          trend: `${(inquiriesData.inquiries || []).length} Total`
+          trend: `${statsData.inquiries?.total || 0} Total`
         },
         { 
           label: "Active Banners", 
-          value: (bannersData.banners || []).filter(b => b.active).length, 
+          value: statsData.banners?.active || "0", 
           icon: <Eye size={24} />, 
           color: "bg-indigo-500",
           trend: "Live"
         },
         { 
           label: "Total Users", 
-          value: "128", 
+          value: statsData.users?.total || "0", 
           icon: <Users size={24} />, 
           color: "bg-slate-800",
-          trend: "Static"
+          trend: "Registered"
         },
       ];
       setStats(liveStats);
@@ -80,6 +75,10 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [token]);
 
   return (
     <div className="space-y-10">

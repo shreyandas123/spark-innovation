@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchProducts, fetchCategories, createProduct, deleteProduct } from "@/lib/api";
+import { fetchProducts, fetchCategories, createProduct, updateProduct, deleteProduct } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Plus, 
