@@ -1,22 +1,41 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState(() => {
-    if (typeof window !== "undefined") {
-      const savedCart = localStorage.getItem("cart");
-      return savedCart ? JSON.parse(savedCart) : [];
-    }
-    return [];
-  });
+  const { user, isAuthenticated } = useAuth();
+  const [cartItems, setCartItems] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // Use a user-specific key for local storage
+  const cartKey = user?._id ? `cart_${user._id}` : "cart_guest";
 
+  // Load cart when user changes or component mounts
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+    const savedCart = localStorage.getItem(cartKey);
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    } else {
+      setCartItems([]);
+    }
+    setIsLoaded(true);
+  }, [cartKey]);
+
+  // Save cart whenever it changes
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(cartKey, JSON.stringify(cartItems));
+    }
+  }, [cartItems, cartKey, isLoaded]);
+
+  // When a guest logs in, merge their guest cart with their user cart
+  // Or just clear it? Usually merging is better, but user-specific cart is what's requested.
+  // Actually, the request "cart isnt different for each user" implies that 
+  // when User A logs out and User B logs in, they see User A's cart.
+  // My new logic fixes this by using cartKey tied to user._id.
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {

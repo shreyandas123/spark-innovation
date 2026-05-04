@@ -11,14 +11,15 @@ import {
   Image as ImageIcon, 
   Settings, 
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Globe
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import AdminGuard from "@/components/AdminGuard";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: "Dashboard", href: "/admin" },
@@ -27,6 +28,7 @@ export default function AdminLayout({ children }) {
     { icon: <ShoppingBag size={20} />, label: "Orders", href: "/admin/orders" },
     { icon: <MessageSquare size={20} />, label: "Inquiries", href: "/admin/inquiries" },
     { icon: <ImageIcon size={20} />, label: "Banners", href: "/admin/banners" },
+    { icon: <Users size={20} />, label: "Users", href: "/admin/users" },
     { icon: <Settings size={20} />, label: "Site Settings", href: "/admin/settings" },
   ];
 
@@ -40,26 +42,31 @@ export default function AdminLayout({ children }) {
         </div>
 
         <nav className="flex-1 px-4 py-4 space-y-2">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center justify-between px-4 py-3 rounded-sm text-[10px] font-black uppercase tracking-widest transition-all ${
-                  isActive 
-                  ? "bg-brand text-white shadow-lg shadow-brand/20" 
-                  : "text-white/60 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  {item.icon}
-                  {item.label}
-                </div>
-                {isActive && <ChevronRight size={14} />}
-              </Link>
-            );
-          })}
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-4 py-3 mb-6 text-[10px] font-black uppercase tracking-widest text-brand hover:text-white hover:bg-brand transition-all border border-brand/20 rounded-sm"
+          >
+            <Globe size={20} />
+            Back to Website
+          </Link>
+
+          {menuItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center justify-between px-4 py-3 rounded-sm text-[10px] font-black uppercase tracking-widest transition-all ${
+                pathname === item.href 
+                ? "bg-brand text-white shadow-lg shadow-brand/20" 
+                : "text-white/60 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                {item.icon}
+                {item.label}
+              </div>
+              {pathname === item.href && <ChevronRight size={14} />}
+            </Link>
+          ))}
         </nav>
 
         <div className="p-4 border-t border-white/10">
@@ -84,10 +91,16 @@ export default function AdminLayout({ children }) {
           </div>
           <div className="flex items-center gap-4">
              <div className="text-right">
-                <p className="text-[10px] font-black text-brand-blue uppercase tracking-widest">Admin User</p>
-                <p className="text-[8px] text-slate-400 font-medium uppercase tracking-widest">Full Access</p>
+                <p className="text-[10px] font-black text-brand-blue uppercase tracking-widest">{user?.name || 'Admin User'}</p>
+                <p className="text-[8px] text-slate-400 font-medium uppercase tracking-widest">Administrator</p>
              </div>
-             <div className="w-10 h-10 bg-brand rounded-full border-2 border-white shadow-sm"></div>
+             <div className="w-10 h-10 bg-brand rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white">
+               {user?.avatar ? (
+                 <img src={user.avatar} alt="Admin" className="w-full h-full object-cover" />
+               ) : (
+                 <LayoutDashboard size={20} />
+               )}
+             </div>
           </div>
         </header>
 

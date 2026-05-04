@@ -7,9 +7,13 @@ import { useAuth } from "./AuthContext";
 const WishlistContext = createContext(null);
 
 export function WishlistProvider({ children }) {
-  const { token, isAuthenticated } = useAuth();
+  const { token, isAuthenticated, user } = useAuth();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // User-specific key for localStorage
+  const wishlistKey = user?._id ? `wishlist_${user._id}` : "wishlist_guest";
 
   useEffect(() => {
     const syncWishlist = async () => {
@@ -24,16 +28,23 @@ export function WishlistProvider({ children }) {
           setIsSyncing(false);
         }
       } else {
-        const saved = localStorage.getItem("wishlist");
-        if (saved) setWishlistItems(JSON.parse(saved));
+        const saved = localStorage.getItem(wishlistKey);
+        if (saved) {
+          setWishlistItems(JSON.parse(saved));
+        } else {
+          setWishlistItems([]);
+        }
       }
+      setIsLoaded(true);
     };
     syncWishlist();
   }, [token, isAuthenticated]);
 
   useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
-  }, [wishlistItems]);
+    if (isLoaded) {
+      localStorage.setItem(wishlistKey, JSON.stringify(wishlistItems));
+    }
+  }, [wishlistItems, wishlistKey, isLoaded]);
 
   const toggleWishlist = async (product) => {
     const exists = wishlistItems.find((item) => item.slug === product.slug);
