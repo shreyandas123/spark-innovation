@@ -110,7 +110,7 @@ function SettingsForm({ user }) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 pt-32 pb-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
           <Link

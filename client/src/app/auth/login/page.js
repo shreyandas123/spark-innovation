@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { loginUser } from "@/lib/api";
 import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
@@ -10,6 +10,8 @@ import GoogleLoginComponent from "@/components/GoogleLogin";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
   const { login } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -32,7 +34,7 @@ export default function LoginPage() {
     try {
       const data = await loginUser(formData);
       login(data.token, data.user);
-      router.push("/");
+      router.push(redirect);
     } catch (err) {
       setError(err.message || "Invalid credentials. Please try again.");
     } finally {

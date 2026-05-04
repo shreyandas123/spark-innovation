@@ -3,10 +3,14 @@
 import { GoogleLogin } from '@react-oauth/google'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function GoogleLoginComponent() {
 
   const { googleLogin } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -16,7 +20,7 @@ export default function GoogleLoginComponent() {
 
     try {
       await googleLogin(credentialResponse.credential)
-      window.location.href = '/'
+      router.push(redirect)
     } catch (err) {
       console.error('Google login error:', err)
       setError(err.message)
@@ -40,8 +44,6 @@ export default function GoogleLoginComponent() {
       />
     </div>
   )
-}
-
 
 
 
