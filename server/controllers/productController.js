@@ -19,7 +19,11 @@ export const getProducts = async (req, res) => {
 
 export const searchProducts = async (req, res) => {
   const { q } = req.query
-  if (!q) return res.status(400).json({ message: 'Search query q is required' })
+  if (!q || typeof q !== 'string' || !q.trim())
+    return res.status(400).json({ message: 'Search query q is required' })
+
+  // escape regex special chars to prevent ReDoS
+  const escaped = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
   const page = Math.max(1, parseInt(req.query.page) || 1)
   const limit = Math.min(100, parseInt(req.query.limit) || 20)
@@ -27,9 +31,9 @@ export const searchProducts = async (req, res) => {
 
   const filter = {
     $or: [
-      { name: { $regex: q, $options: 'i' } },
-      { description: { $regex: q, $options: 'i' } },
-      { category: { $regex: q, $options: 'i' } },
+      { name: { $regex: escaped, $options: 'i' } },
+      { description: { $regex: escaped, $options: 'i' } },
+      { category: { $regex: escaped, $options: 'i' } },
     ],
   }
 
@@ -51,6 +55,8 @@ export const createProduct = async (req, res) => {
   const { name, slug, category, price, description, specs, images, featured, inStock } = req.body
   if (!name || !slug || !category || !price)
     return res.status(400).json({ message: 'name, slug, category and price are required' })
+  if (!/^[a-z0-9-]+$/.test(slug))
+    return res.status(400).json({ message: 'Slug must contain only lowercase letters, numbers and hyphens' })
 
   const existing = await Product.findOne({ slug })
   if (existing) return res.status(409).json({ message: 'Slug already exists' })

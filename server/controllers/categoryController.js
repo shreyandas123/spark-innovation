@@ -14,6 +14,8 @@ export const createCategory = async (req, res, next) => {
     const { name, slug, icon, description } = req.body
     if (!name || !slug)
       return res.status(400).json({ message: 'name and slug are required' })
+    if (!/^[a-z0-9-]+$/.test(slug))
+      return res.status(400).json({ message: 'Slug must contain only lowercase letters, numbers and hyphens' })
 
     const existing = await Category.findOne({ slug })
     if (existing) return res.status(409).json({ message: 'Slug already exists' })

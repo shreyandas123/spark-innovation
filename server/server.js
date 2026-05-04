@@ -15,6 +15,7 @@ import wishlistRoutes from './routes/wishlist.js'
 import jobRoutes from './routes/jobs.js'
 import settingsRoutes from './routes/settings.js'
 import uploadRoutes from './routes/upload.js'
+import cartRoutes from './routes/cart.js'
 
 // validate required env vars before anything else
 const required = ['MONGO_URI', 'JWT_SECRET']
@@ -63,6 +64,7 @@ app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/jobs', jobRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/api/upload', uploadRoutes)
+app.use('/api/cart', cartRoutes)
 
 // global error handler — returns JSON instead of HTML for all unhandled errors
 app.use((err, req, res, next) => {

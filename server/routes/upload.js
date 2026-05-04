@@ -16,6 +16,11 @@ const upload = multer({
   },
 })
 
-router.post('/', protect, adminOnly, upload.single('image'), uploadImage)
+router.post('/', protect, adminOnly, (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) return res.status(400).json({ message: err.message })
+    next()
+  })
+}, uploadImage)
 
 export default router

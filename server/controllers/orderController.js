@@ -81,15 +81,27 @@ export const getAllOrders = async (req, res) => {
   res.json({ orders, total, page, pages: Math.ceil(total / limit) })
 }
 
+const STATUS_TRANSITIONS = {
+  pending:   ['confirmed', 'cancelled'],
+  confirmed: ['shipped', 'cancelled'],
+  shipped:   ['delivered', 'cancelled'],
+  delivered: [],
+  cancelled: [],
+}
+
 export const updateOrderStatus = async (req, res) => {
   const { status } = req.body
   if (!status) return res.status(400).json({ message: 'status is required' })
 
-  const order = await Order.findByIdAndUpdate(
-    req.params.id,
-    { status },
-    { new: true, runValidators: true }
-  ).populate('user', 'name email')
+  const order = await Order.findById(req.params.id).populate('user', 'name email')
+  if (!order) return res.status(404).json({ message: 'Order not found' })
+
+  const allowed = STATUS_TRANSITIONS[order.status] || []
+  if (!allowed.includes(status))
+    return res.status(400).json({ message: `Cannot transition from '${order.status}' to '${status}'` })
+
+  order.status = status
+  await order.save()
 
   if (!order) return res.status(404).json({ message: 'Order not found' })
 

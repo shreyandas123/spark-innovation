@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer'
 
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
 const createTransporter = () => {
   if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     return null
@@ -29,7 +31,7 @@ const send = async (options) => {
 
 export const sendOrderConfirmation = async ({ to, name, orderId, items, total, paymentMethod }) => {
   const itemRows = items
-    .map(i => `<tr><td style="padding:6px 0">${i.name}</td><td style="padding:6px 0;text-align:right">×${i.quantity}</td><td style="padding:6px 0;text-align:right">₹${(i.price * i.quantity).toLocaleString('en-IN')}</td></tr>`)
+    .map(i => `<tr><td style="padding:6px 0">${esc(i.name)}</td><td style="padding:6px 0;text-align:right">×${i.quantity}</td><td style="padding:6px 0;text-align:right">₹${(i.price * i.quantity).toLocaleString('en-IN')}</td></tr>`)
     .join('')
 
   await send({
@@ -42,7 +44,7 @@ export const sendOrderConfirmation = async ({ to, name, orderId, items, total, p
           <p style="color:#94a3b8;margin:8px 0 0;font-size:11px;letter-spacing:1px">AUTHORIZED KUTCHINA DEALER</p>
         </div>
         <div style="padding:32px">
-          <h2 style="font-size:18px;color:#1e3a5f">Hi ${name}, your order is confirmed!</h2>
+          <h2 style="font-size:18px;color:#1e3a5f">Hi ${esc(name)}, your order is confirmed!</h2>
           <p style="color:#64748b;font-size:14px">Thank you for choosing Sparkel Sales. Our team will contact you shortly to confirm delivery and installation details.</p>
           <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:20px;margin:24px 0">
             <p style="margin:0 0 4px;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px">Order ID</p>
@@ -65,7 +67,7 @@ export const sendOrderConfirmation = async ({ to, name, orderId, items, total, p
 
 export const sendOrderStatusUpdate = async ({ to, name, orderId, status }) => {
   const statusMessages = {
-    processing: 'Your order is being processed.',
+    confirmed: 'Your order has been confirmed.',
     shipped: 'Great news — your order is on its way!',
     delivered: 'Your order has been delivered successfully.',
     cancelled: 'Your order has been cancelled. Contact us if you have any questions.',
@@ -80,13 +82,13 @@ export const sendOrderStatusUpdate = async ({ to, name, orderId, status }) => {
           <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARKEL SALES</h1>
         </div>
         <div style="padding:32px">
-          <h2 style="font-size:18px;color:#1e3a5f">Hi ${name}, your order has been updated</h2>
-          <p style="font-size:15px;color:#334155">${statusMessages[status] || `Order status updated to: ${status}`}</p>
+          <h2 style="font-size:18px;color:#1e3a5f">Hi ${esc(name)}, your order has been updated</h2>
+          <p style="font-size:15px;color:#334155">${esc(statusMessages[status] || `Order status updated to: ${status}`)}</p>
           <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:20px;margin:24px 0">
             <p style="margin:0 0 4px;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px">Order ID</p>
             <p style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f">#${orderId}</p>
             <p style="margin:8px 0 0;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px">Status</p>
-            <p style="margin:4px 0 0;font-size:14px;font-weight:700;color:#e63946;text-transform:capitalize">${status}</p>
+            <p style="margin:4px 0 0;font-size:14px;font-weight:700;color:#e63946;text-transform:capitalize">${esc(status)}</p>
           </div>
         </div>
         <div style="background:#f1f5f9;padding:20px;text-align:center;font-size:11px;color:#94a3b8">
@@ -100,7 +102,7 @@ export const sendOrderStatusUpdate = async ({ to, name, orderId, status }) => {
 export const sendInquiryNotification = async ({ adminEmail, inquiryName, inquiryEmail, inquiryPhone, product, message }) => {
   await send({
     to: adminEmail,
-    subject: `New Inquiry from ${inquiryName}${product ? ` — ${product}` : ''}`,
+    subject: `New Inquiry from ${esc(inquiryName)}${product ? ` — ${esc(product)}` : ''}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b">
         <div style="background:#1e3a5f;padding:32px;text-align:center">
@@ -109,14 +111,14 @@ export const sendInquiryNotification = async ({ adminEmail, inquiryName, inquiry
         </div>
         <div style="padding:32px">
           <table style="width:100%;font-size:14px;border-collapse:collapse">
-            <tr><td style="padding:8px 0;color:#64748b;width:120px">Name</td><td style="padding:8px 0;font-weight:600">${inquiryName}</td></tr>
-            <tr><td style="padding:8px 0;color:#64748b">Email</td><td style="padding:8px 0;font-weight:600">${inquiryEmail}</td></tr>
-            ${inquiryPhone ? `<tr><td style="padding:8px 0;color:#64748b">Phone</td><td style="padding:8px 0;font-weight:600">${inquiryPhone}</td></tr>` : ''}
-            ${product ? `<tr><td style="padding:8px 0;color:#64748b">Product</td><td style="padding:8px 0;font-weight:600">${product}</td></tr>` : ''}
+            <tr><td style="padding:8px 0;color:#64748b;width:120px">Name</td><td style="padding:8px 0;font-weight:600">${esc(inquiryName)}</td></tr>
+            <tr><td style="padding:8px 0;color:#64748b">Email</td><td style="padding:8px 0;font-weight:600">${esc(inquiryEmail)}</td></tr>
+            ${inquiryPhone ? `<tr><td style="padding:8px 0;color:#64748b">Phone</td><td style="padding:8px 0;font-weight:600">${esc(inquiryPhone)}</td></tr>` : ''}
+            ${product ? `<tr><td style="padding:8px 0;color:#64748b">Product</td><td style="padding:8px 0;font-weight:600">${esc(product)}</td></tr>` : ''}
           </table>
           <div style="margin-top:20px;background:#f8fafc;border-left:4px solid #e63946;padding:16px;border-radius:0 4px 4px 0">
             <p style="margin:0;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Message</p>
-            <p style="margin:0;font-size:14px;line-height:1.6;color:#334155">${message}</p>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#334155">${esc(message)}</p>
           </div>
         </div>
       </div>
@@ -134,7 +136,7 @@ export const sendInquiryAck = async ({ to, name }) => {
           <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARKEL SALES</h1>
         </div>
         <div style="padding:32px">
-          <h2 style="font-size:18px;color:#1e3a5f">Hi ${name}, we've received your inquiry!</h2>
+          <h2 style="font-size:18px;color:#1e3a5f">Hi ${esc(name)}, we've received your inquiry!</h2>
           <p style="font-size:14px;color:#64748b;line-height:1.6">Thank you for reaching out. Our team will review your inquiry and get back to you within 24 hours.</p>
           <p style="font-size:14px;color:#64748b;line-height:1.6">If you need immediate assistance, please call us directly.</p>
         </div>
