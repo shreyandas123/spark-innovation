@@ -64,23 +64,27 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-8">
-            <Link href="/wishlist" className="relative text-brand-blue hover:text-brand transition-colors">
-              <Heart size={20} />
-              {mounted && wishlistCount > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
-                  {wishlistCount}
-                </span>
-              )}
-            </Link>
+            {mounted && isAuthenticated && (
+              <>
+                <Link href="/wishlist" className="relative text-brand-blue hover:text-brand transition-colors">
+                  <Heart size={20} />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </Link>
 
-            <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors">
-              <ShoppingBag size={20} />
-              {mounted && cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
+                <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors">
+                  <ShoppingBag size={20} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+              </>
+            )}
 
             {mounted && isAuthenticated ? (
               <div className="flex items-center gap-4">
@@ -93,8 +97,12 @@ export default function Navbar() {
                   </Link>
                 )}
                 <Link href="/me" className="flex items-center gap-2" title={`My Dashboard - ${user?.name}`}>
-                  <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center border-2 border-brand-dark hover:bg-brand-dark transition-colors">
-                    <User size={16} />
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-brand-dark hover:border-brand transition-colors flex items-center justify-center bg-brand text-white shadow-sm">
+                    {user?.avatar ? (
+                      <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={16} />
+                    )}
                   </div>
                 </Link>
               </div>
@@ -129,18 +137,20 @@ export default function Navbar() {
         <div className="flex flex-col h-full justify-between p-8 pt-24">
           <div className="space-y-4">
             <p className="text-slate-500 font-black uppercase tracking-[0.4em] text-[8px] mb-8">Navigation</p>
-            <div 
-              className={`transform transition-all duration-700 ${mobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"}`}
-            >
-              <Link
-                href="/cart"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-4xl font-black text-brand uppercase tracking-tighter hover:text-brand-blue transition-colors flex items-center justify-between group"
+            {mounted && isAuthenticated && (
+              <div 
+                className={`transform transition-all duration-700 ${mobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"}`}
               >
-                Cart ({mounted ? cartCount : 0})
-                <ShoppingBag className="opacity-0 -translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0" size={24} />
-              </Link>
-            </div>
+                <Link
+                  href="/cart"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-4xl font-black text-brand uppercase tracking-tighter hover:text-brand-blue transition-colors flex items-center justify-between group"
+                >
+                  Cart ({cartCount})
+                  <ShoppingBag className="opacity-0 -translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0" size={24} />
+                </Link>
+              </div>
+            )}
             {NAV_LINKS.map((link, i) => (
               <div 
                 key={link.label}

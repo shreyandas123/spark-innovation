@@ -2,8 +2,24 @@
 
 import { GoogleLogin } from '@react-oauth/google'
 import { useState } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+import { Suspense } from 'react'
 
 export default function GoogleLoginComponent() {
+  return (
+    <Suspense fallback={<div className="h-[40px] w-[200px] bg-slate-100 animate-pulse rounded" />}>
+      <GoogleLoginInner />
+    </Suspense>
+  )
+}
+
+function GoogleLoginInner() {
+  const { googleLogin } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -12,31 +28,8 @@ export default function GoogleLoginComponent() {
     setError(null)
 
     try {
-
-      const response = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: credentialResponse.credential,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed')
-      }
-
-
-      if (data.token) {
-        localStorage.setItem('authToken', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
-
-
-        window.location.href = '/'
-      }
+      await googleLogin(credentialResponse.credential)
+      router.push(redirect)
     } catch (err) {
       console.error('Google login error:', err)
       setError(err.message)
@@ -61,7 +54,6 @@ export default function GoogleLoginComponent() {
     </div>
   )
 }
-
 
 
 

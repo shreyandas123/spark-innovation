@@ -12,7 +12,8 @@ import {
   MapPin, 
   LogOut,
   Calendar,
-  Edit2
+  Edit2,
+  LayoutDashboard
 } from 'lucide-react'
 import { useWishlist } from '@/contexts/WishlistContext'
 import { fetchUserOrders } from '@/lib/api'
@@ -27,7 +28,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const loadOrders = async () => {
-      if (!token) return
+      if (!isAuthenticated) return
       try {
         setFetchingOrders(true)
         const data = await fetchUserOrders(token)
@@ -77,8 +78,12 @@ export default function UserDashboard() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden sticky top-6">
               <div className="bg-linear-to-br from-brand to-brand-dark p-6 text-white text-center">
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User size={32} />
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden border-2 border-white/30">
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={32} />
+                  )}
                 </div>
                 <h3 className="font-bold text-lg">{user?.name}</h3>
                 <p className="text-white/80 text-sm">{user?.email}</p>
@@ -112,6 +117,15 @@ export default function UserDashboard() {
                   <User size={18} />
                   Profile
                 </button>
+                {user?.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-brand-blue hover:bg-slate-100 transition mt-2 border border-brand/10"
+                  >
+                    <LayoutDashboard size={18} />
+                    Admin Panel
+                  </Link>
+                )}
               </nav>
 
               <div className="p-4 border-t border-slate-200">

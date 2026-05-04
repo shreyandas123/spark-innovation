@@ -4,8 +4,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { updateUserProfile } from '@/lib/api'
-import { ChevronLeft, Save, AlertCircle, CheckCircle } from 'lucide-react'
+import { updateUserProfile, uploadImage } from '@/lib/api'
+import { ChevronLeft, Save, AlertCircle, CheckCircle, Camera, Loader2 } from 'lucide-react'
 
 export default function UserSettings() {
   const { user, loading, isAuthenticated } = useAuth()
@@ -35,9 +35,43 @@ export default function UserSettings() {
 
 function SettingsForm({ user }) {
   const { token, login } = useAuth()
-  const [formData, setFormData] = useState({ name: user.name || '', email: user.email || '' })
+  const [formData, setFormData] = useState({ 
+    name: user.name || '', 
+    email: user.email || '',
+    phone: user.phone || ''
+  })
   const [message, setMessage] = useState({ type: '', text: '' })
   const [isSaving, setIsSaving] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [avatarPreview, setAvatarPreview] = useState(user.avatar || '')
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Image must be less than 5MB' })
+      return
+    }
+
+    try {
+      setIsUploading(true)
+      const formData = new FormData()
+      formData.append('image', file)
+      
+      const res = await uploadImage(token, formData)
+      setAvatarPreview(res.url)
+      
+      // Update profile immediately with new avatar
+      const updatedUser = await updateUserProfile(token, { avatar: res.url })
+      login(token, updatedUser.user || updatedUser)
+      setMessage({ type: 'success', text: 'Profile picture updated!' })
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Failed to upload image' })
+    } finally {
+      setIsUploading(false)
+    }
+  }
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target
@@ -48,7 +82,8 @@ function SettingsForm({ user }) {
     street: user.address?.street || '', 
     city: user.address?.city || '', 
     state: user.address?.state || '', 
-    zipCode: user.address?.zipCode || '' 
+    zipCode: user.address?.zipCode || '',
+    country: user.address?.country || ''
   })
 
   const handleAddressChange = (e) => {
@@ -75,7 +110,7 @@ function SettingsForm({ user }) {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-12">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 pt-32 pb-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
           <Link
@@ -106,6 +141,32 @@ function SettingsForm({ user }) {
         )}
 
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h2 className="text-xl font-bold text-brand-blue mb-6">Profile Picture</h2>
+          <div className="flex items-center gap-6 mb-8">
+            <div className="relative group">
+              <div className="w-24 h-24 bg-slate-100 rounded-full overflow-hidden border-2 border-slate-200 flex items-center justify-center">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <Camera size={32} className="text-slate-300" />
+                )}
+                {isUploading && (
+                  <div className="absolute inset-0 bg-white/60 backdrop-blur-xs flex items-center justify-center">
+                    <Loader2 size={24} className="text-brand animate-spin" />
+                  </div>
+                )}
+              </div>
+              <label className="absolute bottom-0 right-0 p-2 bg-brand text-white rounded-full cursor-pointer shadow-lg hover:bg-brand-dark transition-colors border-2 border-white">
+                <Camera size={14} />
+                <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} disabled={isUploading} />
+              </label>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-brand-blue uppercase tracking-tight">Your Avatar</p>
+              <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-medium">JPG or PNG. Max 5MB.</p>
+            </div>
+          </div>
+
           <h2 className="text-xl font-bold text-brand-blue mb-6">Update Profile</h2>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div>
@@ -129,6 +190,18 @@ function SettingsForm({ user }) {
                 onChange={handleProfileChange}
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition"
                 placeholder="Enter your email"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleProfileChange}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition"
+                placeholder="Enter your phone number"
               />
             </div>
 
@@ -192,6 +265,18 @@ function SettingsForm({ user }) {
                 onChange={handleAddressChange}
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition"
                 placeholder="700001"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Country</label>
+              <input
+                type="text"
+                name="country"
+                value={addressData.country}
+                onChange={handleAddressChange}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition"
+                placeholder="India"
               />
             </div>
 

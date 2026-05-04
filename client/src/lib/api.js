@@ -409,3 +409,37 @@ export const fetchAllOrders = async (token) => {
   if (!res.ok) throw new Error('Failed to fetch all orders');
   return res.json();
 };
+
+export const uploadImage = async (token, formData) => {
+  const res = await fetch(`${API_URL}/upload`, {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${token}` 
+    },
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to upload image');
+  return res.json();
+};
+
+export const fetchUsers = async (token) => {
+  const res = await fetch(`${API_URL}/admin/users`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error('Failed to fetch users');
+  return res.json();
+};
+
+export const updateAdminUser = async (token, id, data) => {
+  const res = await fetch(`${API_URL}/admin/users/${id}`, {
+    method: 'PATCH',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error('Failed to update user');
+  return res.json();
+};
+
