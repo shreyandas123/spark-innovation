@@ -26,17 +26,6 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
   },
-  phone: {
-    type: String,
-    trim: true,
-  },
-  address: {
-    street: { type: String },
-    city: { type: String },
-    state: { type: String },
-    zipCode: { type: String },
-    country: { type: String },
-  },
   role: {
     type: String,
     enum: ['admin', 'user'],
