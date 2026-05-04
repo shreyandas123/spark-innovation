@@ -5,8 +5,17 @@ import { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function GoogleLoginComponent() {
+import { Suspense } from 'react'
 
+export default function GoogleLoginComponent() {
+  return (
+    <Suspense fallback={<div className="h-[40px] w-[200px] bg-slate-100 animate-pulse rounded" />}>
+      <GoogleLoginInner />
+    </Suspense>
+  )
+}
+
+function GoogleLoginInner() {
   const { googleLogin } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()

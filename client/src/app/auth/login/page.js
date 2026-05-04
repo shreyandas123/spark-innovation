@@ -8,7 +8,21 @@ import { loginUser } from "@/lib/api";
 import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import GoogleLoginComponent from "@/components/GoogleLogin";
 
+import { Suspense } from "react";
+
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-brand" size={32} />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
