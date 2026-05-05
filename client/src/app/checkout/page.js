@@ -171,6 +171,20 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <label htmlFor="checkout-email" className="text-[9px] font-black uppercase tracking-widest text-slate-400">Email Address</label>
+                  <input 
+                    id="checkout-email"
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-sm font-medium" 
+                    placeholder="your@email.com" 
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
                   <label htmlFor="checkout-phone" className="text-[9px] font-black uppercase tracking-widest text-slate-400">Phone Number</label>
                   <input 
                     id="checkout-phone"
