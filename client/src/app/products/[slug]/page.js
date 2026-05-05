@@ -33,8 +33,16 @@ export default function ProductDetailPage({ params }) {
           fetchProductBySlug(slug),
           import("@/lib/api").then(m => m.fetchSiteSettings())
         ]);
-        setProduct(productData.product);
-        setSettings(settingsData.settings);
+        
+        if (productData && productData.product) {
+          setProduct(productData.product);
+        } else {
+          setError("Product not found");
+        }
+        
+        if (settingsData) {
+          setSettings(settingsData.settings);
+        }
       } catch (err) {
         console.error("Error loading product data:", err);
         setError("Product not found");
