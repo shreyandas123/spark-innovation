@@ -16,7 +16,7 @@ export default function WhyChooseUs() {
       <div className="container-wide">
         <SectionHeader 
           badge="Distributor Benefits"
-          title="Why Choose Sparkel Sales"
+          title="Why Choose Spark Innovations"
           description="We are committed to providing the best service and quality appliances for your home."
         />
         
