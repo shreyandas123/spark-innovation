@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { registerUser } from "@/lib/api";
 import { ShoppingBag, ArrowRight, Mail, Lock, User, Loader2 } from "lucide-react";
@@ -46,8 +47,8 @@ export default function SignupPage() {
         <div className="p-8 sm:p-10">
           <div className="text-center mb-10">
             <Link href="/" className="inline-flex items-center gap-2 mb-6 group">
-              <div className="w-8 h-8 bg-brand flex items-center justify-center rounded transition-transform group-hover:scale-110">
-                <span className="text-white font-bold text-sm">S</span>
+              <div className="w-8 h-8 relative flex items-center justify-center transition-transform group-hover:scale-110">
+                <Image src="/favicon.ico" alt="Spark Innovations Logo" fill className="object-contain" />
               </div>
               <span className="text-3xl font-black text-brand-blue uppercase tracking-tighter">
                 Spark <span className="text-brand">Innovations</span>

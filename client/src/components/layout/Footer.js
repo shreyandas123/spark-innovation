@@ -1,5 +1,6 @@
 "use client";
 import { Phone, Mail, ArrowUp } from "lucide-react";
+import Image from "next/image";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 
 import { usePathname } from "next/navigation";
@@ -28,8 +29,8 @@ export default function Footer() {
           
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-10 group cursor-default">
-              <div className="w-10 h-10 bg-brand flex items-center justify-center rounded-sm">
-                <span className="text-white font-black text-xl">S</span>
+              <div className="w-10 h-10 relative flex items-center justify-center">
+                <Image src="/favicon.ico" alt="Spark Innovations Logo" fill className="object-contain" />
               </div>
               <span className="text-2xl font-black uppercase tracking-tighter">
                 Spark <span className="text-brand">Innovations</span>

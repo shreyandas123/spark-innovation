@@ -4,6 +4,7 @@ import { useState, useEffect, useSyncExternalStore } from "react";
 import { Phone, Menu, X, ArrowRight, ShoppingBag, User, Heart } from "lucide-react";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -41,8 +42,8 @@ export default function Navbar() {
       <div className="container-wide">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 bg-brand flex items-center justify-center rounded">
-              <span className="text-white font-bold text-lg">S</span>
+            <div className="w-8 h-8 relative flex items-center justify-center">
+              <Image src="/favicon.ico" alt="Spark Innovations Logo" fill className="object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-black uppercase tracking-tighter">
