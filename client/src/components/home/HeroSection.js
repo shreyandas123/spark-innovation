@@ -52,7 +52,7 @@ export default function HeroSection() {
   }, [nextSlide]);
 
   return (
-    <section className="relative w-full h-[50vh] md:h-[75vh] bg-white overflow-hidden group">
+    <section className="relative w-full h-[45vh] md:h-[75vh] bg-white overflow-hidden group">
       {}
       <div className="absolute inset-0 z-0">
         {HERO_SLIDES.map((slide, idx) => (
@@ -66,11 +66,11 @@ export default function HeroSection() {
               src={slide.image} 
               alt={slide.title} 
               fill 
-              className="object-cover object-center"
+              className="object-cover md:object-contain lg:object-cover object-center"
               priority={idx === 0}
             />
             {}
-            <div className="absolute inset-0 bg-linear-to-r from-white to-transparent z-10" />
+            <div className="absolute inset-0 bg-linear-to-r from-white via-white/20 md:via-white/40 to-transparent z-10" />
             <div className="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent z-10" />
           </div>
         ))}
@@ -78,18 +78,18 @@ export default function HeroSection() {
 
       {}
       <div className="relative h-full container-wide flex items-center z-20">
-        <div className="max-w-2xl space-y-6 md:space-y-8 animate-reveal">
-          <div className="space-y-3 md:space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-100 rounded-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">
+        <div className="max-w-2xl space-y-4 md:space-y-8 animate-reveal">
+          <div className="space-y-2 md:space-y-4">
+            <div className="inline-flex items-center gap-2 px-2 md:px-3 py-1 bg-white border border-slate-100 rounded-sm">
+              <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-brand" />
+              <p className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">
                 {HERO_SLIDES[currentSlide].subtitle}
               </p>
             </div>
-            <h1 className="text-4xl md:text-7xl font-black text-slate-900 leading-[1.05] tracking-tighter">
+            <h1 className="text-3xl md:text-7xl font-black text-slate-900 leading-[1.05] tracking-tighter">
               {HERO_SLIDES[currentSlide].title}
             </h1>
-            <p className="text-slate-600 text-sm md:text-lg font-medium max-w-lg leading-relaxed">
+            <p className="hidden md:block text-slate-600 text-sm md:text-lg font-medium max-w-lg leading-relaxed">
               {HERO_SLIDES[currentSlide].description}
             </p>
           </div>
@@ -97,9 +97,9 @@ export default function HeroSection() {
           <div className="flex items-center gap-4">
             <Link 
               href="/products" 
-              className="px-8 md:px-10 py-4 bg-brand text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand-dark transition-all flex items-center gap-2 group/btn"
+              className="px-6 md:px-10 py-3 md:py-4 bg-brand text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] rounded-sm hover:bg-brand-dark transition-all flex items-center gap-2 group/btn"
             >
-              Shop Collection
+              Shop Now
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -107,13 +107,13 @@ export default function HeroSection() {
       </div>
 
       {}
-      <div className="absolute bottom-10 left-10 md:left-20 flex items-center gap-3 z-30">
+      <div className="absolute bottom-6 md:bottom-10 left-6 md:left-20 flex items-center gap-2 md:gap-3 z-30">
         {HERO_SLIDES.map((_, idx) => (
           <button 
             key={idx}
             onClick={() => setCurrentSlide(idx)}
-            className={`h-1.5 transition-all duration-500 rounded-full ${
-              idx === currentSlide ? 'w-12 bg-brand' : 'w-4 bg-slate-200 hover:bg-slate-300'
+            className={`h-1 md:h-1.5 transition-all duration-500 rounded-full ${
+              idx === currentSlide ? 'w-8 md:w-12 bg-brand' : 'w-2 md:w-4 bg-slate-200 hover:bg-slate-300'
             }`}
           />
         ))}
