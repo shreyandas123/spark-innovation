@@ -113,33 +113,3 @@ export default function HeroSection() {
     </section>
   );
 }
-
-        {}
-        <div className="flex items-center justify-center gap-6 mt-16">
-          <button onClick={prevSlide} className="p-3 text-slate-300 hover:text-brand transition-colors">
-            <ChevronLeft size={20} />
-          </button>
-          
-          <div className="flex gap-3">
-            {HERO_SLIDES.map((_, idx) => (
-              <button 
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`h-1.5 transition-all duration-500 rounded-full ${idx === currentSlide ? 'w-10 bg-brand' : 'w-3 bg-slate-100'}`}
-              />
-            ))}
-          </div>
-
-          <button onClick={nextSlide} className="p-3 text-slate-300 hover:text-brand transition-colors">
-            <ChevronRight size={20} />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-
-
-
-
