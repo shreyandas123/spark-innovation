@@ -77,39 +77,39 @@ export default function AdminUsersPage() {
       </div>
 
       {}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-sm">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-brand/10 text-brand rounded-full flex items-center justify-center">
-              <Users size={24} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-white border border-slate-200 p-5 rounded-sm shadow-sm overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-brand/10 text-brand rounded-full flex items-center justify-center shrink-0">
+              <Users size={18} />
             </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Users</p>
-              <h3 className="text-2xl font-black text-brand-blue leading-none">{users.length}</h3>
+            <div className="min-w-0 overflow-hidden">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">Total Users</p>
+              <h3 className="text-xl font-black text-brand-blue leading-none truncate">{users.length}</h3>
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-sm">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center">
-              <Shield size={24} />
+        <div className="bg-white border border-slate-200 p-5 rounded-sm shadow-sm overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center shrink-0">
+              <Shield size={18} />
             </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Admins</p>
-              <h3 className="text-2xl font-black text-brand-blue leading-none">
+            <div className="min-w-0 overflow-hidden">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">Admins</p>
+              <h3 className="text-xl font-black text-brand-blue leading-none truncate">
                 {users.filter(u => u.role === 'admin').length}
               </h3>
             </div>
           </div>
         </div>
-        <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-sm">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-brand-blue/5 text-brand-blue rounded-full flex items-center justify-center">
-              <UserCircle size={24} />
+        <div className="bg-white border border-slate-200 p-5 rounded-sm shadow-sm overflow-hidden">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-brand-blue/5 text-brand-blue rounded-full flex items-center justify-center shrink-0">
+              <UserCircle size={18} />
             </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Customers</p>
-              <h3 className="text-2xl font-black text-brand-blue leading-none">
+            <div className="min-w-0 overflow-hidden">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate">Customers</p>
+              <h3 className="text-xl font-black text-brand-blue leading-none truncate">
                 {users.filter(u => u.role === 'user').length}
               </h3>
             </div>
@@ -119,107 +119,102 @@ export default function AdminUsersPage() {
 
       {}
       <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+        <div className="p-4 md:p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <input 
               type="text"
-              placeholder="Search by name or email..."
+              placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-sm text-sm focus:outline-none focus:border-brand transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-sm text-xs focus:outline-none focus:border-brand transition-colors font-medium"
             />
           </div>
-          <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Showing {filteredUsers.length} Users
+          <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+            {filteredUsers.length} Users Listed
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-200">
-                <th className="px-8 py-4">User</th>
-                <th className="px-8 py-4">Contact</th>
-                <th className="px-8 py-4">Joined On</th>
-                <th className="px-8 py-4">Role</th>
-                <th className="px-8 py-4 text-right">Actions</th>
+              <tr className="bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-200">
+                <th className="px-4 md:px-6 py-4">User</th>
+                <th className="px-4 md:px-6 py-4">Contact</th>
+                <th className="px-4 md:px-6 py-4">Joined On</th>
+                <th className="px-4 md:px-6 py-4">Role</th>
+                <th className="px-4 md:px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="px-8 py-20 text-center">
-                    <Loader2 className="animate-spin text-brand mx-auto mb-4" size={32} />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Loading Accounts...</p>
+                  <td colSpan="5" className="px-4 py-20 text-center">
+                    <Loader2 className="animate-spin text-brand mx-auto mb-4" size={24} />
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Loading Accounts...</p>
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-8 py-20 text-center">
-                    <XCircle className="text-slate-200 mx-auto mb-4" size={48} />
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">No users found</p>
+                  <td colSpan="5" className="px-4 py-20 text-center">
+                    <XCircle className="text-slate-200 mx-auto mb-4" size={40} />
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">No users found</p>
                   </td>
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
                   <tr key={user._id} className="hover:bg-slate-50/50 transition-colors group">
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-brand-blue/5 text-brand-blue flex items-center justify-center font-black text-sm border border-slate-100 uppercase">
-                          {user.name?.charAt(0) || <UserCircle size={20} />}
+                    <td className="px-4 md:px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-brand-blue/5 text-brand-blue flex items-center justify-center font-black text-[10px] border border-slate-100 uppercase shrink-0">
+                          {user.name?.charAt(0) || <UserCircle size={16} />}
                         </div>
-                        <div>
-                          <p className="text-sm font-black text-brand-blue uppercase tracking-tight">{user.name}</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">ID: {user._id.substring(0, 8)}...</p>
+                        <div className="min-w-0">
+                          <p className="text-[12px] font-black text-brand-blue uppercase tracking-tight truncate">{user.name}</p>
+                          <p className="text-[8px] text-slate-300 font-bold uppercase tracking-widest truncate">ID: {user._id.substring(0, 6)}...</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 text-slate-600">
-                          <Mail size={14} className="text-slate-300" />
-                          <span className="text-xs font-medium">{user.email}</span>
+                    <td className="px-4 md:px-6 py-4">
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1.5 text-slate-600">
+                          <Mail size={12} className="text-slate-300" />
+                          <span className="text-[11px] font-medium truncate max-w-[140px]">{user.email}</span>
                         </div>
-                        {user.phone && (
-                          <div className="flex items-center gap-2 text-slate-600">
-                            <span className="text-[10px] font-bold text-slate-400">T: {user.phone}</span>
-                          </div>
-                        )}
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-2 text-slate-500">
-                        <Calendar size={14} className="text-slate-300" />
-                        <span className="text-xs font-medium">
+                    <td className="px-4 md:px-6 py-4">
+                      <div className="flex items-center gap-2 text-slate-400">
+                        <Calendar size={12} className="text-slate-300" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">
                           {new Date(user.createdAt).toLocaleDateString('en-IN', {
                             day: 'numeric',
                             month: 'short',
-                            year: 'numeric'
+                            year: '2-digit'
                           })}
                         </span>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                    <td className="px-4 md:px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest ${
                         user.role === 'admin' 
-                          ? 'bg-brand text-white' 
+                          ? 'bg-brand text-white shadow-sm shadow-brand/10' 
                           : 'bg-slate-100 text-slate-500'
                       }`}>
-                        {user.role === 'admin' ? <Shield size={10} /> : <UserCircle size={10} />}
+                        {user.role === 'admin' ? <Shield size={8} /> : <UserCircle size={8} />}
                         {user.role}
                       </span>
                     </td>
-                    <td className="px-8 py-6 text-right">
+                    <td className="px-4 md:px-6 py-4 text-right">
                       {updatingId === user._id ? (
-                        <Loader2 className="animate-spin text-brand ml-auto" size={20} />
+                        <Loader2 className="animate-spin text-brand ml-auto" size={16} />
                       ) : (
                         <button 
                           onClick={() => handleRoleToggle(user._id, user.role)}
-                          className="p-2 text-slate-400 hover:text-brand hover:bg-white rounded-sm transition-all"
+                          className="p-1.5 text-slate-300 hover:text-brand hover:bg-white rounded-sm transition-all"
                           title="Toggle Role"
                         >
-                          <RefreshCcw size={18} />
+                          <RefreshCcw size={16} />
                         </button>
                       )}
                     </td>

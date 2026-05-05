@@ -75,39 +75,39 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-black text-brand-blue uppercase tracking-tight">Site Settings</h2>
-          <p className="text-sm text-slate-500 mt-1">Configure global layout, headlines, and contact info.</p>
+          <p className="text-[10px] text-slate-400 font-medium uppercase tracking-widest mt-1">Configure global layout and contact info.</p>
         </div>
         <button 
           onClick={handleSaveSettings}
           disabled={isSaving || loading}
-          className="flex items-center gap-2 bg-brand text-white px-6 py-3 rounded-sm font-black uppercase tracking-widest text-[10px] hover:bg-brand-dark transition-all shadow-lg disabled:opacity-50"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-brand text-white px-6 py-3 rounded-sm font-black uppercase tracking-widest text-[9px] hover:bg-brand-dark transition-all shadow-lg disabled:opacity-50"
         >
-          {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />} 
+          {isSaving ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />} 
           {isSaving ? "Saving..." : "Save Changes"}
         </button>
       </div>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-40 gap-4 bg-white border border-slate-200 rounded-sm">
-          <Loader2 className="animate-spin text-brand" size={40} />
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Settings...</p>
+          <Loader2 className="animate-spin text-brand" size={32} />
+          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Loading Settings...</p>
         </div>
       ) : (
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        <div className="bg-white border border-slate-200 rounded-sm p-2 shadow-sm sticky top-6">
-          <nav className="flex flex-col space-y-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+        <div className="bg-white border border-slate-200 rounded-sm p-1.5 shadow-sm lg:sticky lg:top-6 overflow-x-auto custom-scrollbar no-scrollbar lg:overflow-visible">
+          <nav className="flex lg:flex-col gap-1 min-w-max lg:min-w-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all text-left ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 text-[9px] font-black uppercase tracking-widest rounded-sm transition-all text-left whitespace-nowrap ${
                   activeTab === tab.id
                     ? "bg-brand/10 text-brand"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-brand-blue"
+                    : "text-slate-400 hover:bg-slate-50 hover:text-brand-blue"
                 }`}
               >
                 {tab.icon}
@@ -118,7 +118,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="lg:col-span-3">
-          <div className="bg-white border border-slate-200 rounded-sm shadow-sm p-8">
+          <div className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 md:p-8">
             {activeTab === "general" && (
               <div className="space-y-6">
                 <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-6 pb-4 border-b border-slate-100">General Information</h3>

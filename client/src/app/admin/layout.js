@@ -112,38 +112,38 @@ export default function AdminLayout({ children }) {
 
         {}
         <main className="flex-1 lg:ml-64 min-h-screen">
-          <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-4">
+          <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-3 md:px-8 py-3 md:py-4 flex justify-between items-center">
+            <div className="flex items-center gap-3 md:gap-4">
               <button 
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden p-2 text-brand-blue hover:bg-slate-50 rounded-sm transition-colors"
+                className="lg:hidden p-1.5 text-brand-blue hover:bg-slate-50 rounded-sm transition-colors"
               >
-                <Menu size={24} />
+                <Menu size={20} />
               </button>
               <div>
-                <h1 className="text-lg md:text-xl font-black text-brand-blue uppercase tracking-tight leading-none">
+                <h1 className="text-base md:text-xl font-black text-brand-blue uppercase tracking-tight leading-none">
                   {menuItems.find(i => i.href === pathname)?.label || "Admin Panel"}
                 </h1>
                 <p className="hidden md:block text-[8px] text-slate-400 font-medium mt-1 uppercase tracking-widest">Management Portal</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 md:gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               <div className="hidden md:block text-right">
                 <p className="text-[9px] font-black text-brand-blue uppercase tracking-widest leading-none">{user?.name || 'Admin User'}</p>
                 <p className="text-[7px] text-slate-400 font-medium uppercase tracking-widest mt-1">Administrator</p>
               </div>
-              <div className="w-9 h-9 md:w-10 md:h-10 bg-brand rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-brand rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white shrink-0">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="Admin" className="w-full h-full object-cover" />
                 ) : (
-                  <LayoutDashboard size={18} />
+                  <LayoutDashboard size={16} />
                 )}
               </div>
             </div>
           </header>
 
-          <div className="p-4 md:p-8 lg:p-10">
+          <div className="p-3 md:p-8 lg:p-10">
             {children}
           </div>
         </main>

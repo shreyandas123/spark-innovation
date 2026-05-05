@@ -169,53 +169,53 @@ export default function AdminProductsPage() {
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Inventory...</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Product Info</th>
-                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Category</th>
-                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Price</th>
-                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Status</th>
-                  <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
+                  <th className="px-4 py-4 text-[8px] font-black uppercase tracking-widest text-slate-400">Product Info</th>
+                  <th className="px-4 py-4 text-[8px] font-black uppercase tracking-widest text-slate-400">Category</th>
+                  <th className="px-4 py-4 text-[8px] font-black uppercase tracking-widest text-slate-400">Price</th>
+                  <th className="px-4 py-4 text-[8px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                  <th className="px-4 py-4 text-[8px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredProducts.map((product) => (
                   <tr key={product.slug} className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-sm relative overflow-hidden p-1 shrink-0">
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-sm relative overflow-hidden p-1 shrink-0">
                           {product.images?.[0] ? (
                             <Image src={product.images[0]} alt={product.name} fill className="object-contain" />
                           ) : (
                             <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                              <Plus size={12} />
+                              <Plus size={10} />
                             </div>
                           )}
                         </div>
-                        <div>
-                          <p className="text-sm font-bold text-brand-blue line-clamp-1">{product.name}</p>
-                          <p className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">SKU: {product.slug?.slice(0, 8).toUpperCase() || 'N/A'}</p>
+                        <div className="min-w-0">
+                          <p className="text-[12px] font-bold text-brand-blue line-clamp-1">{product.name}</p>
+                          <p className="text-[8px] text-slate-300 font-medium uppercase tracking-widest">SKU: {product.slug?.slice(0, 6).toUpperCase() || 'N/A'}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[8px] font-black uppercase tracking-widest rounded-full">
+                    <td className="px-4 py-4">
+                      <span className="px-2 py-0.5 bg-slate-100 text-slate-400 text-[7px] font-black uppercase tracking-widest rounded-full">
                         {product.category?.replace("-", " ") || 'Uncategorized'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm font-bold text-brand-blue">₹{product.price?.toLocaleString("en-IN") || '0'}</p>
+                    <td className="px-4 py-4">
+                      <p className="text-[12px] font-bold text-brand-blue">₹{product.price?.toLocaleString("en-IN") || '0'}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4">
                       <div className="flex items-center gap-1.5 text-emerald-500">
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                        <span className="text-[9px] font-black uppercase tracking-widest">In Stock</span>
+                        <div className="w-1 h-1 bg-emerald-500 rounded-full"></div>
+                        <span className="text-[8px] font-black uppercase tracking-widest">In Stock</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-4 py-4">
+                      <div className="flex items-center justify-end gap-1">
                         <button 
                           onClick={() => {
                             setEditingProduct(product);
@@ -231,18 +231,15 @@ export default function AdminProductsPage() {
                             setImagePreview(product.images?.[0] || "");
                             setImageFile(null);
                           }}
-                          className="p-2 text-slate-400 hover:text-brand transition-colors"
+                          className="p-1.5 text-slate-300 hover:text-brand transition-colors"
                         >
-                          <Edit2 size={16} />
+                          <Edit2 size={14} />
                         </button>
                         <button 
                           onClick={() => handleDelete(product.slug)}
-                          className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                          className="p-1.5 text-slate-300 hover:text-red-500 transition-colors"
                         >
-                          <Trash2 size={16} />
-                        </button>
-                        <button className="p-2 text-slate-400 hover:text-brand-blue transition-colors">
-                          <MoreVertical size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
