@@ -2,11 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, IndianRupee, ShoppingBag } from "lucide-react";
+import { IndianRupee, ShoppingBag, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -67,7 +71,7 @@ export default function ProductCard({ product }) {
           Add to Cart
         </button>
       </div>
-    </Link>
+    </div>
   );
 }
 
