@@ -5,10 +5,10 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import ProductCard from "@/components/ui/ProductCard";
-import SectionHeader from "@/components/ui/SectionHeader";
-import { Heart, ShoppingBag, Trash2, ArrowRight, Ghost } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { ShoppingBag, Trash2, ArrowRight, Heart, IndianRupee } from "lucide-react";
 
 export default function WishlistPage() {
   const { wishlistItems, toggleWishlist, clearWishlist } = useWishlist();
@@ -64,6 +64,7 @@ export default function WishlistPage() {
   return (
     <main className="min-h-screen pt-32 pb-20 bg-white">
       <div className="container-wide">
+        {}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16 border-b border-slate-100 pb-12">
           <SectionHeader 
             badge="My Collection"
@@ -92,18 +93,51 @@ export default function WishlistPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+        {}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
           {wishlistItems.map((product) => (
-            <div key={product.slug} className="group relative">
-              <ProductCard product={product} />
+            <div key={product.slug} className="flex flex-col h-full bg-white group">
               {}
-              <button 
-                onClick={() => toggleWishlist(product)}
-                className="absolute top-4 right-4 w-10 h-10 bg-white shadow-lg text-slate-400 hover:text-red-500 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-all z-20 border border-slate-100"
-                title="Remove from wishlist"
-              >
-                <Trash2 size={16} />
-              </button>
+              <Link href={`/products/${product.slug}`} className="block aspect-square relative bg-slate-50 rounded-sm overflow-hidden mb-6">
+                <Image 
+                  src={product.images?.[0] || product.image || "/images/placeholder-product.svg"} 
+                  alt={product.name} 
+                  fill 
+                  className="object-contain p-8 group-hover:scale-105 transition-transform duration-500" 
+                />
+              </Link>
+
+              {}
+              <div className="flex-1 space-y-2 mb-6">
+                <p className="text-[10px] font-black text-brand uppercase tracking-[0.2em]">
+                  {product.category?.replace("-", " ")}
+                </p>
+                <h3 className="text-lg font-black text-brand-blue uppercase tracking-tight leading-tight">
+                  {product.name}
+                </h3>
+                <div className="flex items-center gap-1 text-brand font-black text-xl">
+                  <IndianRupee size={16} strokeWidth={4} />
+                  <span>{product.price?.toLocaleString("en-IN")}</span>
+                </div>
+              </div>
+
+              {}
+              <div className="grid grid-cols-1 gap-2 mt-auto">
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="w-full py-4 bg-brand-blue text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand transition-all flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag size={14} />
+                  Add to Bag
+                </button>
+                <button 
+                  onClick={() => toggleWishlist(product)}
+                  className="w-full py-4 bg-white border border-slate-100 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-sm hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={14} />
+                  Remove from Wishlist
+                </button>
+              </div>
             </div>
           ))}
         </div>
