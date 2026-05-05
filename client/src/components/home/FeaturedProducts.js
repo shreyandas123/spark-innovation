@@ -39,15 +39,15 @@ export default function FeaturedProducts() {
         
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6">
           <SectionHeader 
-            badge="Best Sellers"
-            title={<>FEATURED <br className="hidden md:block" /><span className="text-brand">INNOVATIONS.</span></>}
+            badge="Curated"
+            title="Featured Innovations"
             description="Explore our best-selling smart appliances designed for the modern Indian kitchen."
             className="mb-0"
           />
-          <Link href="/products" className="hidden md:flex items-center gap-3 text-brand-blue font-black uppercase tracking-widest text-[10px] cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
-            View All Products
-            <div className="w-10 h-10 border border-slate-200 flex items-center justify-center rounded-full group-hover:bg-brand-blue group-hover:text-white transition-all">
-              <ArrowRight size={14} />
+          <Link href="/products" className="hidden md:flex items-center gap-4 text-slate-400 font-bold uppercase tracking-[0.3em] text-[9px] cursor-pointer group hover:text-brand transition-all">
+            View All Collection
+            <div className="w-12 h-12 border border-slate-100 flex items-center justify-center rounded-full group-hover:border-brand transition-all">
+              <ArrowRight size={16} />
             </div>
           </Link>
         </div>

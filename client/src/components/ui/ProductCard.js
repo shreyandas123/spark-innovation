@@ -34,55 +34,55 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="group relative bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
-      <Link href={`/products/${product.slug}`} className="block aspect-[4/5] relative p-4 md:p-8 bg-[#fcfcfc] group-hover:bg-white transition-colors duration-500">
+    <div className="group relative bg-white transition-all duration-700 flex flex-col h-full rounded-sm border border-transparent hover:border-slate-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.03)] p-2">
+      <Link href={`/products/${product.slug}`} className="block aspect-[4/5] relative bg-[#f9f9f9] rounded-sm overflow-hidden group-hover:bg-[#f2f2f2] transition-colors duration-500">
         <Image 
           src={product.images?.[0] || product.image || "/images/placeholder-product.svg"} 
           alt={product.name} 
           fill 
-          className="object-contain p-4 md:p-6 group-hover:scale-110 transition-transform duration-700" 
+          className="object-contain p-6 md:p-10 group-hover:scale-110 transition-transform duration-1000" 
         />
         {}
-        <div className="absolute top-2 right-2 md:top-4 md:right-4 flex flex-col gap-2 z-10">
+        <div className="absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
           <button 
             onClick={handleWishlistClick}
-            className={`p-2 md:p-3 rounded-full backdrop-blur-md transition-all duration-300 ${
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
               isInWishlist(product.slug) 
-                ? "bg-brand text-white shadow-lg shadow-brand/20 scale-110" 
-                : "bg-white/90 text-slate-400 hover:text-brand hover:bg-white shadow-sm border border-slate-100"
+                ? "bg-brand text-white shadow-lg shadow-brand/20" 
+                : "bg-white text-slate-400 hover:text-brand shadow-sm"
             }`}
           >
-            <Heart size={14} className="md:w-4 md:h-4" fill={isInWishlist(product.slug) ? "currentColor" : "none"} strokeWidth={2.5} />
+            <Heart size={14} fill={isInWishlist(product.slug) ? "currentColor" : "none"} />
           </button>
         </div>
 
         {product.isNew && (
-          <div className="absolute top-2 left-2 md:top-4 md:left-4">
-            <span className="bg-brand-blue text-white text-[7px] md:text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">New</span>
+          <div className="absolute top-3 left-3">
+            <span className="bg-brand-blue text-white text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">New</span>
           </div>
         )}
       </Link>
 
-      <div className="p-4 md:p-6 flex flex-col flex-1">
-        <div className="flex-1 space-y-1 md:space-y-2 mb-4">
-          <p className="text-[7px] md:text-[9px] font-black text-brand uppercase tracking-[0.2em] mb-1">
+      <div className="pt-6 pb-4 px-2 flex flex-col flex-1 text-center lg:text-left">
+        <div className="flex-1 space-y-2 mb-6">
+          <p className="text-[9px] font-bold text-brand uppercase tracking-[0.2em] opacity-60">
             {product.category?.replace("-", " ")}
           </p>
-          <h3 className="text-xs md:text-base font-black text-brand-blue line-clamp-2 leading-tight tracking-tight uppercase">
+          <h3 className="text-sm md:text-base font-semibold text-brand-blue leading-tight tracking-tight hover:text-brand transition-colors">
             {product.name}
           </h3>
-          <div className="flex items-center gap-1 text-brand font-black text-sm md:text-xl">
-            <IndianRupee size={12} className="md:w-4 md:h-4" strokeWidth={4} />
+          <div className="flex items-center justify-center lg:justify-start gap-1 text-brand-blue font-bold text-base md:text-lg">
+            <IndianRupee size={14} strokeWidth={2.5} />
             <span>{product.price?.toLocaleString("en-IN")}</span>
           </div>
         </div>
 
         <button 
           onClick={handleAddToCart}
-          className="w-full py-2.5 md:py-3.5 bg-brand-blue text-white font-black uppercase tracking-[0.2em] text-[8px] md:text-[10px] rounded-sm hover:bg-brand transition-all flex items-center justify-center gap-2 group-hover:translate-y-0 active:scale-95 shadow-lg shadow-brand-blue/10"
+          className="w-full py-3 bg-brand-blue text-white font-bold uppercase tracking-widest text-[9px] rounded-sm hover:bg-brand transition-all flex items-center justify-center gap-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500"
         >
-          <ShoppingBag size={12} className="md:w-4 md:h-4" />
-          Add to Cart
+          <ShoppingBag size={12} />
+          Add to Bag
         </button>
       </div>
     </div>

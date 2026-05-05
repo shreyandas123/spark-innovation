@@ -50,54 +50,53 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
-        isScrolled ? "py-3 shadow-md" : "py-6"
-      } border-b border-slate-100`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white/80 backdrop-blur-md ${
+        isScrolled ? "py-4 shadow-[0_4px_30px_rgba(0,0,0,0.03)]" : "py-8"
+      } border-b border-slate-50`}
     >
       <div className="container-wide">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 relative flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-7 h-7 relative flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-500">
               <Image src="/favicon.ico" alt="Spark Innovations Logo" fill className="object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-black uppercase tracking-tighter">
-                Spark <span className="text-brand">Innovations</span>
+              <span className="text-xl font-bold uppercase tracking-tighter text-brand-blue">
+                Spark <span className="text-brand font-medium">Innovations</span>
               </span>
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-12">
             {NAV_LINKS.map((link) => (
               <div key={link.label} className="relative group/nav">
                 {link.isDropdown ? (
                   <>
-                    <button className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-brand transition-colors py-2 flex items-center gap-1">
+                    <button className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 hover:text-brand-blue transition-all py-2 flex items-center gap-1">
                       {link.label}
-                      <span className="w-1 h-1 bg-brand rounded-full opacity-0 group-hover/nav:opacity-100 transition-opacity" />
                     </button>
                     
                     {}
-                    <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 opacity-0 invisible translate-y-4 group-hover/nav:opacity-100 group-hover/nav:visible group-hover/nav:translate-y-0 transition-all duration-300 z-50">
-                      <div className="bg-white border border-slate-100 shadow-2xl rounded-sm p-6 min-w-[240px]">
-                        <div className="grid gap-4">
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full pt-6 opacity-0 invisible translate-y-2 group-hover/nav:opacity-100 group-hover/nav:visible group-hover/nav:translate-y-0 transition-all duration-500 z-50">
+                      <div className="bg-white border border-slate-50 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-sm p-8 min-w-[280px]">
+                        <div className="grid gap-6">
                           {categories.length > 0 ? (
                             categories.map((cat) => (
                               <Link 
                                 key={cat.slug} 
                                 href={`/categories/${cat.slug}`}
-                                className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors flex items-center justify-between group/cat"
+                                className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-brand transition-colors flex items-center justify-between group/cat"
                               >
                                 {cat.name}
-                                <ArrowRight size={12} className="opacity-0 -translate-x-2 transition-all group-hover/cat:opacity-100 group-hover/cat:translate-x-0" />
+                                <div className="w-1 h-1 bg-brand rounded-full opacity-0 group-hover/cat:opacity-100 transition-opacity" />
                               </Link>
                             ))
                           ) : (
-                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-300 text-center">Loading Categories...</p>
+                            <p className="text-[9px] font-medium uppercase tracking-widest text-slate-300 text-center">Loading...</p>
                           )}
-                          <div className="pt-4 border-t border-slate-50">
-                            <Link href="/products" className="text-[9px] font-black uppercase tracking-widest text-brand-blue hover:text-brand flex items-center gap-2">
-                              View All Collection <ArrowRight size={10} />
+                          <div className="pt-6 border-t border-slate-50">
+                            <Link href="/products" className="text-[9px] font-bold uppercase tracking-widest text-brand hover:opacity-80 flex items-center gap-2">
+                              View Collection
                             </Link>
                           </div>
                         </div>
@@ -107,7 +106,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={link.href || "#"}
-                    className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-brand transition-colors py-2 block"
+                    className="text-[11px] font-medium uppercase tracking-[0.25em] text-slate-400 hover:text-brand-blue transition-all py-2 block"
                   >
                     {link.label}
                   </Link>
