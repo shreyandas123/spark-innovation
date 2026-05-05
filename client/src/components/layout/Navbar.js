@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useSyncExternalStore } from "react";
-import { Phone, Menu, X, ArrowRight, ShoppingBag, User, Heart } from "lucide-react";
+import { Phone, Menu, X, ArrowRight, ShoppingBag, User, Heart, MessageSquare } from "lucide-react";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 import Link from "next/link";
 import Image from "next/image";
