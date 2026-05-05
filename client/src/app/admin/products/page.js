@@ -252,9 +252,9 @@ export default function AdminProductsPage() {
       </div>
 
       {isAddingProduct && (
-        <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-2xl rounded-sm shadow-2xl overflow-hidden animate-reveal">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 md:p-8">
+          <div className="bg-white w-full max-w-2xl rounded-sm shadow-2xl overflow-hidden animate-reveal flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
               <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">
                 {editingProduct ? "Edit Product" : "Add New Product"}
               </h2>
@@ -265,12 +265,13 @@ export default function AdminProductsPage() {
                   setImageFile(null);
                   setImagePreview("");
                 }} 
-                className="text-slate-400 hover:text-brand"
+                className="text-slate-400 hover:text-brand transition-colors p-2 -mr-2"
               >
                 <X size={20} />
               </button>
             </div>
-            <div className="p-8 space-y-6">
+            
+            <div className="p-6 md:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Product Name</label>
@@ -355,7 +356,7 @@ export default function AdminProductsPage() {
                 ></textarea>
               </div>
             </div>
-            <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
+            <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-4 shrink-0">
               <button 
                 onClick={() => setIsAddingProduct(false)} 
                 className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors"
