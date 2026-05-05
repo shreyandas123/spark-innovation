@@ -65,9 +65,13 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-8">
-            {mounted && isAuthenticated && (
+            {mounted && (
               <>
-                <Link href="/wishlist" className="relative text-brand-blue hover:text-brand transition-colors" aria-label={`View Wishlist (${wishlistCount} items)`}>
+                <Link 
+                  href={isAuthenticated ? "/wishlist" : "/auth/login?redirect=/wishlist"} 
+                  className="relative text-brand-blue hover:text-brand transition-colors" 
+                  aria-label={`View Wishlist (${wishlistCount} items)`}
+                >
                   <Heart size={20} />
                   {wishlistCount > 0 && (
                     <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-white">
@@ -139,19 +143,33 @@ export default function Navbar() {
         <div className="flex flex-col h-full justify-between p-8 pt-24">
           <div className="space-y-4">
             <p className="text-slate-500 font-black uppercase tracking-[0.4em] text-[8px] mb-8">Navigation</p>
-            {mounted && isAuthenticated && (
-              <div 
-                className={`transform transition-all duration-700 ${mobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"}`}
-              >
-                <Link
-                  href="/cart"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-4xl font-black text-brand uppercase tracking-tighter hover:text-brand-blue transition-colors flex items-center justify-between group"
+            {mounted && (
+              <>
+                <div 
+                  className={`transform transition-all duration-700 ${mobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"}`}
                 >
-                  Cart ({cartCount})
-                  <ShoppingBag className="opacity-0 -translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0" size={24} />
-                </Link>
-              </div>
+                  <Link
+                    href="/cart"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-4xl font-black text-brand-blue uppercase tracking-tighter hover:text-brand transition-colors flex items-center justify-between group"
+                  >
+                    Cart ({cartCount})
+                    <ShoppingBag className="opacity-0 -translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0" size={24} />
+                  </Link>
+                </div>
+                <div 
+                  className={`transform transition-all duration-700 delay-75 ${mobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"}`}
+                >
+                  <Link
+                    href={isAuthenticated ? "/wishlist" : "/auth/login?redirect=/wishlist"}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-4xl font-black text-brand-blue uppercase tracking-tighter hover:text-brand transition-colors flex items-center justify-between group"
+                  >
+                    Wishlist
+                    <Heart className="opacity-0 -translate-x-4 transition-all group-hover:opacity-100 group-hover:translate-x-0" size={24} />
+                  </Link>
+                </div>
+              </>
             )}
             {NAV_LINKS.map((link, i) => (
               <div 

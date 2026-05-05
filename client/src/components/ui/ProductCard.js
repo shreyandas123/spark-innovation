@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { IndianRupee, ShoppingBag, Heart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -18,11 +19,14 @@ export default function ProductCard({ product }) {
     addToCart(product);
   };
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
-      window.location.href = "/auth/login";
+      router.push(`/auth/login?redirect=${pathname}`);
       return;
     }
     toggleWishlist(product);
