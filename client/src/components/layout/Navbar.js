@@ -213,7 +213,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="pt-8 border-t border-slate-100 flex flex-col gap-4">
+          <div className="pt-8 border-t border-slate-100 flex flex-col gap-3">
             <Link 
               href="/cart"
               className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
@@ -221,7 +221,19 @@ export default function Navbar() {
             >
               <div className="flex items-center gap-3">
                 <ShoppingBag size={20} className="text-brand" />
-                <span className="font-black text-brand-blue uppercase tracking-tight">Cart ({cartCount})</span>
+                <span className="font-black text-brand-blue uppercase tracking-tight text-sm">Shopping Cart ({cartCount})</span>
+              </div>
+              <ArrowRight size={16} className="text-slate-300" />
+            </Link>
+
+            <Link 
+              href={isAuthenticated ? "/wishlist" : "/auth/login?redirect=/wishlist"}
+              className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-3">
+                <Heart size={20} className="text-rose-400" />
+                <span className="font-black text-brand-blue uppercase tracking-tight text-sm">My Wishlist ({wishlistCount})</span>
               </div>
               <ArrowRight size={16} className="text-slate-300" />
             </Link>
@@ -234,7 +246,7 @@ export default function Navbar() {
               >
                 <div className="flex items-center gap-3">
                   <User size={20} className="text-slate-400" />
-                  <span className="font-black text-brand-blue uppercase tracking-tight">Account</span>
+                  <span className="font-black text-brand-blue uppercase tracking-tight text-sm">My Account</span>
                 </div>
                 <ArrowRight size={16} className="text-slate-300" />
               </Link>
