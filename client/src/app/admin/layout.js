@@ -39,19 +39,19 @@ export default function AdminLayout({ children }) {
 
   const SidebarContent = () => (
     <>
-      <div className="p-8">
+      <div className="p-6">
         <h2 className="text-xl font-black tracking-tighter uppercase leading-none">
           Spark <span className="text-brand">Innovations</span>
-          <span className="block text-[10px] text-white/40 mt-1">Admin Dashboard</span>
+          <span className="block text-[9px] text-white/40 mt-1">Admin Dashboard</span>
         </h2>
       </div>
 
-      <nav className="flex-1 px-4 py-4 space-y-1.5">
+      <nav className="flex-1 px-3 py-2 space-y-1 custom-scrollbar">
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-3 mb-6 text-[9px] font-black uppercase tracking-widest text-brand hover:text-white hover:bg-brand transition-all border border-brand/20 rounded-sm"
+          className="flex items-center gap-3 px-3 py-2.5 mb-4 text-[9px] font-black uppercase tracking-widest text-brand hover:text-white hover:bg-brand transition-all border border-brand/20 rounded-sm"
         >
-          <Globe size={18} />
+          <Globe size={16} />
           View Website
         </Link>
 
@@ -60,7 +60,7 @@ export default function AdminLayout({ children }) {
             key={item.href}
             href={item.href}
             onClick={() => setMobileMenuOpen(false)}
-            className={`flex items-center justify-between px-4 py-3 rounded-sm text-[9px] font-black uppercase tracking-widest transition-all ${
+            className={`flex items-center justify-between px-3 py-2.5 rounded-sm text-[9px] font-black uppercase tracking-widest transition-all ${
               pathname === item.href 
               ? "bg-brand text-white shadow-xl shadow-brand/20" 
               : "text-white/60 hover:text-white hover:bg-white/5"
@@ -70,7 +70,7 @@ export default function AdminLayout({ children }) {
               {item.icon}
               {item.label}
             </div>
-            {pathname === item.href && <ChevronRight size={12} />}
+            {pathname === item.href && <ChevronRight size={10} />}
           </Link>
         ))}
       </nav>
@@ -91,7 +91,7 @@ export default function AdminLayout({ children }) {
     <AdminGuard>
       <div className="min-h-screen bg-slate-50 flex">
         {}
-        <aside className="hidden lg:flex w-64 bg-brand-blue text-white fixed h-full flex-col z-50">
+        <aside className="hidden lg:flex w-64 bg-brand-blue text-white fixed h-full flex-col z-50 overflow-y-auto custom-scrollbar">
           <SidebarContent />
         </aside>
 
@@ -103,7 +103,7 @@ export default function AdminLayout({ children }) {
           onClick={() => setMobileMenuOpen(false)}
         />
         <aside 
-          className={`lg:hidden fixed left-0 top-0 bottom-0 w-72 bg-brand-blue text-white z-[70] transition-transform duration-500 ease-in-out flex flex-col ${
+          className={`lg:hidden fixed left-0 top-0 bottom-0 w-72 bg-brand-blue text-white z-[70] transition-transform duration-500 ease-in-out flex flex-col overflow-y-auto custom-scrollbar ${
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
