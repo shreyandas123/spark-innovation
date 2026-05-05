@@ -65,18 +65,18 @@ export default function WishlistPage() {
     <main className="min-h-screen pt-32 pb-20 bg-white">
       <div className="container-wide">
         {}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16 border-b border-slate-100 pb-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-20 border-b border-slate-100 pb-12">
           <SectionHeader 
-            badge="My Collection"
-            title={<>SAVED <span className="text-brand">ITEMS.</span></>}
-            description="Your personal curated list of premium kitchen appliances."
+            badge="Personal Collection"
+            title={<>MY <span className="text-brand">WISHLIST.</span></>}
+            description="Your curated selection of premium kitchen innovations."
             className="mb-0"
           />
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button 
               onClick={handleMoveAllToCart}
-              className="px-8 py-4 bg-brand text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand-dark transition-all shadow-xl shadow-brand/20 flex items-center gap-2"
+              className="px-6 py-4 bg-brand text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand-dark transition-all flex items-center gap-2 shadow-xl shadow-brand/10"
             >
               <ShoppingBag size={14} />
               Move All to Bag
@@ -85,57 +85,56 @@ export default function WishlistPage() {
               onClick={() => {
                 if (confirm("Clear your entire wishlist?")) clearWishlist();
               }}
-              className="px-8 py-4 bg-white border border-slate-200 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-sm hover:text-red-500 hover:border-red-100 transition-all"
+              className="px-6 py-4 bg-white border border-slate-200 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-sm hover:text-red-500 hover:border-red-100 transition-all"
             >
               <Trash2 size={14} />
-              Clear All
             </button>
           </div>
         </div>
 
         {}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-16">
           {wishlistItems.map((product) => (
-            <div key={product.slug} className="flex flex-col h-full bg-white group">
+            <div key={product.slug} className="flex flex-col h-full bg-white group text-center lg:text-left">
               {}
-              <Link href={`/products/${product.slug}`} className="block aspect-square relative bg-slate-50 rounded-sm overflow-hidden mb-6">
+              <Link href={`/products/${product.slug}`} className="block aspect-[4/5] relative bg-slate-50 rounded-sm overflow-hidden mb-5">
                 <Image 
                   src={product.images?.[0] || product.image || "/images/placeholder-product.svg"} 
                   alt={product.name} 
                   fill 
-                  className="object-contain p-8 group-hover:scale-105 transition-transform duration-500" 
+                  className="object-contain p-6" 
                 />
               </Link>
 
               {}
-              <div className="flex-1 space-y-2 mb-6">
-                <p className="text-[10px] font-black text-brand uppercase tracking-[0.2em]">
+              <div className="flex-1 space-y-1.5 mb-5">
+                <p className="text-[9px] font-bold text-brand uppercase tracking-[0.2em] opacity-60">
                   {product.category?.replace("-", " ")}
                 </p>
-                <h3 className="text-lg font-black text-brand-blue uppercase tracking-tight leading-tight">
+                <h3 className="text-[13px] font-black text-brand-blue uppercase tracking-tight leading-tight line-clamp-2 min-h-[2.5em]">
                   {product.name}
                 </h3>
-                <div className="flex items-center gap-1 text-brand font-black text-xl">
-                  <IndianRupee size={16} strokeWidth={4} />
+                <div className="flex items-center justify-center lg:justify-start gap-0.5 text-brand-blue font-black text-lg">
+                  <IndianRupee size={14} strokeWidth={4} />
                   <span>{product.price?.toLocaleString("en-IN")}</span>
                 </div>
               </div>
 
               {}
-              <div className="grid grid-cols-1 gap-2 mt-auto">
+              <div className="flex items-center gap-1.5">
                 <button 
                   onClick={() => addToCart(product)}
-                  className="w-full py-4 bg-brand-blue text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 bg-brand-blue text-white font-black uppercase tracking-widest text-[9px] rounded-sm hover:bg-brand transition-all flex items-center justify-center gap-1.5"
                 >
-                  <ShoppingBag size={14} />
-                  Add to Bag
+                  <ShoppingBag size={13} />
+                  <span>Bag</span>
                 </button>
                 <button 
                   onClick={() => toggleWishlist(product)}
-                  className="w-full py-4 bg-white border border-slate-100 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-sm hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                  className="w-12 py-3.5 bg-slate-50 border border-slate-100 text-slate-300 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all flex items-center justify-center rounded-sm"
+                  title="Remove"
                 >
                   <Trash2 size={14} />
-                  Remove from Wishlist
                 </button>
               </div>
             </div>
