@@ -43,7 +43,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
   if (pathname?.startsWith("/admin")) {
     return null;
   }
@@ -92,7 +91,7 @@ export default function Navbar() {
                               </Link>
                             ))
                           ) : (
-                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-300 text-center">Loading Categories...</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-300 text-center">Loading...</p>
                           )}
                           <div className="pt-4 border-t border-slate-50">
                             <Link href="/products" className="text-[9px] font-black uppercase tracking-widest text-brand-blue hover:text-brand flex items-center gap-2">
@@ -121,7 +120,6 @@ export default function Navbar() {
                 <Link 
                   href={isAuthenticated ? "/wishlist" : "/auth/login?redirect=/wishlist"} 
                   className="relative text-brand-blue hover:text-brand transition-colors" 
-                  aria-label={`View Wishlist (${wishlistCount} items)`}
                 >
                   <Heart size={18} />
                   {wishlistCount > 0 && (
@@ -131,31 +129,27 @@ export default function Navbar() {
                   )}
                 </Link>
 
-                <div className="relative group/cart">
-                  <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors block py-2" aria-label={`View Shopping Cart (${cartCount} items)`}>
-                    <ShoppingBag size={18} />
-                    {cartCount > 0 && (
-                      <span className="absolute -top-0 -right-2 w-4 h-4 bg-brand text-white text-[8px] font-bold flex items-center justify-center rounded-full">
-                        {cartCount}
-                      </span>
-                    )}
-                  </Link>
-                </div>
+                <Link href="/cart" className="relative text-brand-blue hover:text-brand transition-colors" aria-label={`View Shopping Cart (${cartCount} items)`}>
+                  <ShoppingBag size={18} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 w-4 h-4 bg-brand text-white text-[8px] font-bold flex items-center justify-center rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
               </>
             )}
 
             {mounted && isAuthenticated ? (
-              <div className="flex items-center gap-4">
-                <Link href="/me" className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full overflow-hidden border border-brand-dark flex items-center justify-center bg-brand text-white">
-                    {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <User size={14} />
-                    )}
-                  </div>
-                </Link>
-              </div>
+              <Link href="/me" className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full overflow-hidden border border-brand-dark flex items-center justify-center bg-brand text-white">
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={14} />
+                  )}
+                </div>
+              </Link>
             ) : (
               <Link 
                 href="/auth/login"
@@ -173,32 +167,32 @@ export default function Navbar() {
           <button
             className="lg:hidden p-2 text-brand-blue"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close Menu" : "Open Menu"}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
+      {}
       <div 
         className={`lg:hidden fixed inset-0 bg-white z-40 transition-all duration-500 ease-in-out ${
           mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
         }`}
       >
         <div className="flex flex-col h-full justify-between p-8 pt-24 pb-12">
-          <div className="space-y-4">
-            <p className="text-slate-500 font-black uppercase tracking-[0.4em] text-[8px] mb-6">Navigation</p>
+          <div className="space-y-6">
+            <p className="text-slate-500 font-black uppercase tracking-[0.4em] text-[8px] mb-6">Menu</p>
             {NAV_LINKS.map((link) => (
               <div key={link.label}>
                 {link.isDropdown ? (
-                  <div className="space-y-3">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-300">{link.label}</p>
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">{link.label}</p>
                     <div className="grid gap-4 pl-4 border-l border-slate-100">
                       {categories.map((cat) => (
                         <Link
                           key={cat.slug}
                           href={`/categories/${cat.slug}`}
-                          className="text-lg font-black text-brand-blue uppercase tracking-tight"
+                          className="text-xl font-black text-brand-blue uppercase tracking-tight block"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {cat.name}
@@ -209,33 +203,53 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={link.href || "#"}
-                    className="text-2xl font-black text-brand-blue uppercase tracking-tighter block"
+                    className="text-3xl font-black text-brand-blue uppercase tracking-tighter block"
                     onClick={() => setMobileMenuOpen(false)}
-        </Link>
-
-        <Link href="/me" className={`flex flex-col items-center gap-1 ${pathname === '/me' ? 'text-brand' : 'text-slate-400'}`}>
-          <div className={`p-1.5 rounded-xl transition-all ${pathname === '/me' ? 'bg-brand/10' : ''}`}>
-            <User size={18} />
+                  >
+                    {link.label}
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
-          <span className="text-[7px] font-black uppercase tracking-widest">Profile</span>
-        </Link>
 
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`flex flex-col items-center gap-1 ${mobileMenuOpen ? 'text-brand' : 'text-slate-400'}`}
-        >
-          <div className={`p-1.5 rounded-xl transition-all ${mobileMenuOpen ? 'bg-brand/10' : ''}`}>
-            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+          <div className="pt-8 border-t border-slate-100 flex flex-col gap-4">
+            <Link 
+              href="/cart"
+              className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <div className="flex items-center gap-3">
+                <ShoppingBag size={20} className="text-brand" />
+                <span className="font-black text-brand-blue uppercase tracking-tight">Cart ({cartCount})</span>
+              </div>
+              <ArrowRight size={16} className="text-slate-300" />
+            </Link>
+            
+            {isAuthenticated ? (
+              <Link 
+                href="/me"
+                className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <User size={20} className="text-slate-400" />
+                  <span className="font-black text-brand-blue uppercase tracking-tight">Account</span>
+                </div>
+                <ArrowRight size={16} className="text-slate-300" />
+              </Link>
+            ) : (
+              <Link 
+                href="/auth/login"
+                className="flex items-center justify-center bg-brand-blue text-white p-4 rounded-sm font-black uppercase tracking-widest text-[10px]"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login to Account
+              </Link>
+            )}
           </div>
-          <span className="text-[7px] font-black uppercase tracking-widest">More</span>
-        </button>
+        </div>
       </div>
     </nav>
   );
 }
-
-
-
-
-
-
