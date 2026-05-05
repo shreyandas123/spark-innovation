@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, CheckCircle, Loader2, Send } from "lucide-react";
 import { createInquiry } from "@/lib/api";
 
