@@ -22,21 +22,6 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import AdminGuard from "@/components/AdminGuard";
 
-export default function AdminLayout({ children }) {
-  const pathname = usePathname();
-  const { user, logout } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const menuItems = [
-    { icon: <LayoutDashboard size={18} />, label: "Dashboard", href: "/admin" },
-    { icon: <Package size={18} />, label: "Products", href: "/admin/products" },
-    { icon: <Tags size={18} />, label: "Categories", href: "/admin/categories" },
-    { icon: <ShoppingBag size={18} />, label: "Orders", href: "/admin/orders" },
-    { icon: <MessageSquare size={18} />, label: "Inquiries", href: "/admin/inquiries" },
-    { icon: <ImageIcon size={18} />, label: "Banners", href: "/admin/banners" },
-    { icon: <Users size={18} />, label: "Users", href: "/admin/users" },
-    { icon: <Settings size={18} />, label: "Site Settings", href: "/admin/settings" },
-  ];
 
 const SidebarContent = ({ menuItems, pathname, setMobileMenuOpen, logout }) => (
   <>
