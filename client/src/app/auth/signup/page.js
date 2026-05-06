@@ -7,15 +7,18 @@ import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { registerUser } from "@/lib/api";
 import { ShoppingBag, ArrowRight, Mail, Lock, User, Loader2 } from "lucide-react";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function SignupPage() {
   const router = useRouter();
   const { register } = useAuth();
+  const { showToast } = useToast();
   
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   
   const [loading, setLoading] = useState(false);
@@ -27,6 +30,17 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -101,6 +115,18 @@ export default function SignupPage() {
               />
             </div>
 
+            <div className="space-y-1">
+              <input
+                name="confirmPassword"
+                type="password"
+                required
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-lg text-sm focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all"
+                placeholder="Confirm Password"
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -123,7 +149,7 @@ export default function SignupPage() {
             </div>
 
             <button 
-              onClick={() => alert("Google Signup is coming soon! Requires configuration.")}
+              onClick={() => showToast("Google Signup is coming soon!", "info")}
               className="w-full flex items-center justify-center gap-3 py-3 border border-slate-100 rounded-lg hover:bg-slate-50 transition-all"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">

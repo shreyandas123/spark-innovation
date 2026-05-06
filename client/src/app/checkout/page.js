@@ -43,11 +43,13 @@ export default function CheckoutPage() {
     country: user?.address?.country || "India"
   });
 
-  // Guest checkout support is enabled
+  // Enforce login for checkout to avoid "Guest Checkout Trap"
   useEffect(() => {
-    // We allow both authenticated users and guests to proceed to checkout
-    // No redirect to login is enforced here
-  }, [isAuthenticated]);
+    if (!authLoading && !isAuthenticated) {
+      showToast("Please sign in to proceed to checkout.", "info");
+      router.push("/auth/login?redirect=/checkout");
+    }
+  }, [isAuthenticated, authLoading, router, showToast]);
 
   // Autofill form when user data is available, but don't overwrite manual edits
   useEffect(() => {
@@ -94,6 +96,11 @@ export default function CheckoutPage() {
         };
 
         // If authenticated, token is used. If guest, token is null and backend must handle it.
+        if (!token) {
+          showToast("Please sign in to complete your purchase.", "error");
+          setIsProcessing(false);
+          return;
+        }
         await createOrder(token, orderData);
         clearCart();
         setStep(3);
@@ -147,10 +154,10 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-16 items-start">
-          {}
+          {/* Main Checkout Flow */}
           <div className="lg:col-span-2 space-y-12">
             
-            {}
+            {/* Step 1: Shipping */}
             <div className={`space-y-8 ${step > 1 ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
                 <div className="w-8 h-8 bg-brand-blue text-white rounded-full flex items-center justify-center text-xs font-black">1</div>
@@ -246,7 +253,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {}
+            {/* Step 2: Payment */}
             <div className={`space-y-8 ${step < 2 ? 'opacity-30' : ''}`}>
               <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
                 <div className="w-8 h-8 bg-brand-blue text-white rounded-full flex items-center justify-center text-xs font-black">2</div>
@@ -255,7 +262,7 @@ export default function CheckoutPage() {
 
               {step >= 2 && (
                 <div className="grid md:grid-cols-2 gap-6">
-                  {}
+                  {/* UPI Option */}
                   <div 
                     onClick={() => setPaymentMethod("qr")}
                     className={`p-6 border-2 rounded-sm cursor-pointer transition-all ${paymentMethod === 'qr' ? 'border-brand bg-brand/5 shadow-md' : 'border-slate-100 bg-white hover:border-slate-300'}`}
@@ -270,7 +277,7 @@ export default function CheckoutPage() {
                     <p className="text-[10px] text-slate-500 font-medium">Scan and pay using any UPI app</p>
                   </div>
 
-                  {}
+                  {/* COD Option */}
                   <div 
                     onClick={() => setPaymentMethod("cod")}
                     className={`p-6 border-2 rounded-sm cursor-pointer transition-all ${paymentMethod === 'cod' ? 'border-brand bg-brand/5 shadow-md' : 'border-slate-100 bg-white hover:border-slate-300'}`}
@@ -287,7 +294,7 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {}
+              {/* QR Code Display */}
               {step === 2 && paymentMethod === "qr" && (
                 <div className="bg-white border border-brand/20 rounded-sm p-8 flex flex-col items-center animate-reveal">
                   <div className="text-center mb-8">
@@ -311,7 +318,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {}
+          {/* Order Summary Sidebar */}
           <div className="lg:col-span-1 bg-white border border-slate-200 rounded-sm p-8 shadow-sm sticky top-32">
             <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-8 pb-4 border-b border-slate-100">Order Summary</h3>
             

@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { updateUserProfile, uploadImage } from '@/lib/api'
 import { ChevronLeft, Save, AlertCircle, CheckCircle, Camera, Loader2 } from 'lucide-react'
 
@@ -144,9 +145,9 @@ function SettingsForm({ user }) {
           <h2 className="text-xl font-bold text-brand-blue mb-6">Profile Picture</h2>
           <div className="flex items-center gap-6 mb-8">
             <div className="relative group">
-              <div className="w-24 h-24 bg-slate-100 rounded-full overflow-hidden border-2 border-slate-200 flex items-center justify-center">
+              <div className="w-24 h-24 bg-slate-100 rounded-full overflow-hidden border-2 border-slate-200 flex items-center justify-center relative">
                 {avatarPreview ? (
-                  <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                  <Image src={avatarPreview} alt="Avatar" fill className="object-cover" />
                 ) : (
                   <Camera size={32} className="text-slate-300" />
                 )}

@@ -26,7 +26,11 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/";
+  const redirectParam = searchParams.get("redirect") || "/";
+  // Validate redirect to prevent open redirect vulnerabilities
+  const redirect = redirectParam.startsWith("/") ? redirectParam : "/";
+  const isExpired = searchParams.get("expired") === "true";
+  
   const { login } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -73,6 +77,12 @@ function LoginForm() {
             <h2 className="text-2xl font-bold text-brand-blue tracking-tight">Welcome Back</h2>
             <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-1">Sign in to your account</p>
           </div>
+
+          {isExpired && !error && (
+            <div className="mb-6 p-3 bg-brand/5 border border-brand/10 text-brand text-[10px] font-bold uppercase tracking-widest rounded text-center">
+              Your session has expired. Please log in again.
+            </div>
+          )}
 
           {error && (
             <div className="mb-6 p-3 bg-red-50 border border-red-100 text-red-600 text-[10px] font-bold uppercase tracking-widest rounded text-center">

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Plus, Image as ImageIcon, Trash2, Edit2, Link as LinkIcon, Check, X, Loader2 } from "lucide-react";
 import { fetchBanners, createBanner, updateBanner, deleteBanner, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
+import Image from "next/image";
 
 export default function BannersPage() {
   const [banners, setBanners] = useState([]);
@@ -11,6 +13,7 @@ export default function BannersPage() {
   const [isAddingBanner, setIsAddingBanner] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
   const { token } = useAuth();
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -40,7 +43,7 @@ export default function BannersPage() {
 
   const handleSaveBanner = async () => {
     if (!formData.title || !formData.image) {
-      alert("Title and Image URL are required");
+      showToast("Title and Image URL are required", "error");
       return;
     }
 
@@ -74,7 +77,7 @@ export default function BannersPage() {
       setImagePreview("");
     } catch (err) {
       console.error("Error saving banner:", err);
-      alert(err.message || "Failed to save banner");
+      showToast(err.message || "Failed to save banner", "error");
     } finally {
       setIsSaving(false);
     }
@@ -83,8 +86,12 @@ export default function BannersPage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        showToast("Only image files are allowed", "error");
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
+        showToast("Image size should be less than 5MB", "error");
         return;
       }
       setImageFile(file);
@@ -102,7 +109,7 @@ export default function BannersPage() {
       setBanners(banners.filter(b => b._id !== id));
     } catch (err) {
       console.error("Error deleting banner:", err);
-      alert(err.message || "Failed to delete banner");
+      showToast(err.message || "Failed to delete banner", "error");
     }
   };
 
@@ -157,7 +164,7 @@ export default function BannersPage() {
                 <td className="px-6 py-4 w-64">
                   <div className="aspect-[3/1] bg-slate-100 rounded-sm border border-slate-200 flex items-center justify-center relative overflow-hidden group">
                     {banner.image ? (
-                      <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                      <Image src={banner.image} alt={banner.title} fill className="object-cover" />
                     ) : (
                       <ImageIcon size={24} className="text-slate-300" />
                     )}
@@ -253,7 +260,7 @@ export default function BannersPage() {
                 <div className="flex items-center gap-6">
                   <div className="w-32 h-16 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
                     {imagePreview || formData.image ? (
-                      <img src={imagePreview || formData.image} alt="Preview" className="w-full h-full object-cover" />
+                      <Image src={imagePreview || formData.image} alt="Preview" fill className="object-cover" />
                     ) : (
                       <ImageIcon className="text-slate-200" size={24} />
                     )}

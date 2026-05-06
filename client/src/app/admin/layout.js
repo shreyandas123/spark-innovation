@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
@@ -37,65 +38,86 @@ export default function AdminLayout({ children }) {
     { icon: <Settings size={18} />, label: "Site Settings", href: "/admin/settings" },
   ];
 
-  const SidebarContent = () => (
-    <>
-      <div className="p-6">
-        <h2 className="text-xl font-black tracking-tighter uppercase leading-none">
-          Spark <span className="text-brand">Innovations</span>
-          <span className="block text-[9px] text-white/40 mt-1">Admin Dashboard</span>
-        </h2>
-      </div>
+const SidebarContent = ({ menuItems, pathname, setMobileMenuOpen, logout }) => (
+  <>
+    <div className="p-6">
+      <h2 className="text-xl font-black tracking-tighter uppercase leading-none">
+        Spark <span className="text-brand">Innovations</span>
+        <span className="block text-[9px] text-white/40 mt-1">Admin Dashboard</span>
+      </h2>
+    </div>
 
-      <nav className="flex-1 px-3 py-2 space-y-1 custom-scrollbar">
+    <nav className="flex-1 px-3 py-2 space-y-1 custom-scrollbar">
+      <Link
+        href="/"
+        className="flex items-center gap-3 px-3 py-2.5 mb-4 text-[9px] font-black uppercase tracking-widest text-brand hover:text-white hover:bg-brand transition-all border border-brand/20 rounded-sm"
+      >
+        <Globe size={16} />
+        View Website
+      </Link>
+
+      {menuItems.map((item) => (
         <Link
-          href="/"
-          className="flex items-center gap-3 px-3 py-2.5 mb-4 text-[9px] font-black uppercase tracking-widest text-brand hover:text-white hover:bg-brand transition-all border border-brand/20 rounded-sm"
+          key={item.href}
+          href={item.href}
+          onClick={() => setMobileMenuOpen(false)}
+          className={`flex items-center justify-between px-3 py-2.5 rounded-sm text-[9px] font-black uppercase tracking-widest transition-all ${
+            pathname === item.href 
+            ? "bg-brand text-white shadow-xl shadow-brand/20" 
+            : "text-white/60 hover:text-white hover:bg-white/5"
+          }`}
         >
-          <Globe size={16} />
-          View Website
+          <div className="flex items-center gap-3">
+            {item.icon}
+            {item.label}
+          </div>
+          {pathname === item.href && <ChevronRight size={10} />}
         </Link>
+      ))}
+    </nav>
 
-        {menuItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => setMobileMenuOpen(false)}
-            className={`flex items-center justify-between px-3 py-2.5 rounded-sm text-[9px] font-black uppercase tracking-widest transition-all ${
-              pathname === item.href 
-              ? "bg-brand text-white shadow-xl shadow-brand/20" 
-              : "text-white/60 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              {item.icon}
-              {item.label}
-            </div>
-            {pathname === item.href && <ChevronRight size={10} />}
-          </Link>
-        ))}
-      </nav>
+    <div className="p-4 border-t border-white/10">
+      <button 
+        onClick={logout}
+        className="flex items-center gap-3 w-full px-4 py-3 text-[9px] font-black uppercase tracking-widest text-white/60 hover:text-brand transition-colors"
+      >
+        <LogOut size={18} />
+        Logout
+      </button>
+    </div>
+  </>
+);
 
-      <div className="p-4 border-t border-white/10">
-        <button 
-          onClick={logout}
-          className="flex items-center gap-3 w-full px-4 py-3 text-[9px] font-black uppercase tracking-widest text-white/60 hover:text-brand transition-colors"
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
-      </div>
-    </>
-  );
+export default function AdminLayout({ children }) {
+  const pathname = usePathname();
+  const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const menuItems = [
+    { icon: <LayoutDashboard size={18} />, label: "Dashboard", href: "/admin" },
+    { icon: <Package size={18} />, label: "Products", href: "/admin/products" },
+    { icon: <Tags size={18} />, label: "Categories", href: "/admin/categories" },
+    { icon: <ShoppingBag size={18} />, label: "Orders", href: "/admin/orders" },
+    { icon: <MessageSquare size={18} />, label: "Inquiries", href: "/admin/inquiries" },
+    { icon: <ImageIcon size={18} />, label: "Banners", href: "/admin/banners" },
+    { icon: <Users size={18} />, label: "Users", href: "/admin/users" },
+    { icon: <Settings size={18} />, label: "Site Settings", href: "/admin/settings" },
+  ];
 
   return (
     <AdminGuard>
       <div className="min-h-screen bg-slate-50 flex">
-        {}
+        {/* Desktop Sidebar */}
         <aside className="hidden lg:flex w-64 bg-brand-blue text-white fixed h-full flex-col z-50 overflow-y-auto custom-scrollbar">
-          <SidebarContent />
+          <SidebarContent 
+            menuItems={menuItems} 
+            pathname={pathname} 
+            setMobileMenuOpen={setMobileMenuOpen} 
+            logout={logout} 
+          />
         </aside>
 
-        {}
+        {/* Mobile Sidebar */}
         <div 
           className={`lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] transition-opacity duration-300 ${
             mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -107,7 +129,12 @@ export default function AdminLayout({ children }) {
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <SidebarContent />
+          <SidebarContent 
+            menuItems={menuItems} 
+            pathname={pathname} 
+            setMobileMenuOpen={setMobileMenuOpen} 
+            logout={logout} 
+          />
         </aside>
 
         {}
@@ -133,9 +160,9 @@ export default function AdminLayout({ children }) {
                 <p className="text-[9px] font-black text-brand-blue uppercase tracking-widest leading-none">{user?.name || 'Admin User'}</p>
                 <p className="text-[7px] text-slate-400 font-medium uppercase tracking-widest mt-1">Administrator</p>
               </div>
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-brand rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white shrink-0">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-brand rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-white shrink-0 relative">
                 {user?.avatar ? (
-                  <img src={user.avatar} alt="Admin" className="w-full h-full object-cover" />
+                  <Image src={user.avatar} alt="Admin" fill className="object-cover" />
                 ) : (
                   <LayoutDashboard size={16} />
                 )}

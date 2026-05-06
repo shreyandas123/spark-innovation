@@ -30,7 +30,7 @@ export function WishlistProvider({ children }) {
     syncToStorage(wishlistItems, isAuthenticated, isLoaded);
   }, [wishlistItems, isLoaded, isAuthenticated, syncToStorage]);
 
-  const toggleWishlist = async (product) => {
+  const toggleWishlist = useCallback(async (product) => {
     const exists = wishlistItems.some((item) => item.slug === product.slug);
 
     if (isAuthenticated && token) {
@@ -52,25 +52,32 @@ export function WishlistProvider({ children }) {
       // Guest logic
       if (exists) {
         setWishlistItems(prev => prev.filter(item => item.slug !== product.slug));
+        showToast("Removed from wishlist");
       } else {
         setWishlistItems(prev => [...prev, product]);
+        showToast(`Saved ${product.name} to wishlist`);
       }
     }
-  };
+  }, [wishlistItems, isAuthenticated, token, showToast]);
 
-  const isInWishlist = (slug) => {
+  const isInWishlist = useCallback((slug) => {
     return wishlistItems.some((item) => item.slug === slug);
-  };
+  }, [wishlistItems]);
 
-  const clearWishlist = async () => {
-    if (!isAuthenticated || !token) return;
-    try {
+  const clearWishlist = useCallback(async () => {
+    if (isAuthenticated && token) {
+      try {
+        setWishlistItems([]);
+        await clearWishlistApi(token);
+      } catch (err) {
+        console.error("Failed to clear wishlist:", err);
+      }
+    } else {
       setWishlistItems([]);
-      await clearWishlistApi(token);
-    } catch (err) {
-      console.error("Failed to clear wishlist:", err);
     }
-  };
+    // Also clear guest storage
+    localStorage.removeItem("wishlist_guest");
+  }, [isAuthenticated, token]);
 
   const value = useMemo(() => ({
     wishlistItems,

@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { fetchProducts, fetchCategories, createProduct, updateProduct, deleteProduct, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
+import { validateImageFile } from "@/lib/utils";
 import { 
   Plus, 
   Search, 
@@ -23,6 +25,15 @@ export default function AdminProductsPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
+  const { showToast } = useToast();
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -59,15 +70,16 @@ export default function AdminProductsPage() {
   }, []);
 
   const filteredProducts = (products || []).filter(p => 
-    (p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (p.category || "").toLowerCase().includes(searchQuery.toLowerCase())
+    (p.name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+    (p.category || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase())
   );
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
+      const error = validateImageFile(file);
+      if (error) {
+        showToast(error, "error");
         return;
       }
       setImageFile(file);
@@ -79,12 +91,12 @@ export default function AdminProductsPage() {
 
   const handleSaveProduct = async () => {
     if (!newProduct.name || !newProduct.slug || !newProduct.category) {
-      alert("Name, Slug, and Category are required");
+      showToast("Name, Slug, and Category are required", "error");
       return;
     }
     
     if (!/^[a-z0-9-]+$/.test(newProduct.slug)) {
-      alert("Slug must contain only lowercase letters, numbers, and hyphens (e.g., flora-90-chimney)");
+      showToast("Slug must contain only lowercase letters, numbers, and hyphens", "error");
       return;
     }
 
@@ -111,6 +123,7 @@ export default function AdminProductsPage() {
       } else {
         const data = await createProduct(token, productData);
         setProducts([...products, data.product]);
+        showToast("Product created successfully", "success");
       }
       setIsAddingProduct(false);
       setEditingProduct(null);
@@ -119,7 +132,7 @@ export default function AdminProductsPage() {
       setImagePreview("");
     } catch (err) {
       console.error("Error saving product:", err);
-      alert(err.message || "Failed to save product");
+      showToast(err.message || "Failed to save product", "error");
     } finally {
       setIsSaving(false);
     }
@@ -130,9 +143,10 @@ export default function AdminProductsPage() {
       try {
         await deleteProduct(token, slug);
         setProducts(products.filter(p => p.slug !== slug));
+        showToast("Product deleted successfully", "success");
       } catch (err) {
         console.error("Error deleting product:", err);
-        alert(err.message || "Failed to delete product");
+        showToast(err.message || "Failed to delete product", "error");
       }
     }
   };
@@ -323,7 +337,7 @@ export default function AdminProductsPage() {
                 <div className="flex items-center gap-6">
                   <div className="w-24 h-24 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
                     {imagePreview || newProduct.images[0] ? (
-                      <img src={imagePreview || newProduct.images[0]} alt="Preview" className="w-full h-full object-contain" />
+                      <Image src={imagePreview || newProduct.images[0]} alt="Preview" fill className="object-contain" />
                     ) : (
                       <ImageIcon className="text-slate-200" size={32} />
                     )}

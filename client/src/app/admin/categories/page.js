@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { fetchCategories, createCategory, updateCategory, deleteCategory, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 import { 
   Plus, 
   Search, 
@@ -252,7 +253,7 @@ export default function AdminCategoriesPage() {
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
                     {imagePreview || newCategory.image ? (
-                      <img src={imagePreview || newCategory.image} alt="Preview" className="w-full h-full object-contain" />
+                      <Image src={imagePreview || newCategory.image} alt="Preview" fill className="object-contain" />
                     ) : (
                       <ImageIconLucide className="text-slate-200" size={24} />
                     )}

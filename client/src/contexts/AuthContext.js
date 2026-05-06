@@ -1,6 +1,7 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { fetchUserMe, loginWithGoogle } from '@/lib/api'
 
 const AuthContext = createContext(null)
@@ -9,13 +10,15 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null)
     setUser(null)
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
-  }
+    router.push('/')
+  }, [router])
 
   useEffect(() => {
     const handleUnauthorized = () => {

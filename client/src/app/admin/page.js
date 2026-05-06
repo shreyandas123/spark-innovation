@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { fetchProducts, fetchInquiries, fetchBanners, fetchStats } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState([
@@ -26,12 +27,15 @@ export default function AdminDashboard() {
   ]);
   const [recentInquiries, setRecentInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { token } = useAuth();
+  const { showToast } = useToast();
 
   const loadDashboardData = async () => {
     if (!token) return;
     try {
       setLoading(true);
+      setError(null);
       const [statsData, inquiriesData] = await Promise.all([
         fetchStats(token),
         fetchInquiries(token)
@@ -71,6 +75,8 @@ export default function AdminDashboard() {
       setRecentInquiries((inquiriesData.inquiries || []).slice(0, 5));
     } catch (err) {
       console.error("Error loading dashboard data:", err);
+      setError("Failed to load dashboard statistics. Please try refreshing the page.");
+      showToast("Failed to load stats", "error");
     } finally {
       setLoading(false);
     }
@@ -82,6 +88,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-10">
+      {error && (
+        <div className="bg-red-50 border border-red-100 p-4 rounded-sm flex items-center justify-between">
+          <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{error}</p>
+          <button 
+            onClick={loadDashboardData}
+            className="text-[10px] font-black text-brand uppercase tracking-widest hover:underline"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
       {}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {stats.map((stat, index) => (

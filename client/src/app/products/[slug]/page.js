@@ -4,6 +4,7 @@ import { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchProductBySlug } from "@/lib/api";
+import { SITE_CONFIG } from "@/lib/constants";
 import { ArrowLeft, Check, IndianRupee, MessageSquare, Phone, ShieldCheck, Zap, Loader2, Heart, ShoppingBag, Plus, Minus } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
@@ -181,7 +182,7 @@ export default function ProductDetailPage({ params }) {
                   Inquire Now
                 </button>
                 <a 
-                  href={`tel:${(settings?.phone || "+919831012345").replace(/[^\d+]/g, '')}`}
+                  href={`tel:${(settings?.phone || SITE_CONFIG.phone).replace(/[^\d+]/g, '')}`}
                   className="flex-1 border-2 border-brand-blue text-brand-blue py-5 px-8 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand-blue hover:text-white transition-all group"
                 >
                   <Phone size={18} />

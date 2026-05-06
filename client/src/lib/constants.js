@@ -3,8 +3,8 @@ export const SITE_CONFIG = {
   tagline: "Authorized Kutchina Distributor",
   description:
     "Your trusted partner for premium Kutchina kitchen appliances. Explore chimneys, hobs, cooktops, and more.",
-  phone: "to be added soon",
-  email: "[EMAIL_ADDRESS]",
+  phone: "+91 98310 12345",
+  email: "contact@sparkinnovations.in",
   address: "Kolkata, West Bengal, India",
 };
 

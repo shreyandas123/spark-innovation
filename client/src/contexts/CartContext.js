@@ -37,7 +37,7 @@ export function CartProvider({ children }) {
     syncToStorage(cartItems, isAuthenticated, isLoaded);
   }, [cartItems, isLoaded, isAuthenticated, syncToStorage]);
 
-  const addToCart = async (product) => {
+  const addToCart = useCallback(async (product) => {
     const existingItem = cartItems.find((item) => item.slug === product.slug);
     
     if (isAuthenticated && token) {
@@ -69,9 +69,9 @@ export function CartProvider({ children }) {
       });
       showToast(`Added ${product.name} to cart`);
     }
-  };
+  }, [cartItems, isAuthenticated, token, showToast, syncCart]);
 
-  const removeFromCart = async (slug) => {
+  const removeFromCart = useCallback(async (slug) => {
     if (isAuthenticated && token) {
       try {
         setCartItems(prev => prev.filter(i => i.slug !== slug));
@@ -84,9 +84,9 @@ export function CartProvider({ children }) {
     } else {
       setCartItems(prev => prev.filter(i => i.slug !== slug));
     }
-  };
+  }, [isAuthenticated, token, showToast, syncCart]);
 
-  const updateQuantity = async (slug, quantity) => {
+  const updateQuantity = useCallback(async (slug, quantity) => {
     if (quantity < 1) {
       removeFromCart(slug);
       return;
@@ -103,9 +103,9 @@ export function CartProvider({ children }) {
     } else {
       setCartItems(prev => prev.map(i => i.slug === slug ? { ...i, quantity } : i));
     }
-  };
+  }, [isAuthenticated, token, removeFromCart, syncCart]);
 
-  const clearCart = async () => {
+  const clearCart = useCallback(async () => {
     if (isAuthenticated && token) {
       try {
         setCartItems([]);
@@ -117,7 +117,9 @@ export function CartProvider({ children }) {
     } else {
       setCartItems([]);
     }
-  };
+    // Also clear guest storage
+    localStorage.removeItem("cart_guest");
+  }, [isAuthenticated, token, syncCart]);
 
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);

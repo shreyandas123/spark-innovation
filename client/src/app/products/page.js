@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { fetchProducts, fetchCategories } from "@/lib/api";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ProductCard from "@/components/ui/ProductCard";
+import ProductSkeleton from "@/components/ui/ProductSkeleton";
 import { Search, Loader2 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -18,12 +19,22 @@ export default function ProductsPage() {
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         const params = { limit: 12, page: 1 };
         if (selectedCategory !== "all") params.category = selectedCategory;
+        if (debouncedSearchQuery) params.search = debouncedSearchQuery;
 
         const [productsData, categoriesData] = await Promise.all([
           fetchProducts(params),
@@ -44,7 +55,7 @@ export default function ProductsPage() {
     };
 
     loadData();
-  }, [selectedCategory]);
+  }, [selectedCategory, debouncedSearchQuery]);
 
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
@@ -53,6 +64,7 @@ export default function ProductsPage() {
       const nextPage = page + 1;
       const params = { limit: 12, page: nextPage };
       if (selectedCategory !== "all") params.category = selectedCategory;
+      if (debouncedSearchQuery) params.search = debouncedSearchQuery;
       
       const productsData = await fetchProducts(params);
       
@@ -66,10 +78,7 @@ export default function ProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter((product) => {
-    return (product.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
-           (product.description || "").toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredProducts = products;
 
   return (
     <main className="min-h-screen pt-24 pb-20">
@@ -120,9 +129,10 @@ export default function ProductsPage() {
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <Loader2 className="animate-spin text-brand" size={40} />
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Collection...</p>
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 lg:gap-12">
+            {[...Array(8)].map((_, i) => (
+              <ProductSkeleton key={i} />
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-20 border border-dashed border-red-100 rounded-sm bg-red-50/30">
@@ -141,7 +151,7 @@ export default function ProductsPage() {
                 <ProductCard key={product.slug} product={product} />
               ))}
             </div>
-            {hasMore && !searchQuery && (
+            {hasMore && (
               <div className="mt-16 flex justify-center">
                 <button
                   onClick={loadMore}

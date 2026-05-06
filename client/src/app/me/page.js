@@ -103,11 +103,11 @@ export default function UserDashboard() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden sticky top-6">
               <div className="bg-linear-to-br from-brand to-brand-dark p-6 text-white text-center">
-                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden border-2 border-white/30">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/30 relative">
                   {user?.avatar ? (
                     <Image src={user.avatar} alt={user.name} fill className="object-cover" />
                   ) : (
-                    <User size={32} />
+                    <User size={40} className="text-white" />
                   )}
                 </div>
                 <h3 className="font-bold text-lg">{user?.name}</h3>
@@ -195,7 +195,7 @@ export default function UserDashboard() {
                       <div>
                         <p className="text-slate-600 text-sm font-medium">Member Since</p>
                         <p className="text-sm font-bold text-brand-blue mt-2">
-                          {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recently'}
+                          {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN') : 'Recently'}
                         </p>
                       </div>
                       <Calendar size={40} className="text-slate-200" />
@@ -225,8 +225,8 @@ export default function UserDashboard() {
                               <ShoppingBag size={20} />
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-brand-blue">Order #{order._id.substring(order._id.length - 6).toUpperCase()}</p>
-                              <p className="text-xs text-slate-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                              <p className="text-sm font-bold text-brand-blue">Order #{order._id.substring(order._id.length - 8).toUpperCase()}</p>
+                              <p className="text-xs text-slate-500">{new Date(order.createdAt).toLocaleDateString('en-IN')}</p>
                             </div>
                           </div>
                           <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
