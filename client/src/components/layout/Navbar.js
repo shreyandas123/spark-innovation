@@ -9,11 +9,12 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { fetchCategories } from "@/lib/api";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { cartCount, cartItems } = useCart();
   const { wishlistCount } = useWishlist();
   const { user, isAuthenticated, logout } = useAuth();
@@ -295,62 +296,72 @@ export default function Navbar() {
           </div>
 
           <div className="pt-8 border-t border-slate-100 flex flex-col gap-3">
-            <Link 
-              href="/cart"
-              className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
-              onClick={() => setMobileMenuOpen(false)}
+            <button 
+              onClick={() => {
+                setMobileMenuOpen(false);
+                router.push("/cart");
+              }}
+              className="w-full flex items-center justify-between bg-slate-50 p-4 rounded-sm text-left"
             >
               <div className="flex items-center gap-3">
                 <ShoppingBag size={20} className="text-brand" />
                 <span className="font-black text-brand-blue uppercase tracking-tight text-sm">Shopping Cart ({cartCount})</span>
               </div>
               <ArrowRight size={16} className="text-slate-300" />
-            </Link>
+            </button>
 
-            <Link 
-              href={isAuthenticated ? "/wishlist" : "/auth/login?redirect=/wishlist"}
-              className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
-              onClick={() => setMobileMenuOpen(false)}
+            <button 
+              onClick={() => {
+                setMobileMenuOpen(false);
+                router.push(isAuthenticated ? "/wishlist" : "/auth/login?redirect=/wishlist");
+              }}
+              className="w-full flex items-center justify-between bg-slate-50 p-4 rounded-sm text-left"
             >
               <div className="flex items-center gap-3">
                 <Heart size={20} className="text-rose-400" />
                 <span className="font-black text-brand-blue uppercase tracking-tight text-sm">My Wishlist ({wishlistCount})</span>
               </div>
               <ArrowRight size={16} className="text-slate-300" />
-            </Link>
+            </button>
             
-            <Link 
-              href="/inquiry"
-              className="flex items-center justify-between bg-brand text-white p-4 rounded-sm"
-              onClick={() => setMobileMenuOpen(false)}
+            <button 
+              onClick={() => {
+                setMobileMenuOpen(false);
+                router.push("/inquiry");
+              }}
+              className="w-full flex items-center justify-between bg-brand text-white p-4 rounded-sm text-left"
             >
               <div className="flex items-center gap-3">
                 <MessageSquare size={20} />
                 <span className="font-black uppercase tracking-tight text-sm">Quick Inquiry</span>
               </div>
               <ArrowRight size={16} />
-            </Link>
+            </button>
 
             {isAuthenticated ? (
-              <Link 
-                href="/me"
-                className="flex items-center justify-between bg-slate-50 p-4 rounded-sm"
-                onClick={() => setMobileMenuOpen(false)}
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  router.push("/me");
+                }}
+                className="w-full flex items-center justify-between bg-slate-50 p-4 rounded-sm"
               >
                 <div className="flex items-center gap-3">
                   <User size={20} className="text-slate-400" />
                   <span className="font-black text-brand-blue uppercase tracking-tight text-sm">My Account</span>
                 </div>
                 <ArrowRight size={16} className="text-slate-300" />
-              </Link>
+              </button>
             ) : (
-              <Link 
-                href="/auth/login"
-                className="flex items-center justify-center bg-brand-blue text-white p-4 rounded-sm font-black uppercase tracking-widest text-[10px]"
-                onClick={() => setMobileMenuOpen(false)}
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  router.push("/auth/login");
+                }}
+                className="w-full flex items-center justify-center bg-brand-blue text-white p-4 rounded-sm font-black uppercase tracking-widest text-[10px]"
               >
                 Login to Account
-              </Link>
+              </button>
             )}
           </div>
         </div>
