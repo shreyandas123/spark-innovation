@@ -1,7 +1,6 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { fetchUserMe, loginWithGoogle } from '@/lib/api'
 
 const AuthContext = createContext(null)
@@ -10,27 +9,30 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
-  const logout = useCallback(() => {
+  // Clears auth state only — does NOT redirect
+  const clearAuth = useCallback(() => {
     setToken(null)
     setUser(null)
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
-    router.push('/')
-  }, [router])
+  }, [])
+
+  // Full logout that also redirects to home
+  const logout = useCallback(() => {
+    clearAuth()
+    window.location.href = '/'
+  }, [clearAuth])
 
   useEffect(() => {
     const handleUnauthorized = () => {
-      console.warn("Unauthorized access detected, logging out...");
-      logout();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/auth/login?expired=true';
-      }
+      console.warn('Unauthorized — clearing session');
+      clearAuth();
+      window.location.href = '/auth/login?expired=true';
     };
     window.addEventListener('unauthorized', handleUnauthorized);
     return () => window.removeEventListener('unauthorized', handleUnauthorized);
-  }, []);
+  }, [clearAuth]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -41,8 +43,9 @@ export function AuthProvider({ children }) {
           setToken(storedToken)
           setUser(data.user)
         } catch (err) {
-          console.error("Session expired or invalid")
-          logout()
+          console.error('Session expired or invalid — clearing auth')
+          // Just clear state, do NOT redirect — user may be on a public page
+          clearAuth()
         }
       }
       setLoading(false)
