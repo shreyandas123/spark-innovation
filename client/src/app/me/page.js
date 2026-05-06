@@ -178,8 +178,8 @@ export default function UserDashboard() {
               </div>
             </div>
           </div>
-
-          <div className="lg:col-span-9 animate-reveal">
+ 
+         <div className="lg:col-span-9 animate-reveal">
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -414,6 +414,6 @@ export default function UserDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
