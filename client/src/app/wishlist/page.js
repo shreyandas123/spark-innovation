@@ -23,11 +23,9 @@ export default function WishlistPage() {
   }, [loading, isAuthenticated, router]);
 
   const handleMoveAllToCart = () => {
-    if (confirm("Move all items to bag?")) {
-      wishlistItems.forEach(item => addToCart(item));
-      clearWishlist();
-      router.push("/cart");
-    }
+    wishlistItems.forEach(item => addToCart(item));
+    clearWishlist();
+    router.push("/cart");
   };
 
   if (loading) {
@@ -81,9 +79,7 @@ export default function WishlistPage() {
               Move All to Bag
             </button>
             <button 
-              onClick={() => {
-                if (confirm("Clear your entire wishlist?")) clearWishlist();
-              }}
+              onClick={clearWishlist}
               className="px-6 py-4 bg-white border border-slate-200 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-sm hover:text-red-500 hover:border-red-100 transition-all"
             >
               <Trash2 size={14} />

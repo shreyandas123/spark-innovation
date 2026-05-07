@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import { fetchUsers, updateAdminUser } from "@/lib/api";
 import { 
   Users, 
@@ -19,6 +20,7 @@ import {
 
 export default function AdminUsersPage() {
   const { token } = useAuth();
+  const { showToast } = useToast();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,14 +44,14 @@ export default function AdminUsersPage() {
 
   const handleRoleToggle = async (userId, currentRole) => {
     const newRole = currentRole === "admin" ? "user" : "admin";
-    if (!window.confirm(`Are you sure you want to change this user's role to ${newRole}?`)) return;
-
+    
     try {
       setUpdatingId(userId);
       await updateAdminUser(token, userId, { role: newRole });
       setUsers(prev => prev.map(u => u._id === userId ? { ...u, role: newRole } : u));
+      showToast(`User role updated to ${newRole}`, "success");
     } catch (error) {
-      alert("Failed to update user role");
+      showToast("Failed to update user role", "error");
     } finally {
       setUpdatingId(null);
     }

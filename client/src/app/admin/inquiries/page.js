@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import { 
   MessageSquare, 
   Search, 
@@ -21,6 +22,7 @@ export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const { token } = useAuth();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -42,15 +44,14 @@ export default function AdminInquiriesPage() {
   }, [token]);
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this inquiry?")) return;
-    
     try {
       await deleteInquiry(token, id);
       setInquiries(inquiries.filter(i => i._id !== id));
       if (selectedInquiry?._id === id) setSelectedInquiry(null);
+      showToast("Inquiry deleted successfully", "success");
     } catch (err) {
       console.error("Failed to delete inquiry", err);
-      alert(err.message || "Failed to delete inquiry");
+      showToast(err.message || "Failed to delete inquiry", "error");
     }
   };
 
@@ -182,8 +183,10 @@ export default function AdminInquiriesPage() {
                         await updateInquiryStatus(token, selectedInquiry._id, 'Contacted');
                         setInquiries(inquiries.map(i => i._id === selectedInquiry._id ? { ...i, status: 'Contacted' } : i));
                         setSelectedInquiry({ ...selectedInquiry, status: 'Contacted' });
+                        showToast("Inquiry status updated to Contacted", "success");
                       } catch (err) {
                         console.error("Failed to update status", err);
+                        showToast("Failed to update status", "error");
                       }
                     }}
                     className="flex items-center justify-center gap-2 py-3 bg-blue-500 text-white text-[9px] font-black uppercase tracking-widest rounded-sm hover:bg-blue-600 transition-colors"
@@ -197,8 +200,10 @@ export default function AdminInquiriesPage() {
                         await updateInquiryStatus(token, selectedInquiry._id, 'Closed');
                         setInquiries(inquiries.map(i => i._id === selectedInquiry._id ? { ...i, status: 'Closed' } : i));
                         setSelectedInquiry({ ...selectedInquiry, status: 'Closed' });
+                        showToast("Inquiry closed", "info");
                       } catch (err) {
                         console.error("Failed to update status", err);
+                        showToast("Failed to update status", "error");
                       }
                     }}
                     className="flex items-center justify-center gap-2 py-3 bg-slate-800 text-white text-[9px] font-black uppercase tracking-widest rounded-sm hover:bg-black transition-colors"

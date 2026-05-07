@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { fetchCategories, createCategory, updateCategory, deleteCategory, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import Image from "next/image";
 import { 
   Plus, 
@@ -23,6 +24,7 @@ export default function AdminCategoriesPage() {
   const [editingCategory, setEditingCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
+  const { showToast } = useToast();
   
   const [newCategory, setNewCategory] = useState({
     name: "",
@@ -54,12 +56,12 @@ export default function AdminCategoriesPage() {
 
   const handleSaveCategory = async () => {
     if (!newCategory.name || !newCategory.slug) {
-      alert("Name and Slug are required");
+      showToast("Name and Slug are required", "error");
       return;
     }
     
     if (!/^[a-z0-9-]+$/.test(newCategory.slug)) {
-      alert("Slug must contain only lowercase letters, numbers, and hyphens (e.g., kitchen-chimneys)");
+      showToast("Slug must contain only lowercase letters, numbers, and hyphens", "error");
       return;
     }
     
@@ -85,6 +87,7 @@ export default function AdminCategoriesPage() {
       } else {
         const data = await createCategory(token, categoryData);
         setCategories([...categories, data.category]);
+        showToast("Category created successfully", "success");
       }
       setIsAddingCategory(false);
       setEditingCategory(null);
@@ -93,7 +96,7 @@ export default function AdminCategoriesPage() {
       setImagePreview("");
     } catch (err) {
       console.error("Error saving category:", err);
-      alert(err.message || "Failed to save category");
+      showToast(err.message || "Failed to save category", "error");
     } finally {
       setIsSaving(false);
     }
@@ -103,7 +106,7 @@ export default function AdminCategoriesPage() {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert("Image size should be less than 5MB");
+        showToast("Image size should be less than 5MB", "warning");
         return;
       }
       setImageFile(file);
@@ -114,14 +117,13 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDeleteCategory = async (slug) => {
-    if (!confirm(`Are you sure you want to delete category: ${slug}?`)) return;
-    
     try {
       await deleteCategory(token, slug);
       setCategories(categories.filter(c => c.slug !== slug));
+      showToast("Category deleted successfully", "success");
     } catch (err) {
       console.error("Error deleting category:", err);
-      alert(err.message || "Failed to delete category");
+      showToast(err.message || "Failed to delete category", "error");
     }
   };
 

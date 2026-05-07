@@ -102,11 +102,10 @@ export default function BannersPage() {
   };
 
   const handleDeleteBanner = async (id) => {
-    if (!confirm("Are you sure you want to delete this banner?")) return;
-
     try {
       await deleteBanner(token, id);
       setBanners(banners.filter(b => b._id !== id));
+      showToast("Banner deleted successfully", "success");
     } catch (err) {
       console.error("Error deleting banner:", err);
       showToast(err.message || "Failed to delete banner", "error");

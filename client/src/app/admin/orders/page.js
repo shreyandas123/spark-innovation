@@ -17,12 +17,14 @@ import {
   Package
 } from "lucide-react";
 import Image from "next/image";
+import { useToast } from "@/contexts/ToastContext";
 import { fetchAllOrders, updateOrderStatus } from "@/lib/api";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const { token } = useAuth();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -50,8 +52,9 @@ export default function AdminOrdersPage() {
       await updateOrderStatus(token, id, status);
       setOrders(orders.map(o => o._id === id ? { ...o, status } : o));
       if (selectedOrder?._id === id) setSelectedOrder({ ...selectedOrder, status });
+      showToast(`Order status updated to ${status}`, "success");
     } catch (err) {
-      alert(err.message || "Failed to update status");
+      showToast(err.message || "Failed to update status", "error");
     } finally {
       setIsUpdating(false);
     }

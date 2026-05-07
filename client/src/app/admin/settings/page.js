@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import { Save, LayoutTemplate, Type, Phone, Share2, Loader2 } from "lucide-react";
 import { fetchSiteSettings, updateSiteSettings } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { token } = useAuth();
+  const { showToast } = useToast();
 
   const [settings, setSettings] = useState({
     websiteName: "",
@@ -57,10 +59,10 @@ export default function SettingsPage() {
     try {
       setIsSaving(true);
       await updateSiteSettings(token, settings);
-      alert("Settings saved successfully!");
+      showToast("Settings saved successfully!", "success");
     } catch (err) {
       console.error("Error saving settings:", err);
-      alert(err.message || "Failed to save settings");
+      showToast(err.message || "Failed to save settings", "error");
     } finally {
       setIsSaving(false);
     }

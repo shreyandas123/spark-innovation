@@ -139,15 +139,13 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (slug) => {
-    if (confirm(`Are you sure you want to delete product: ${slug}?`)) {
-      try {
-        await deleteProduct(token, slug);
-        setProducts(products.filter(p => p.slug !== slug));
-        showToast("Product deleted successfully", "success");
-      } catch (err) {
-        console.error("Error deleting product:", err);
-        showToast(err.message || "Failed to delete product", "error");
-      }
+    try {
+      await deleteProduct(token, slug);
+      setProducts(products.filter(p => p.slug !== slug));
+      showToast("Product deleted successfully", "success");
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      showToast(err.message || "Failed to delete product", "error");
     }
   };
 
