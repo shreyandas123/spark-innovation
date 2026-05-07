@@ -75,32 +75,59 @@ export default function AdminOrdersPage() {
   );
 
   return (
-    <div className="grid lg:grid-cols-3 gap-10">
-      <div className="lg:col-span-2 space-y-6">
-        <div className="flex items-center gap-4 bg-white p-2 border border-slate-200 rounded-sm">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input 
-              type="text"
-              placeholder="Search by Order ID, Name or Email..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm focus:outline-none"
-            />
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 border-l border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors">
-            <Filter size={14} />
-            Filter
-          </button>
-        </div>
+    <div className="space-y-6">
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Hide main page scrollbar */
+        html, body {
+          -ms-overflow-style: none !important;
+          scrollbar-width: none !important;
+        }
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+          display: none !important;
+        }
 
+        /* Keep aside scrollbar visible */
+        .scrollbar-visible::-webkit-scrollbar {
+          width: 6px !important;
+          display: block !important;
+        }
+        .scrollbar-visible::-webkit-scrollbar-track {
+          background: #f8fafc !important;
+        }
+        .scrollbar-visible::-webkit-scrollbar-thumb {
+          background: #cbd5e1 !important;
+          border-radius: 10px !important;
+        }
+        .scrollbar-visible::-webkit-scrollbar-thumb:hover {
+          background: #f58220 !important;
+        }
+      `}} />
+
+      <div className="flex items-center gap-4 bg-white p-2 border border-slate-200 rounded-sm">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+          <input 
+            type="text"
+            placeholder="Search by Order ID, Name or Email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 text-sm focus:outline-none"
+          />
+        </div>
+        <button className="flex items-center gap-2 px-4 py-2 border-l border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors">
+          <Filter size={14} />
+          Filter
+        </button>
+      </div>
+
+      <div className="space-y-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
             <Loader2 className="animate-spin text-brand" size={32} />
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Fetching Orders...</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredOrders.map((order) => (
               <div 
                 key={order._id}
@@ -130,11 +157,11 @@ export default function AdminOrdersPage() {
                 </div>
               </div>
             ))}
-            {filteredOrders.length === 0 && (
-              <div className="text-center py-20 bg-white border border-slate-200 rounded-sm">
-                <p className="text-slate-400 text-sm italic">No orders found.</p>
-              </div>
-            )}
+          </div>
+        )}
+        {!loading && filteredOrders.length === 0 && (
+          <div className="text-center py-20 bg-white border border-slate-200 rounded-sm">
+            <p className="text-slate-400 text-sm italic">No orders found.</p>
           </div>
         )}
       </div>
@@ -142,32 +169,6 @@ export default function AdminOrdersPage() {
       {/* Order Details Slide-over Aside */}
       {selectedOrder && (
         <div className="fixed inset-0 z-[100] flex justify-end">
-          <style dangerouslySetInnerHTML={{ __html: `
-            /* Hide main page scrollbar */
-            body {
-              -ms-overflow-style: none;
-              scrollbar-width: none;
-            }
-            body::-webkit-scrollbar {
-              display: none;
-            }
-
-            /* Keep aside scrollbar visible */
-            .scrollbar-visible::-webkit-scrollbar {
-              width: 6px !important;
-              display: block !important;
-            }
-            .scrollbar-visible::-webkit-scrollbar-track {
-              background: #f8fafc !important;
-            }
-            .scrollbar-visible::-webkit-scrollbar-thumb {
-              background: #cbd5e1 !important;
-              border-radius: 10px !important;
-            }
-            .scrollbar-visible::-webkit-scrollbar-thumb:hover {
-              background: #f58220 !important;
-            }
-          `}} />
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" 
