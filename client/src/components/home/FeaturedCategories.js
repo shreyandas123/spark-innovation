@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CATEGORIES } from "@/lib/constants";
 import { fetchCategories } from "@/lib/api";
@@ -45,22 +46,23 @@ export default function FeaturedCategories() {
             ))
           ) : (
             categories.map((category, idx) => (
-              <div
+              <Link
+                href={`/categories/${category.slug}`}
                 key={category.slug || category._id}
-                className={`group relative bg-white border border-slate-100 p-8 rounded-lg hover:shadow-lg transition-all animate-reveal delay-${(idx + 1) * 100}`}
+                className={`group relative bg-white border border-slate-100 p-8 rounded-lg hover:shadow-lg hover:border-brand transition-all animate-reveal delay-${(idx + 1) * 100}`}
               >
                 <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-brand-blue uppercase tracking-tight">
+                  <h3 className="text-2xl font-bold text-brand-blue uppercase tracking-tight group-hover:text-brand transition-colors">
                     {category.name}
                   </h3>
                   <p className="text-slate-500 text-sm leading-relaxed">
                     {category.description}
                   </p>
                   <div className="flex items-center gap-2 text-brand font-bold text-xs uppercase tracking-widest pt-4">
-                    View Products <ArrowRight size={14} />
+                    View Products <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))
           )}
         </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { Menu, X, ArrowRight, ShoppingBag, User, Heart, MessageSquare } from "lucide-react";
-import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
+import { SITE_CONFIG, NAV_LINKS, CATEGORIES } from "@/lib/constants";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
@@ -21,7 +21,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(CATEGORIES);
   const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Navbar() {
     const loadCategories = async () => {
       try {
         const data = await fetchCategories();
-        if (data && data.categories) {
+        if (data && data.categories && data.categories.length > 0) {
           setCategories(data.categories);
         }
       } catch (error) {
@@ -50,12 +50,19 @@ export default function Navbar() {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
-      setMobileCategoriesOpen(false);
     }
     return () => {
       document.body.style.overflow = "unset";
     };
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+      if (mobileCategoriesOpen) setMobileCategoriesOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [pathname, mobileMenuOpen, mobileCategoriesOpen]);
 
   if (pathname?.startsWith("/admin")) {
     return null;
@@ -91,25 +98,21 @@ export default function Navbar() {
                     </button>
                     
                     <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 opacity-0 invisible translate-y-4 group-hover/nav:opacity-100 group-hover/nav:visible group-hover/nav:translate-y-0 transition-all duration-300 z-50">
-                      <div className="bg-white border border-slate-100 shadow-2xl rounded-sm p-6 min-w-[240px]">
+                      <div className="bg-white border border-slate-100 shadow-2xl rounded-sm p-6 min-w-60">
                         <div className="grid gap-4">
-                          {categories.length > 0 ? (
-                            categories.map((cat) => (
-                              <Link 
-                                key={cat.slug} 
-                                href={`/categories/${cat.slug}`}
-                                className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors flex items-center justify-between group/cat"
-                              >
-                                {cat.name}
-                                <ArrowRight size={12} className="opacity-0 -translate-x-2 transition-all group-hover/cat:opacity-100 group-hover/cat:translate-x-0" />
-                              </Link>
-                            ))
-                          ) : (
-                            <p className="text-[9px] font-black uppercase tracking-widest text-slate-300 text-center">Loading...</p>
-                          )}
+                          {categories.map((cat) => (
+                            <Link 
+                              key={cat.slug} 
+                              href={`/categories/${cat.slug}`}
+                              className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors flex items-center justify-between group/cat"
+                            >
+                              {cat.name}
+                              <ArrowRight size={12} className="opacity-0 -translate-x-2 transition-all group-hover/cat:opacity-100 group-hover/cat:translate-x-0" />
+                            </Link>
+                          ))}
                           <div className="pt-4 border-t border-slate-50">
-                            <Link href="/products" className="text-[9px] font-black uppercase tracking-widest text-brand-blue hover:text-brand flex items-center gap-2">
-                              View All Collection <ArrowRight size={10} />
+                            <Link href="/categories" className="text-[9px] font-black uppercase tracking-widest text-brand-blue hover:text-brand flex items-center gap-2">
+                              View All Categories <ArrowRight size={10} />
                             </Link>
                           </div>
                         </div>
@@ -243,7 +246,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`lg:hidden fixed inset-0 bg-white z-[60] transition-all duration-500 ease-in-out overflow-y-auto ${
+        className={`lg:hidden fixed inset-0 bg-white z-60 transition-all duration-500 ease-in-out overflow-y-auto ${
           mobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
         }`}
       >
@@ -270,7 +273,7 @@ export default function Navbar() {
                       <ArrowRight size={14} className={`transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-90 text-brand' : ''}`} />
                     </button>
                     
-                    <div className={`grid gap-4 pl-4 border-l-2 border-slate-50 overflow-hidden transition-all duration-300 ${mobileCategoriesOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
+                    <div className={`grid gap-4 pl-4 border-l-2 border-slate-50 overflow-hidden transition-all duration-300 ${mobileCategoriesOpen ? 'max-h-125 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
                       {categories.map((cat) => (
                         <Link
                           key={cat.slug}
@@ -281,6 +284,13 @@ export default function Navbar() {
                           {cat.name}
                         </Link>
                       ))}
+                      <Link
+                        href="/categories"
+                        className="text-sm font-black text-brand uppercase tracking-widest block pt-4 mt-4 border-t border-slate-50"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        View All Categories
+                      </Link>
                     </div>
                   </div>
                 ) : (

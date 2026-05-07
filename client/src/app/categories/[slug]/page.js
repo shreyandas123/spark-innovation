@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import { fetchProducts, fetchCategories } from "@/lib/api";
+import { CATEGORIES, SAMPLE_PRODUCTS } from "@/lib/constants";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ProductCard from "@/components/ui/ProductCard";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -25,13 +26,17 @@ export default function CategoryDetailPage({ params }) {
           fetchCategories()
         ]);
         
-        if (categoriesData && categoriesData.categories) {
+        if (categoriesData && categoriesData.categories && categoriesData.categories.length > 0) {
           const currentCat = categoriesData.categories.find(c => c.slug === slug);
-          setCategory(currentCat);
+          setCategory(currentCat || CATEGORIES.find(c => c.slug === slug));
+        } else {
+          setCategory(CATEGORIES.find(c => c.slug === slug));
         }
         
-        if (productsData && productsData.products) {
+        if (productsData && productsData.products && productsData.products.length > 0) {
           setProducts(productsData.products);
+        } else {
+          setProducts(SAMPLE_PRODUCTS.filter(p => p.category === slug));
         }
       } catch (err) {
         console.error("Error loading category data:", err);

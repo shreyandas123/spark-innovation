@@ -4,7 +4,7 @@ import { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchProductBySlug } from "@/lib/api";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, SAMPLE_PRODUCTS } from "@/lib/constants";
 import { ArrowLeft, Check, IndianRupee, MessageSquare, Phone, ShieldCheck, Zap, Loader2, Heart, ShoppingBag, Plus, Minus } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
@@ -38,7 +38,12 @@ export default function ProductDetailPage({ params }) {
         if (productData && productData.product) {
           setProduct(productData.product);
         } else {
-          setError("Product not found");
+          const fallback = SAMPLE_PRODUCTS.find(p => p.slug === slug);
+          if (fallback) {
+            setProduct(fallback);
+          } else {
+            setError("Product not found");
+          }
         }
         
         if (settingsData) {

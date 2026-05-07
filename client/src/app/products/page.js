@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchProducts, fetchCategories } from "@/lib/api";
+import { SAMPLE_PRODUCTS } from "@/lib/constants";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ProductCard from "@/components/ui/ProductCard";
 import ProductSkeleton from "@/components/ui/ProductSkeleton";
@@ -41,8 +42,17 @@ export default function ProductsPage() {
           fetchCategories()
         ]);
         
-        setProducts(productsData.products || []);
-        setHasMore(productsData.page < productsData.pages);
+        if (productsData && productsData.products && productsData.products.length > 0) {
+          setProducts(productsData.products);
+          setHasMore(productsData.page < productsData.pages);
+        } else {
+          // Fallback to sample products matching the category if any
+          const fallback = selectedCategory === "all" 
+            ? SAMPLE_PRODUCTS 
+            : SAMPLE_PRODUCTS.filter(p => p.category === selectedCategory);
+          setProducts(fallback);
+          setHasMore(false);
+        }
         setPage(1);
         setCategories(categoriesData.categories || []);
         setError(null);
