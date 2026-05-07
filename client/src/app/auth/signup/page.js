@@ -49,8 +49,10 @@ export default function SignupPage() {
       const data = await registerUser(formData);
       register(data.token, data.user);
       router.push("/");
+      showToast("Account created successfully", "success");
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
+      showToast(err.message || "Registration failed", "error");
     } finally {
       setLoading(false);
     }
@@ -162,7 +164,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
-
-
-

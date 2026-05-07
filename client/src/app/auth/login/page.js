@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { loginUser } from "@/lib/api";
 import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import GoogleLoginComponent from "@/components/GoogleLogin";
+import { useToast } from "@/contexts/ToastContext";
 
 import { Suspense } from "react";
 import Image from "next/image";
@@ -25,6 +26,7 @@ export default function LoginPage() {
 
 function LoginForm() {
   const router = useRouter();
+  const { showToast } = useToast();
   const searchParams = useSearchParams();
   const redirectParam = searchParams.get("redirect") || "/";
   // Validate redirect to prevent open redirect vulnerabilities
@@ -54,8 +56,10 @@ function LoginForm() {
       const data = await loginUser(formData);
       login(data.token, data.user);
       router.push(redirect);
+      showToast("Welcome back!", "success");
     } catch (err) {
       setError(err.message || "Invalid credentials. Please try again.");
+      showToast(err.message || "Login failed", "error");
     } finally {
       setLoading(false);
     }
@@ -75,7 +79,7 @@ function LoginForm() {
               </span>
             </Link>
             <h2 className="text-2xl font-bold text-brand-blue tracking-tight">Welcome Back</h2>
-            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-1">Sign in to your account (Built at 08:29:08)</p>
+            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-1">Sign in to your account</p>
           </div>
 
           {isExpired && !error && (
@@ -114,7 +118,7 @@ function LoginForm() {
                 placeholder="Password"
               />
               <div className="text-right">
-                <button type="button" onClick={() => alert("Forgot password feature coming soon!")} className="text-[10px] font-bold text-brand uppercase tracking-widest hover:text-brand-dark transition-colors">
+                <button type="button" onClick={() => showToast("Forgot password feature coming soon!", "warning")} className="text-[10px] font-bold text-brand uppercase tracking-widest hover:text-brand-dark transition-colors">
                   Forgot?
                 </button>
               </div>
@@ -155,7 +159,3 @@ function LoginForm() {
     </div>
   );
 }
-
-
-
-
