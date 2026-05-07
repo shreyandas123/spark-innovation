@@ -100,7 +100,7 @@ export default function ProductDetailPage({ params }) {
           <div className="flex flex-col">
             <div className="mb-8 md:mb-12">
               <span className="px-3 py-1 bg-brand/10 text-brand text-[10px] font-black uppercase tracking-widest rounded-full mb-4 inline-block">
-                {product.category?.replace("-", " ")}
+                {product.category?.replace(/-/g, " ")}
               </span>
               <h1 className="text-3xl md:text-5xl font-black text-brand-blue uppercase leading-tight mb-6 tracking-tight">
                 {product.name}

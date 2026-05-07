@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useSyncExternalStore } from "react";
-import { Phone, Menu, X, ArrowRight, ShoppingBag, User, Heart, MessageSquare } from "lucide-react";
+import { Menu, X, ArrowRight, ShoppingBag, User, Heart, MessageSquare } from "lucide-react";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 import Link from "next/link";
 import Image from "next/image";
@@ -50,6 +50,7 @@ export default function Navbar() {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
+      setMobileCategoriesOpen(false);
     }
     return () => {
       document.body.style.overflow = "unset";
@@ -203,7 +204,7 @@ export default function Navbar() {
               </>
             )}
 
-            {isAuthenticated ? (
+            {mounted && (isAuthenticated ? (
               <Link href="/me" className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-full overflow-hidden border border-brand-dark flex items-center justify-center bg-brand text-white relative">
                   {user?.avatar ? (
@@ -214,13 +215,13 @@ export default function Navbar() {
                 </div>
               </Link>
             ) : (
-              <Link 
+              <Link
                 href="/auth/login"
                 className="text-[9px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand transition-colors"
               >
                 Login
               </Link>
-            )}
+            ))}
 
             <Link 
               href="/inquiry"

@@ -1,6 +1,7 @@
 "use client";
 import { Phone, Mail, ArrowUp } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
 
 import { usePathname } from "next/navigation";
@@ -16,7 +17,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-gradient-to-br from-brand-blue to-[#051c36] text-white pt-24 pb-12 relative overflow-hidden">
-      {}
+      {/* Top accent line */}
       <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-brand via-brand-blue to-brand" />
       
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
@@ -80,8 +81,8 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-12">
             <div className="flex gap-12">
-              <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest cursor-default hover:text-white transition-colors">Privacy Policy</span>
-              <span className="text-slate-400 text-[9px] font-black uppercase tracking-widest cursor-default hover:text-white transition-colors">Terms of Service</span>
+              <Link href="/terms" className="text-slate-400 text-[9px] font-black uppercase tracking-widest hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="text-slate-400 text-[9px] font-black uppercase tracking-widest hover:text-white transition-colors">Terms of Service</Link>
             </div>
             <button 
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

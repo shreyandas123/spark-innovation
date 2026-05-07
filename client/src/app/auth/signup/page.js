@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { registerUser } from "@/lib/api";
-import { ShoppingBag, ArrowRight, Mail, Lock, User, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 
 export default function SignupPage() {

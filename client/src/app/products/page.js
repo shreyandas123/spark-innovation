@@ -78,8 +78,6 @@ export default function ProductsPage() {
     }
   };
 
-  const filteredProducts = products;
-
   return (
     <main className="min-h-screen pt-24 pb-20">
       <div className="container-wide">
@@ -129,7 +127,7 @@ export default function ProductsPage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 lg:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 lg:gap-12">
             {[...Array(8)].map((_, i) => (
               <ProductSkeleton key={i} />
             ))}
@@ -137,17 +135,17 @@ export default function ProductsPage() {
         ) : error ? (
           <div className="text-center py-20 border border-dashed border-red-100 rounded-sm bg-red-50/30">
             <p className="text-red-500 font-medium">{error}</p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="mt-4 text-brand font-black uppercase tracking-widest text-[10px]"
             >
               Retry Connection
             </button>
           </div>
-        ) : filteredProducts.length > 0 ? (
+        ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 lg:gap-12">
-              {filteredProducts.map((product) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 lg:gap-12">
+              {products.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
             </div>

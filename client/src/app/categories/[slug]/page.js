@@ -66,8 +66,8 @@ export default function CategoryDetailPage({ params }) {
 
         <SectionHeader 
           badge="Category"
-          title={<>{category?.name || slug.replace("-", " ")} <span className="text-brand">COLLECTION.</span></>}
-          description={category?.description || `Explore our range of premium ${slug.replace("-", " ")}.`}
+          title={<>{category?.name || slug.replace(/-/g, " ")} <span className="text-brand">COLLECTION.</span></>}
+          description={category?.description || `Explore our range of premium ${slug.replace(/-/g, " ")}.`}
         />
 
         {products.length > 0 ? (

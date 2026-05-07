@@ -64,7 +64,6 @@ export default function WishlistPage() {
   return (
     <main className="min-h-screen pt-32 pb-20 bg-white">
       <div className="container-wide">
-        {}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-20 border-b border-slate-100 pb-12">
           <SectionHeader 
             badge="Personal Collection"
@@ -92,24 +91,21 @@ export default function WishlistPage() {
           </div>
         </div>
 
-        {}
-        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-16">
           {wishlistItems.map((product) => (
             <div key={product.slug} className="flex flex-col h-full bg-white group text-center lg:text-left">
-              {}
-              <Link href={`/products/${product.slug}`} className="block aspect-[4/5] relative bg-slate-50 rounded-sm overflow-hidden mb-5">
-                <Image 
-                  src={product.images?.[0] || product.image || "/images/placeholder-product.svg"} 
-                  alt={product.name} 
-                  fill 
-                  className="object-contain p-6" 
+              <Link href={`/products/${product.slug}`} className="block aspect-4/5 relative bg-slate-50 rounded-sm overflow-hidden mb-5">
+                <Image
+                  src={product.images?.[0] || product.image || "/images/placeholder-product.svg"}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-6"
                 />
               </Link>
 
-              {}
               <div className="flex-1 space-y-1.5 mb-5">
                 <p className="text-[9px] font-bold text-brand uppercase tracking-[0.2em] opacity-60">
-                  {product.category?.replace("-", " ")}
+                  {product.category?.replace(/-/g, " ")}
                 </p>
                 <h3 className="text-[13px] font-black text-brand-blue uppercase tracking-tight leading-tight line-clamp-2 min-h-[2.5em]">
                   {product.name}
@@ -120,7 +116,6 @@ export default function WishlistPage() {
                 </div>
               </div>
 
-              {}
               <div className="flex items-center gap-1.5">
                 <button 
                   onClick={() => addToCart(product)}

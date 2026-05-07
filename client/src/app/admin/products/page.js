@@ -217,7 +217,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-4 py-4 hidden md:table-cell">
                       <span className="px-2 py-0.5 bg-slate-100 text-slate-400 text-[7px] font-black uppercase tracking-widest rounded-full">
-                        {product.category?.replace("-", " ") || 'Uncategorized'}
+                        {product.category?.replace(/-/g, " ") || 'Uncategorized'}
                       </span>
                     </td>
                     <td className="px-4 py-4">

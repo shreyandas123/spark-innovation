@@ -9,10 +9,11 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProductCard({ product }) {
-  if (!product) return null;
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { isAuthenticated } = useAuth();
+
+  if (!product) return null;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -66,7 +67,7 @@ export default function ProductCard({ product }) {
       <div className="p-4 md:p-6 flex flex-col flex-1">
         <div className="flex-1 space-y-1 md:space-y-2 mb-4">
           <p className="text-[7px] md:text-[9px] font-black text-brand uppercase tracking-[0.2em] mb-1">
-            {product.category?.replace("-", " ")}
+            {product.category?.replace(/-/g, " ")}
           </p>
           <h3 className="text-xs md:text-base font-black text-brand-blue line-clamp-2 leading-tight tracking-tight uppercase">
             {product.name}

@@ -91,7 +91,7 @@ export default function CartPage() {
                           {item.name}
                         </Link>
                         <p className="text-[8px] md:text-xs text-slate-400 font-bold uppercase tracking-widest mt-0.5">
-                          {item.category?.replace("-", " ") || "General"}
+                          {item.category?.replace(/-/g, " ") || "General"}
                         </p>
                         <div className="md:hidden mt-2 flex justify-between items-end">
                           <div>
