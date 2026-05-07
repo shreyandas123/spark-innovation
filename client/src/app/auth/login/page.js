@@ -75,7 +75,7 @@ function LoginForm() {
               </span>
             </Link>
             <h2 className="text-2xl font-bold text-brand-blue tracking-tight">Welcome Back</h2>
-            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-1">Sign in to your account</p>
+            <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-1">Sign in to your account (Built at 08:29:08)</p>
           </div>
 
           {isExpired && !error && (
