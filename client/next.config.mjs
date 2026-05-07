@@ -6,9 +6,6 @@ const __dirname = path.dirname(__filename);
 
 const nextConfig = {
   reactCompiler: true,
-  turbopack: {
-    root: __dirname,
-  },
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
