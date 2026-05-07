@@ -141,15 +141,15 @@ export default function AdminOrdersPage() {
 
       <div className="lg:col-span-1">
         {selectedOrder ? (
-          <div className="bg-white border border-slate-200 rounded-sm p-8 sticky top-32 animate-reveal">
-            <div className="flex justify-between items-center mb-8 pb-6 border-b border-slate-100">
+          <div className="bg-white border border-slate-200 rounded-sm p-8 sticky top-32 animate-reveal flex flex-col h-[calc(100vh-160px)]">
+            <div className="flex justify-between items-center mb-8 pb-6 border-b border-slate-100 shrink-0">
               <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">Order Details</h2>
               <button onClick={() => setSelectedOrder(null)} className="text-slate-300 hover:text-brand">
                 <ChevronRight size={20} />
               </button>
             </div>
 
-            <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-8 overflow-y-auto pr-2 custom-scrollbar flex-1">
               <div>
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Items Summary</label>
                 <div className="space-y-4">
