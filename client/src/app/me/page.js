@@ -5,12 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { 
-  User, 
-  Settings, 
-  Heart, 
-  ShoppingBag, 
-  MapPin, 
+import {
+  User,
+  Heart,
+  ShoppingBag,
+  MapPin,
   LogOut,
   Calendar,
   Edit2,
@@ -33,6 +32,12 @@ export default function UserDashboard() {
   const [hasMore, setHasMore] = useState(false)
 
   useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.push('/auth/login')
+    }
+  }, [loading, isAuthenticated, router])
+
+  useEffect(() => {
     const loadOrders = async () => {
       if (!isAuthenticated || !token) return
       try {
@@ -48,7 +53,6 @@ export default function UserDashboard() {
         setFetchingOrders(false)
       }
     }
-    
     if (isAuthenticated) {
       loadOrders()
     }
@@ -70,15 +74,9 @@ export default function UserDashboard() {
     }
   }
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push('/auth/login')
-    }
-  }, [loading, isAuthenticated, router])
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
           <p className="text-slate-600">Loading your dashboard...</p>
@@ -92,6 +90,8 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-black text-brand-blue uppercase tracking-tight mb-2">
             Welcome Back, {user?.name?.split(' ')[0]}!
@@ -99,11 +99,16 @@ export default function UserDashboard() {
           <p className="text-slate-600">Manage your account and orders</p>
         </div>
 
+        {/* Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          {/* Sidebar */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden sticky top-32">
-              <div className="bg-linear-to-br from-brand to-brand-dark p-6 text-white text-center">
-                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/30 relative">
+
+              {/* Profile Header */}
+              <div className="bg-gradient-to-br from-brand to-brand-dark p-6 text-white text-center">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/30 relative mx-auto mb-3">
                   {user?.avatar ? (
                     <Image src={user.avatar} alt={user.name} fill className="object-cover" />
                   ) : (
@@ -119,13 +124,12 @@ export default function UserDashboard() {
                 </div>
               </div>
 
+              {/* Navigation */}
               <nav className="p-4 space-y-2">
                 <button
                   onClick={() => setActiveTab('overview')}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition ${
-                    activeTab === 'overview'
-                      ? 'bg-brand text-white'
-                      : 'text-slate-700 hover:bg-slate-100'
+                    activeTab === 'overview' ? 'bg-brand text-white shadow-md' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   <ShoppingBag size={18} />
@@ -134,9 +138,7 @@ export default function UserDashboard() {
                 <button
                   onClick={() => setActiveTab('orders')}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition ${
-                    activeTab === 'orders'
-                      ? 'bg-brand text-white shadow-md'
-                      : 'text-slate-700 hover:bg-slate-100'
+                    activeTab === 'orders' ? 'bg-brand text-white shadow-md' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   <ShoppingBag size={18} />
@@ -145,9 +147,7 @@ export default function UserDashboard() {
                 <button
                   onClick={() => setActiveTab('profile')}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition ${
-                    activeTab === 'profile'
-                      ? 'bg-brand text-white shadow-md'
-                      : 'text-slate-700 hover:bg-slate-100'
+                    activeTab === 'profile' ? 'bg-brand text-white shadow-md' : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   <User size={18} />
@@ -164,22 +164,24 @@ export default function UserDashboard() {
                 )}
               </nav>
 
+              {/* Logout */}
               <div className="p-4 border-t border-slate-200">
                 <button
-                  onClick={() => {
-                    logout()
-                    router.push('/')
-                  }}
+                  onClick={logout}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-red-600 hover:bg-red-50 transition"
                 >
                   <LogOut size={18} />
                   Logout
                 </button>
               </div>
+
             </div>
           </div>
- 
-         <div className="lg:col-span-9 animate-reveal">
+
+          {/* Main Content */}
+          <div className="lg:col-span-9 animate-reveal">
+
+            {/* Overview Tab */}
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -220,10 +222,7 @@ export default function UserDashboard() {
                     <div className="text-center py-12">
                       <ShoppingBag size={48} className="text-slate-200 mx-auto mb-3" />
                       <p className="text-slate-500">No orders yet</p>
-                      <Link
-                        href="/products"
-                        className="inline-block mt-4 px-6 py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark transition"
-                      >
+                      <Link href="/products" className="inline-block mt-4 px-6 py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-dark transition">
                         Browse Products
                       </Link>
                     </div>
@@ -247,7 +246,7 @@ export default function UserDashboard() {
                           </span>
                         </div>
                       ))}
-                      <button 
+                      <button
                         onClick={() => setActiveTab('orders')}
                         className="w-full py-3 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors"
                       >
@@ -259,19 +258,20 @@ export default function UserDashboard() {
               </div>
             )}
 
+            {/* Orders Tab */}
             {activeTab === 'orders' && (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg shadow-sm p-8">
                   <div className="flex items-center justify-between mb-8">
                     <h3 className="font-bold text-lg text-brand-blue uppercase tracking-tight">Your Orders</h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('overview')}
                       className="text-[10px] font-black text-slate-400 hover:text-brand uppercase tracking-widest flex items-center gap-2"
                     >
                       <ArrowLeft size={14} /> Back to Overview
                     </button>
                   </div>
-                  
+
                   {fetchingOrders ? (
                     <div className="text-center py-20">
                       <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand mx-auto mb-4"></div>
@@ -280,7 +280,7 @@ export default function UserDashboard() {
                   ) : orders.length === 0 ? (
                     <div className="text-center py-20 bg-slate-50 rounded-lg border border-dashed border-slate-200">
                       <ShoppingBag size={48} className="text-slate-200 mx-auto mb-4" />
-                      <p className="text-slate-500 font-bold">You haven't placed any orders yet.</p>
+                      <p className="text-slate-500 font-bold">You haven&apos;t placed any orders yet.</p>
                       <Link href="/products" className="inline-block mt-6 px-8 py-3 bg-brand text-white rounded-lg font-black uppercase tracking-widest text-[10px] hover:bg-brand-dark transition shadow-lg shadow-brand/20">
                         Start Shopping
                       </Link>
@@ -305,10 +305,10 @@ export default function UserDashboard() {
                             </div>
                             <div>
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Amount</p>
-                              <p className="text-xs font-black text-brand">₹{order.total?.toLocaleString("en-IN")}</p>
+                              <p className="text-xs font-black text-brand">₹{order.total?.toLocaleString('en-IN')}</p>
                             </div>
                             <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${
-                              order.status === 'delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                              order.status === 'delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                               order.status === 'shipped' ? 'bg-blue-50 text-blue-600 border-blue-100' :
                               'bg-brand/10 text-brand border-brand/20'
                             }`}>
@@ -319,7 +319,7 @@ export default function UserDashboard() {
                             <div className="flex flex-wrap gap-4">
                               {order.items?.slice(0, 4).map((item, idx) => (
                                 <div key={idx} className="w-16 h-16 bg-white border border-slate-100 rounded-sm p-1 relative group-hover:border-brand/20 transition-colors">
-                                  <Image src={item.image || "/images/placeholder.png"} alt={item.name} fill className="object-contain p-1" />
+                                  <Image src={item.image || '/images/placeholder.png'} alt={item.name} fill className="object-contain p-1" />
                                 </div>
                               ))}
                               {order.items?.length > 4 && (
@@ -331,7 +331,7 @@ export default function UserDashboard() {
                           </div>
                         </div>
                       ))}
-                      
+
                       {hasMore && (
                         <button
                           onClick={loadMoreOrders}
@@ -339,9 +339,7 @@ export default function UserDashboard() {
                           className="w-full py-4 border-2 border-dashed border-slate-200 rounded-lg text-xs font-black uppercase tracking-widest text-slate-400 hover:text-brand hover:border-brand/30 transition-all flex items-center justify-center gap-2"
                         >
                           {fetchingOrders ? (
-                            <>
-                              <Loader2 className="animate-spin" size={16} /> Loading More...
-                            </>
+                            <><Loader2 className="animate-spin" size={16} /> Loading More...</>
                           ) : (
                             'Load More Orders'
                           )}
@@ -353,6 +351,7 @@ export default function UserDashboard() {
               </div>
             )}
 
+            {/* Profile Tab */}
             {activeTab === 'profile' && (
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -410,10 +409,10 @@ export default function UserDashboard() {
                 </div>
               </div>
             )}
+
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
-
