@@ -68,8 +68,6 @@ export const googleAuth = async (req, res) => {
     }
   }
 
-  }
-
   const token = signToken(user._id)
   res.json({ token, user })
 }
