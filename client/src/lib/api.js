@@ -15,7 +15,7 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
   try {
     const res = await fetch(`${API_URL}${endpoint}`, {
