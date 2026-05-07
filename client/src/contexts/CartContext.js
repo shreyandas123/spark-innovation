@@ -85,6 +85,7 @@ export function CartProvider({ children }) {
       }
     } else {
       setCartItems(prev => prev.filter(i => i.slug !== slug));
+      showToast("Item removed from cart");
     }
   }, [isAuthenticated, token, showToast, syncCart]);
 
@@ -111,6 +112,7 @@ export function CartProvider({ children }) {
     if (isAuthenticated && token) {
       try {
         setCartItems([]);
+        showToast("Bag cleared");
         await clearCartApi(token);
       } catch (err) {
         console.error("Clear cart failed:", err);
@@ -118,6 +120,7 @@ export function CartProvider({ children }) {
       }
     } else {
       setCartItems([]);
+      showToast("Bag cleared");
     }
     // Also clear guest storage
     localStorage.removeItem("cart_guest");

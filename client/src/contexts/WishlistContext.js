@@ -37,6 +37,7 @@ export function WishlistProvider({ children }) {
       try {
         if (exists) {
           setWishlistItems(prev => prev.filter(item => item.slug !== product.slug));
+          showToast("Removed from wishlist");
           await removeFromWishlist(token, product.slug);
         } else {
           setWishlistItems(prev => [...prev, product]);
@@ -68,12 +69,14 @@ export function WishlistProvider({ children }) {
     if (isAuthenticated && token) {
       try {
         setWishlistItems([]);
+        showToast("Wishlist cleared");
         await clearWishlistApi(token);
       } catch (err) {
         console.error("Failed to clear wishlist:", err);
       }
     } else {
       setWishlistItems([]);
+      showToast("Wishlist cleared");
     }
     // Also clear guest storage
     localStorage.removeItem("wishlist_guest");
