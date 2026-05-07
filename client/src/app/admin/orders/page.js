@@ -149,7 +149,30 @@ export default function AdminOrdersPage() {
               </button>
             </div>
 
-            <div className="space-y-8 overflow-y-auto pr-2 custom-scrollbar flex-1">
+            <div className="space-y-8 overflow-y-auto pr-2 custom-scrollbar flex-1 pb-10">
+              {/* Update Status Section (Moved to top for visibility) */}
+              <div className="bg-slate-50 p-5 rounded-sm border border-slate-100">
+                <label className="text-[9px] font-black uppercase tracking-widest text-brand-blue mb-4 block">Update Order Status</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'].map((status) => (
+                    <button 
+                      key={status}
+                      disabled={isUpdating || selectedOrder.status === status}
+                      onClick={() => handleUpdateStatus(selectedOrder._id, status)}
+                      className={`py-2.5 px-1 text-[8px] font-black uppercase tracking-widest rounded-sm transition-colors border ${
+                        selectedOrder.status === status 
+                        ? 'bg-slate-200 text-slate-500 border-slate-300' 
+                        : status === 'cancelled' 
+                          ? 'bg-white text-rose-400 border-rose-100 hover:border-rose-400 hover:text-rose-500 col-span-2'
+                          : 'bg-white text-brand-blue border-slate-200 hover:border-brand hover:text-brand'
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div>
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Items Summary</label>
                 <div className="space-y-4">
@@ -180,28 +203,6 @@ export default function AdminOrdersPage() {
                   <p>{selectedOrder.shipping?.address}</p>
                   <p>{selectedOrder.shipping?.city}, {selectedOrder.shipping?.pincode}</p>
                   <p className="mt-4 text-brand-blue font-bold">Phone: {selectedOrder.shipping?.phone}</p>
-                </div>
-              </div>
-
-              <div className="pt-8 border-t border-slate-100 pb-10">
-                <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4 block">Update Order Status</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'].map((status) => (
-                    <button 
-                      key={status}
-                      disabled={isUpdating || selectedOrder.status === status}
-                      onClick={() => handleUpdateStatus(selectedOrder._id, status)}
-                      className={`py-2.5 px-1 text-[8px] font-black uppercase tracking-widest rounded-sm transition-colors border ${
-                        selectedOrder.status === status 
-                        ? 'bg-slate-50 text-slate-300 border-slate-100' 
-                        : status === 'cancelled' 
-                          ? 'bg-white text-rose-400 border-rose-100 hover:border-rose-400 hover:text-rose-500 col-span-2 mt-1'
-                          : 'bg-white text-brand-blue border-slate-200 hover:border-brand hover:text-brand'
-                      }`}
-                    >
-                      {status}
-                    </button>
-                  ))}
                 </div>
               </div>
             </div>
