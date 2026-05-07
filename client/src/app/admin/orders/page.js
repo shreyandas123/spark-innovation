@@ -142,6 +142,22 @@ export default function AdminOrdersPage() {
       {/* Order Details Slide-over Aside */}
       {selectedOrder && (
         <div className="fixed inset-0 z-[100] flex justify-end">
+          <style dangerouslySetInnerHTML={{ __html: `
+            .scrollbar-visible::-webkit-scrollbar {
+              width: 6px !important;
+              display: block !important;
+            }
+            .scrollbar-visible::-webkit-scrollbar-track {
+              background: #f8fafc !important;
+            }
+            .scrollbar-visible::-webkit-scrollbar-thumb {
+              background: #cbd5e1 !important;
+              border-radius: 10px !important;
+            }
+            .scrollbar-visible::-webkit-scrollbar-thumb:hover {
+              background: #f58220 !important;
+            }
+          `}} />
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" 
@@ -165,7 +181,7 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-visible">
               {/* Update Status Section */}
               <div className="bg-brand/5 p-6 rounded-sm border border-brand/10">
                 <label className="text-[9px] font-black uppercase tracking-widest text-brand mb-4 block">Update Order Status</label>
