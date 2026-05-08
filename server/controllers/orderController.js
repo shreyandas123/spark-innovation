@@ -1,25 +1,31 @@
 import Order from '../models/Order.js'
 
 export const placeOrder = async (req, res) => {
-  const { items, shipping, paymentMethod, total } = req.body
+  try {
+    const { items, shipping, paymentMethod, total } = req.body
 
-  if (!items?.length)
-    return res.status(400).json({ message: 'Order must have at least one item' })
-  if (!shipping?.name || !shipping?.email || !shipping?.phone || !shipping?.address)
-    return res.status(400).json({ message: 'Shipping name, email, phone and address are required' })
-  if (!paymentMethod)
-    return res.status(400).json({ message: 'Payment method is required' })
+    if (!items?.length)
+      return res.status(400).json({ message: 'Order must have at least one item' })
+    if (!shipping?.name || !shipping?.email || !shipping?.phone || !shipping?.address)
+      return res.status(400).json({ message: 'Shipping name, email, phone and address are required' })
+    if (!paymentMethod)
+      return res.status(400).json({ message: 'Payment method is required' })
 
-  const order = await Order.create({
-    user: req.user._id,
-    items,
-    shipping,
-    paymentMethod,
-    total,
-  })
+    const order = await Order.create({
+      user: req.user._id,
+      items,
+      shipping,
+      paymentMethod,
+      total,
+    })
 
-  res.status(201).json({ order })
+    res.status(201).json({ order })
+  } catch (error) {
+    console.error('Place Order Error:', error)
+    res.status(500).json({ message: error.message || 'Failed to place order' })
+  }
 }
+
 
 export const getMyOrders = async (req, res) => {
   const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 })

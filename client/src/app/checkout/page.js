@@ -94,8 +94,10 @@ export default function CheckoutPage() {
             image: item.images?.[0] || item.image
           })),
           shipping: formData,
-          paymentMethod
+          paymentMethod,
+          total: cartTotal
         };
+
 
         // If authenticated, token is used. If guest, token is null and backend must handle it.
         if (!token) {
