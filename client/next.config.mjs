@@ -60,8 +60,14 @@ const nextConfig = {
   async rewrites() {
     let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:4000';
     
+    // Ensure protocol is present for valid rewrites
+    if (backendUrl && !backendUrl.startsWith('http')) {
+      backendUrl = `https://${backendUrl}`;
+    }
+    
     // Cleanup URL to ensure no trailing slash
     backendUrl = backendUrl.replace(/\/$/, "");
+
     
     return [
       {
