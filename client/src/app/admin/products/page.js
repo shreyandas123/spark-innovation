@@ -334,8 +334,15 @@ export default function AdminProductsPage() {
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Product Image</label>
                 <div className="flex items-center gap-6">
                   <div className="w-24 h-24 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
-                    {imagePreview || newProduct.images[0] ? (
-                      <Image src={imagePreview || newProduct.images[0]} alt="Preview" fill className="object-contain" sizes="80px" />
+                    {(imagePreview || newProduct.images[0]) ? (
+                      <Image 
+                        src={imagePreview || newProduct.images[0]} 
+                        alt="Preview" 
+                        fill 
+                        className="object-contain" 
+                        sizes="96px"
+                        unoptimized
+                      />
                     ) : (
                       <ImageIcon className="text-slate-200" size={32} />
                     )}

@@ -268,8 +268,15 @@ export default function AdminCategoriesPage() {
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category Image</label>
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
-                    {imagePreview || newCategory.image ? (
-                      <Image src={imagePreview || newCategory.image} alt="Preview" fill className="object-contain" sizes="100vw" />
+                    {(imagePreview || newCategory.image) ? (
+                      <Image 
+                        src={imagePreview || newCategory.image} 
+                        alt="Preview" 
+                        fill 
+                        className="object-contain" 
+                        sizes="80px"
+                        unoptimized
+                      />
                     ) : (
                       <ImageIconLucide className="text-slate-200" size={24} />
                     )}

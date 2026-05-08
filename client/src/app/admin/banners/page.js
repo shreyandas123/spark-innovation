@@ -274,8 +274,15 @@ export default function BannersPage() {
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Banner Image</label>
                 <div className="flex items-center gap-6">
                   <div className="w-32 h-16 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
-                    {imagePreview || formData.image ? (
-                      <Image src={imagePreview || formData.image} alt="Preview" fill className="object-cover" sizes="100vw" />
+                    {(imagePreview || formData.image) ? (
+                      <Image 
+                        src={imagePreview || formData.image} 
+                        alt="Preview" 
+                        fill 
+                        className="object-cover" 
+                        sizes="128px"
+                        unoptimized
+                      />
                     ) : (
                       <ImageIcon className="text-slate-200" size={24} />
                     )}
