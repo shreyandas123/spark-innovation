@@ -56,13 +56,13 @@ export default function Navbar() {
     };
   }, [mobileMenuOpen]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (mobileMenuOpen) setMobileMenuOpen(false);
-      if (mobileCategoriesOpen) setMobileCategoriesOpen(false);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [pathname, mobileMenuOpen, mobileCategoriesOpen]);
+  // Reset menu state during render if path changes - Recommended React pattern for adjusting state
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    if (mobileMenuOpen) setMobileMenuOpen(false);
+    if (mobileCategoriesOpen) setMobileCategoriesOpen(false);
+  }
 
   if (pathname?.startsWith("/admin")) {
     return null;
