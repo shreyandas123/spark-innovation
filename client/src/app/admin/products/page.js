@@ -361,7 +361,7 @@ export default function AdminProductsPage() {
                     >
                       {imageFile ? "Change Image" : "Upload Image"}
                     </label>
-                    <p className="text-[8px] text-slate-400 mt-2 uppercase tracking-widest font-medium">MAX 5MB, JPG/PNG ONLY</p>
+                    <p className="text-[8px] text-slate-400 mt-2 uppercase tracking-widest font-medium">MAX 10MB, JPG/PNG ONLY</p>
                   </div>
                 </div>
               </div>

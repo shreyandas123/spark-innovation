@@ -15,7 +15,7 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
+  const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60s for mobile uploads
 
   try {
     const res = await fetch(`${API_URL}${endpoint}`, {
@@ -45,6 +45,10 @@ const apiRequest = async (endpoint, options = {}) => {
 
     return res.json();
   } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error("Request timed out. Please check your internet connection.");
+    }
+    console.error(`API Error [${endpoint}]:`, error);
     throw error;
   }
 };
@@ -229,7 +233,7 @@ export const uploadImage = (token, formData) => {
   // Client-side validation: Max 5MB, images only
   const file = formData.get('image');
   if (file) {
-    if (file.size > 5 * 1024 * 1024) throw new Error("File size exceeds 5MB limit");
+    if (file.size > 10 * 1024 * 1024) throw new Error("File size exceeds 10MB limit");
     if (!file.type.startsWith('image/')) throw new Error("Only image files are allowed");
   }
   return apiRequest('/upload', { method: 'POST', token, body: formData });

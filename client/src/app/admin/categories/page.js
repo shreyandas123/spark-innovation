@@ -119,8 +119,8 @@ export default function AdminCategoriesPage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Image size should be less than 5MB", "warning");
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("Image size should be less than 10MB", "warning");
         return;
       }
       setImageFile(file);

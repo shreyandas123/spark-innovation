@@ -106,8 +106,8 @@ export default function BannersPage() {
         showToast("Only image files are allowed", "error");
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Image size should be less than 5MB", "error");
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("Image size should be less than 10MB", "error");
         return;
       }
       setImageFile(file);

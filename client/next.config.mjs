@@ -59,7 +59,7 @@ const nextConfig = {
 
   },
   async rewrites() {
-    let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:4000';
+    let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
     
     // Ensure protocol is present for valid rewrites
     if (backendUrl && !backendUrl.startsWith('http')) {
