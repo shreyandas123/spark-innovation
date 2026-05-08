@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,8 +33,14 @@ function LoginForm() {
   const redirect = redirectParam.startsWith("/") ? redirectParam : "/";
   const isExpired = searchParams.get("expired") === "true";
   
-  const { login } = useAuth();
+  const { login, isAuthenticated, loading: authLoading } = useAuth();
   
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.push(redirect);
+    }
+  }, [authLoading, isAuthenticated, router, redirect]);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",

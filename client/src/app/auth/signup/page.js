@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -12,8 +12,14 @@ import GoogleLoginComponent from "@/components/GoogleLogin";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { register } = useAuth();
+  const { register, isAuthenticated, loading: authLoading } = useAuth();
   const { showToast } = useToast();
+  
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.push("/");
+    }
+  }, [authLoading, isAuthenticated, router]);
   
   const [formData, setFormData] = useState({
     name: "",
