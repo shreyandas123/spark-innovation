@@ -58,8 +58,8 @@ export default function BannersPage() {
   };
 
   const handleSaveBanner = async () => {
-    if (!formData.title || !formData.image) {
-      showToast("Title and Image URL are required", "error");
+    if (!formData.title || (!formData.image && !imageFile)) {
+      showToast("Title and Image are required", "error");
       return;
     }
 
