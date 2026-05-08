@@ -124,9 +124,11 @@ export default function AdminCategoriesPage() {
         return;
       }
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+      
+      // Cleanup the object URL when component unmounts or image changes
+      return () => URL.revokeObjectURL(objectUrl);
     }
   };
 
@@ -269,13 +271,10 @@ export default function AdminCategoriesPage() {
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
                     {(imagePreview || newCategory.image) ? (
-                      <Image 
+                      <img 
                         src={imagePreview || newCategory.image} 
                         alt="Preview" 
-                        fill 
-                        className="object-contain" 
-                        sizes="80px"
-                        unoptimized
+                        className="w-full h-full object-contain" 
                       />
                     ) : (
                       <ImageIconLucide className="text-slate-200" size={24} />

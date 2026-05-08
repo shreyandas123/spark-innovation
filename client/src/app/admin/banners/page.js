@@ -111,9 +111,11 @@ export default function BannersPage() {
         return;
       }
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+      
+      // Cleanup the object URL
+      return () => URL.revokeObjectURL(objectUrl);
     }
   };
 
@@ -275,13 +277,10 @@ export default function BannersPage() {
                 <div className="flex items-center gap-6">
                   <div className="w-32 h-16 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
                     {(imagePreview || formData.image) ? (
-                      <Image 
+                      <img 
                         src={imagePreview || formData.image} 
                         alt="Preview" 
-                        fill 
-                        className="object-cover" 
-                        sizes="128px"
-                        unoptimized
+                        className="w-full h-full object-cover" 
                       />
                     ) : (
                       <ImageIcon className="text-slate-200" size={24} />

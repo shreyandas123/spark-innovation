@@ -83,9 +83,11 @@ export default function AdminProductsPage() {
         return;
       }
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+      
+      // Cleanup the object URL
+      return () => URL.revokeObjectURL(objectUrl);
     }
   };
 
@@ -335,13 +337,10 @@ export default function AdminProductsPage() {
                 <div className="flex items-center gap-6">
                   <div className="w-24 h-24 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
                     {(imagePreview || newProduct.images[0]) ? (
-                      <Image 
+                      <img 
                         src={imagePreview || newProduct.images[0]} 
                         alt="Preview" 
-                        fill 
-                        className="object-contain" 
-                        sizes="96px"
-                        unoptimized
+                        className="w-full h-full object-contain" 
                       />
                     ) : (
                       <ImageIcon className="text-slate-200" size={32} />
