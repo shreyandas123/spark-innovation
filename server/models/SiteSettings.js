@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 
 const siteSettingsSchema = new Schema(
   {
-    websiteName: { type: String, default: 'Sparkel Sales' },
+    websiteName: { type: String, default: 'Spark Innovations' },
     metaDescription: { type: String },
     heroHeadline: { type: String },
     heroSubheadline: { type: String },

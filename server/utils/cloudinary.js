@@ -11,7 +11,7 @@ if (process.env.CLOUDINARY_URL) {
   });
 }
 
-export const uploadToCloudinary = (buffer, folder = 'sparkel-sales') => {
+export const uploadToCloudinary = (buffer, folder = 'spark-innovations') => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder, resource_type: 'image' },

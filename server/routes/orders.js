@@ -6,7 +6,6 @@ const router = Router()
 
 router.post('/', protect, placeOrder)
 router.get('/me', protect, getMyOrders)
-router.get('/', protect, getMyOrders)
 router.get('/:id', protect, getOrderById)
 
 export default router

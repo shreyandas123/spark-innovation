@@ -86,8 +86,8 @@ export const updateProfile = async (req, res) => {
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
-    { ...(name && { name }), ...(email && { email }) },
-    { new: true, runValidators: true }
+    { name, email },
+    { returnDocument: 'after', runValidators: true }
   )
   res.json({ user })
 }

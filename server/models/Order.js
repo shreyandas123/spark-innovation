@@ -14,14 +14,16 @@ const shippingSchema = new mongoose.Schema({
   phone:   { type: String, required: true },
   address: { type: String, required: true },
   city:    { type: String },
+  state:   { type: String },
   pincode: { type: String },
+  country: { type: String },
 }, { _id: false })
 
 const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
   },
   items:         { type: [orderItemSchema], required: true },
   shipping:      { type: shippingSchema, required: true },
