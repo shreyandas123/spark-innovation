@@ -46,31 +46,37 @@ export const login = async (req, res) => {
 }
 
 export const googleAuth = async (req, res) => {
-  const idToken = req.body.token || req.body.idToken
-  if (!idToken)
-    return res.status(400).json({ message: 'Google ID token is required' })
+  try {
+    const idToken = req.body.token || req.body.idToken
+    if (!idToken)
+      return res.status(400).json({ message: 'Google ID token is required' })
 
-  const ticket = await googleClient.verifyIdToken({
-    idToken,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  })
-  const { sub: googleId, email, name, picture } = ticket.getPayload()
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    const { sub: googleId, email, name, picture } = ticket.getPayload()
 
-  let user = await User.findOne({ googleId })
+    let user = await User.findOne({ googleId })
 
-  if (!user) {
-    user = await User.findOne({ email })
-    if (user) {
-      user.googleId = googleId
-      await user.save()
-    } else {
-      user = await User.create({ name, email, googleId, avatar: picture })
+    if (!user) {
+      user = await User.findOne({ email })
+      if (user) {
+        user.googleId = googleId
+        await user.save()
+      } else {
+        user = await User.create({ name, email, googleId, avatar: picture })
+      }
     }
-  }
 
-  const token = signToken(user._id)
-  res.json({ token, user })
+    const token = signToken(user._id)
+    res.json({ token, user })
+  } catch (error) {
+    console.error('Google Auth Error:', error)
+    res.status(401).json({ message: 'Invalid Google token or authentication failed' })
+  }
 }
+
 
 export const getMe = (req, res) => {
   res.json({ user: req.user })
