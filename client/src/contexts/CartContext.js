@@ -40,38 +40,37 @@ export function CartProvider({ children }) {
   }, [cartItems, isLoaded, isAuthenticated, syncToStorage]);
 
   const addToCart = useCallback(async (product) => {
-    const existingItem = cartItems.find((item) => item.slug === product.slug);
+    const qtyToAdd = product.quantity || 1;
     
+    // Optimistic update
+    setCartItems(prev => {
+      const existing = prev.find(item => item.slug === product.slug);
+      if (existing) {
+        return prev.map(item => 
+          item.slug === product.slug ? { ...item, quantity: item.quantity + qtyToAdd } : item
+        );
+      }
+      return [...prev, { ...product, quantity: qtyToAdd }];
+    });
+
+    showToast(`Added ${product.name} to cart`);
+
     if (isAuthenticated && token) {
       try {
-        setCartItems(prev => {
-          if (existingItem) {
-            return prev.map(i => i.slug === product.slug ? { ...i, quantity: i.quantity + 1 } : i);
-          }
-          return [...prev, { ...product, quantity: 1 }];
-        });
-        showToast(`Added ${product.name} to cart`);
         await addToCartApi(token, {
           slug: product.slug,
           name: product.name,
           price: product.price,
           image: product.images?.[0] || product.image,
-          quantity: 1
+          quantity: qtyToAdd
         });
       } catch (err) {
         console.error("Add to cart failed:", err);
         syncCart();
       }
-    } else {
-      setCartItems(prev => {
-        if (existingItem) {
-          return prev.map(i => i.slug === product.slug ? { ...i, quantity: i.quantity + 1 } : i);
-        }
-        return [...prev, { ...product, quantity: 1 }];
-      });
-      showToast(`Added ${product.name} to cart`);
     }
-  }, [cartItems, isAuthenticated, token, showToast, syncCart]);
+  }, [isAuthenticated, token, showToast, syncCart]);
+
 
   const removeFromCart = useCallback(async (slug) => {
     if (isAuthenticated && token) {
