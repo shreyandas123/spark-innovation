@@ -1,4 +1,6 @@
-import { v2 as cloudinary } from 'cloudinary'
+import cloudinaryPkg from 'cloudinary';
+const { v2: cloudinary } = cloudinaryPkg;
+
 import { Readable } from 'stream'
 
 if (process.env.CLOUDINARY_URL) {
