@@ -78,21 +78,19 @@ export default function TopBar() {
         </div>
 
         {/* Right Side: Social Icons */}
-        <div className="flex items-center shrink-0">
+        <div className="hidden sm:flex items-center shrink-0">
           {socialLinks.length > 0 && (
-            <div className="flex items-center gap-1.5 md:gap-3">
+            <div className="flex items-center gap-3">
               {socialLinks.map((link, idx) => (
                 <a 
                   key={idx}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand transition-all duration-300 hover:-translate-y-0.5 border border-white/5"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand transition-all duration-300 hover:-translate-y-0.5 border border-white/5"
                   aria-label={link.label}
                 >
-                  <div className="scale-90 md:scale-100">
-                    {link.icon}
-                  </div>
+                  {link.icon}
                 </a>
               ))}
             </div>

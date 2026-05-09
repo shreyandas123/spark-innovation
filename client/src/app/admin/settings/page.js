@@ -127,43 +127,43 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-8 animate-reveal">
+    <div className="space-y-6 md:space-y-8 animate-reveal">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-slate-900 p-6 md:p-8 rounded-sm border border-white/5">
-        <div>
-          <h2 className="text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-            <Globe className="text-brand" size={24} />
-            Command Center <span className="text-brand">/</span> Site Identity
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-slate-900 p-6 md:p-8 rounded-sm border border-white/5">
+        <div className="max-w-2xl">
+          <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
+            <Globe className="text-brand shrink-0" size={24} />
+            <span className="truncate">Command Center <span className="text-brand mx-1">/</span> Site Identity</span>
           </h2>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2">
+          <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2 leading-relaxed">
             Configure your global presence and brand assets.
           </p>
         </div>
         <button 
           onClick={handleSaveSettings}
           disabled={isSaving}
-          className="w-full sm:w-auto flex items-center justify-center gap-3 bg-brand text-white px-8 py-4 rounded-sm font-black uppercase tracking-[0.2em] text-[10px] hover:bg-brand-dark transition-all shadow-xl shadow-brand/20 disabled:opacity-50 group"
+          className="w-full lg:w-auto flex items-center justify-center gap-3 bg-brand text-white px-8 py-4 rounded-sm font-black uppercase tracking-[0.2em] text-[10px] hover:bg-brand-dark transition-all shadow-xl shadow-brand/20 disabled:opacity-50 group"
         >
           {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} className="group-hover:scale-110 transition-transform" />} 
           {isSaving ? "Finalizing..." : "Publish Changes"}
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        {/* Navigation Sidebar */}
-        <div className="bg-white border border-slate-200 rounded-sm p-2 shadow-sm lg:sticky lg:top-6">
-          <nav className="flex lg:flex-col gap-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8 items-start">
+        {/* Navigation Sidebar / Slider */}
+        <div className="bg-white border border-slate-200 rounded-sm p-1.5 shadow-sm lg:sticky lg:top-6 overflow-x-auto custom-scrollbar no-scrollbar lg:overflow-visible">
+          <nav className="flex lg:flex-col gap-1 min-w-max lg:min-w-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-5 py-4 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all text-left ${
+                className={`flex items-center gap-3 px-4 md:px-5 py-3 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-sm transition-all text-left whitespace-nowrap ${
                   activeTab === tab.id
                     ? "bg-brand text-white shadow-lg shadow-brand/10"
                     : "text-slate-400 hover:bg-slate-50 hover:text-brand-blue"
                 }`}
               >
-                {tab.icon}
+                <span className="shrink-0">{tab.icon}</span>
                 {tab.label}
               </button>
             ))}
