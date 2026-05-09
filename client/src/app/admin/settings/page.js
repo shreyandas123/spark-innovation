@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { 
-  Save, LayoutTemplate, Type, Phone, Share2, Loader2, 
-  Upload, Trash2, Globe, Eye, Info, AlertCircle 
+  Save, LayoutTemplate, Phone, Share2, Loader2, 
+  Upload, Trash2, Globe, Info 
 } from "lucide-react";
 import { fetchSiteSettings, updateSiteSettings, uploadImage } from "@/lib/api";
 import Image from "next/image";
@@ -22,8 +22,6 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState({
     websiteName: "",
     metaDescription: "",
-    heroHeadline: "",
-    heroSubheadline: "",
     phone: "",
     email: "",
     address: "",
@@ -111,10 +109,8 @@ export default function SettingsPage() {
 
   const tabs = [
     { id: "general", label: "Branding", icon: <LayoutTemplate size={16} /> },
-    { id: "homepage", label: "Hero Content", icon: <Type size={16} /> },
     { id: "contact", label: "Contact Info", icon: <Phone size={16} /> },
     { id: "social", label: "Social Media", icon: <Share2 size={16} /> },
-    { id: "preview", label: "Live Preview", icon: <Eye size={16} /> },
   ];
 
   if (loading) {
@@ -279,49 +275,6 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {activeTab === "homepage" && (
-              <div className="space-y-10">
-                <div className="border-b border-slate-100 pb-6">
-                  <h3 className="text-base font-black text-brand-blue uppercase tracking-widest">Hero Section Content</h3>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">The primary message on your home page.</p>
-                </div>
-                
-                <div className="space-y-8">
-                  <div className="space-y-4">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Main Headline</label>
-                    <input 
-                      type="text" 
-                      value={settings.heroHeadline}
-                      onChange={(e) => setSettings({ ...settings, heroHeadline: e.target.value })}
-                      placeholder="REVOLUTIONIZING MODERN KITCHENS"
-                      className="w-full border-2 border-slate-100 rounded-sm px-5 py-4 text-xl font-black text-brand-blue focus:border-brand outline-none transition-all uppercase tracking-tighter" 
-                    />
-                  </div>
-                  <div className="space-y-4">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Subheadline / Description</label>
-                    <textarea 
-                      value={settings.heroSubheadline}
-                      onChange={(e) => setSettings({ ...settings, heroSubheadline: e.target.value })}
-                      placeholder="Explore our wide range of premium appliances..."
-                      rows={3}
-                      className="w-full border-2 border-slate-100 rounded-sm px-5 py-4 text-sm focus:border-brand outline-none transition-all font-medium leading-relaxed" 
-                    ></textarea>
-                  </div>
-
-                  <div className="p-6 bg-slate-50 border border-slate-100 rounded-sm">
-                    <div className="flex gap-3 items-start">
-                      <AlertCircle className="text-brand shrink-0" size={18} />
-                      <div>
-                        <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">Headline Tips</p>
-                        <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-                          Keep your headline punchy and short (5-8 words). Your subheadline should explain what makes your service unique.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {activeTab === "contact" && (
               <div className="space-y-10">
@@ -404,49 +357,6 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {activeTab === "preview" && (
-              <div className="space-y-10">
-                <div className="border-b border-slate-100 pb-6">
-                  <h3 className="text-base font-black text-brand-blue uppercase tracking-widest">Brand Visualizer</h3>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">How your header will look to users.</p>
-                </div>
-
-                <div className="space-y-12">
-                  <div className="space-y-4">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">Navbar Preview</label>
-                    <div className="border border-slate-200 rounded-sm p-8 bg-slate-50 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 relative">
-                          <Image src={settings.logo || "/favicon.ico"} alt="Logo" fill className="object-contain" />
-                        </div>
-                        <span className="text-xl font-black uppercase tracking-tighter text-slate-900">
-                          {settings.websiteName.split(' ')[0]} <span className="text-brand">{settings.websiteName.split(' ').slice(1).join(' ') || "Innovations"}</span>
-                        </span>
-                      </div>
-                      <div className="flex gap-6">
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Home</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Products</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Contact</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">Hero Section Preview</label>
-                    <div className="border border-slate-200 rounded-sm p-12 bg-white flex flex-col items-center text-center space-y-6">
-                      <div className="px-3 py-1 bg-slate-50 border border-slate-100 text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">PREMIUM COLLECTION</div>
-                      <h4 className="text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter max-w-lg">
-                        {settings.heroHeadline || "YOUR HEADLINE HERE"}
-                      </h4>
-                      <p className="text-sm text-slate-500 font-medium max-w-md">
-                        {settings.heroSubheadline || "Your subheadline or description will appear here to provide more context about your offerings."}
-                      </p>
-                      <div className="px-8 py-3 bg-brand text-white text-[9px] font-black uppercase tracking-widest rounded-sm">Shop Now</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
