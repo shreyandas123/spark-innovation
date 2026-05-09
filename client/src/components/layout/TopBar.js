@@ -43,23 +43,31 @@ export default function TopBar() {
   ].filter(link => link.url);
 
   return (
-    <div className="bg-slate-900 text-white py-1.5 border-b border-white/5 relative z-[60]">
-      <div className="container-wide flex flex-col sm:flex-row justify-between items-center gap-2">
+    <div className="bg-gradient-to-r from-brand-blue to-[#051c36] text-white py-2.5 md:py-3 border-b border-white/5 relative z-[60]">
+      <div className="container-wide flex flex-col sm:flex-row justify-between items-center gap-3">
         {/* Left Side: Announcement / Text */}
-        <div className="flex items-center gap-4">
-          <span className="text-[10px] font-black uppercase tracking-widest text-brand-light">
-            {topBarText}
-          </span>
-          <div className="hidden md:flex items-center gap-4 border-l border-white/10 pl-4">
-            <div className="flex items-center gap-1.5 group cursor-pointer">
-              <Phone size={10} className="text-brand" />
-              <a href={`tel:${phone}`} className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">
+              {topBarText}
+            </span>
+          </div>
+          
+          <div className="hidden lg:flex items-center gap-6 border-l border-white/10 pl-6">
+            <div className="flex items-center gap-2 group cursor-pointer">
+              <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-brand/20 transition-colors">
+                <Phone size={10} className="text-brand" />
+              </div>
+              <a href={`tel:${phone}`} className="text-[10px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider">
                 {phone}
               </a>
             </div>
-            <div className="flex items-center gap-1.5 group cursor-pointer">
-              <MapPin size={10} className="text-brand" />
-              <span className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-[200px]">
+            <div className="flex items-center gap-2 group cursor-pointer">
+              <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-brand/20 transition-colors">
+                <MapPin size={10} className="text-brand" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-[250px]">
                 {address}
               </span>
             </div>
@@ -67,24 +75,23 @@ export default function TopBar() {
         </div>
 
         {/* Right Side: Social Icons */}
-        <div className="flex items-center gap-3">
-          {socialLinks.length > 0 ? (
-            <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <span className="hidden sm:block text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Connect with us</span>
+          {socialLinks.length > 0 && (
+            <div className="flex items-center gap-4">
               {socialLinks.map((link, idx) => (
                 <a 
                   key={idx}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-brand transition-all duration-300 hover:scale-110"
+                  className="w-7 h-7 flex items-center justify-center rounded-sm bg-white/5 text-slate-300 hover:text-white hover:bg-brand transition-all duration-300 hover:-translate-y-0.5 border border-white/5"
                   aria-label={link.label}
                 >
                   {link.icon}
                 </a>
               ))}
             </div>
-          ) : (
-            <span className="text-[8px] font-bold text-slate-500 uppercase tracking-[0.2em]">Follow Us</span>
           )}
         </div>
       </div>
