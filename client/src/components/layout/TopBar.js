@@ -31,6 +31,7 @@ export default function TopBar() {
   }
 
   const phone = settings?.phone || "+91 98310 12345";
+  const email = settings?.email || "info@sparkinnovations.in";
   const address = settings?.address || "Kolkata, West Bengal, India";
   const topBarText = settings?.topBarText || "Under Spark Innovations";
   
@@ -43,27 +44,33 @@ export default function TopBar() {
   ].filter(link => link.url);
 
   return (
-    <div className="bg-gradient-to-r from-brand-blue to-[#051c36] text-white py-2.5 md:py-3 border-b border-white/5 relative z-60">
-      <div className="container-wide flex flex-col sm:flex-row justify-between items-center gap-3">
-        {/* Left Side: Announcement / Text */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">
+    <div className="bg-gradient-to-r from-brand-blue to-[#051c36] text-white py-1.5 md:py-2 border-b border-white/5 relative z-60">
+      <div className="container-wide flex flex-row justify-between items-center gap-2">
+        {/* Left Side: Contact Info & Announcement */}
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="w-1 h-1 rounded-full bg-brand animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white">
               {topBarText}
             </span>
           </div>
           
-          <div className="flex items-center gap-4 sm:gap-6 sm:border-l sm:border-white/10 sm:pl-6">
+          <div className="flex items-center gap-3 md:gap-6 sm:border-l sm:border-white/10 sm:pl-6">
             <div className="flex items-center gap-1.5 group cursor-pointer">
               <Phone size={10} className="text-brand" />
-              <a href={`tel:${phone}`} className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider">
+              <a href={`tel:${phone}`} className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider whitespace-nowrap">
                 {phone}
               </a>
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 group cursor-pointer">
+            <div className="flex items-center gap-1.5 group cursor-pointer">
+              <Mail size={10} className="text-brand" />
+              <a href={`mailto:${email}`} className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider whitespace-nowrap">
+                {email}
+              </a>
+            </div>
+            <div className="hidden lg:flex items-center gap-1.5 group cursor-pointer">
               <MapPin size={10} className="text-brand" />
-              <span className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-[150px] lg:max-w-[250px]">
+              <span className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-[200px]">
                 {address}
               </span>
             </div>

@@ -66,7 +66,12 @@ export default function SettingsPage() {
   };
 
   useEffect(() => {
-    loadSettings();
+    const init = async () => {
+      await loadSettings(false);
+      setLoading(false);
+    };
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleImageUpload = async (e, type) => {
@@ -167,7 +172,7 @@ export default function SettingsPage() {
 
         {/* Content Area */}
         <div className="lg:col-span-3">
-          <div className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 md:p-10 min-h-[600px]">
+          <div className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 md:p-10 min-h-150">
             
             {activeTab === "general" && (
               <div className="space-y-10">
@@ -217,9 +222,9 @@ export default function SettingsPage() {
                     <div className="space-y-4">
                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Brand Logo</label>
                        <div className="relative group">
-                         <div className="border-2 border-dashed border-slate-200 rounded-sm p-6 flex flex-col items-center justify-center text-center bg-slate-50 min-h-[200px] transition-all group-hover:border-brand overflow-hidden">
+                         <div className="border-2 border-dashed border-slate-200 rounded-sm p-6 flex flex-col items-center justify-center text-center bg-slate-50 min-h-50 transition-all group-hover:border-brand overflow-hidden">
                            {settings.logo ? (
-                             <div className="relative w-full h-full min-h-[140px] flex items-center justify-center">
+                             <div className="relative w-full h-full min-h-35 flex items-center justify-center">
                                <Image src={settings.logo} alt="Logo Preview" fill className="object-contain" />
                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                   <button onClick={() => setSettings({ ...settings, logo: "" })} className="p-2 bg-rose-500 text-white rounded-full hover:scale-110 transition-transform">
@@ -245,7 +250,7 @@ export default function SettingsPage() {
                     <div className="space-y-4">
                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Favicon</label>
                        <div className="relative group">
-                         <div className="border-2 border-dashed border-slate-200 rounded-sm p-6 flex flex-col items-center justify-center text-center bg-slate-50 min-h-[200px] transition-all group-hover:border-brand overflow-hidden">
+                         <div className="border-2 border-dashed border-slate-200 rounded-sm p-6 flex flex-col items-center justify-center text-center bg-slate-50 min-h-50 transition-all group-hover:border-brand overflow-hidden">
                            {settings.favicon ? (
                              <div className="relative w-20 h-20">
                                <Image src={settings.favicon} alt="Favicon Preview" fill className="object-contain" />
