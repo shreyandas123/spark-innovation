@@ -86,7 +86,7 @@ export default function ProductSlider() {
           >
             {loading ? (
               [...Array(6)].map((_, i) => (
-                <div key={i} className="min-w-[280px] md:min-w-[320px] aspect-[4/5] bg-slate-100 animate-pulse rounded-sm" />
+                <div key={i} className="min-w-[280px] md:min-w-[320px] aspect-square bg-slate-100 animate-pulse rounded-sm" />
               ))
             ) : (
               products.map((product, idx) => (

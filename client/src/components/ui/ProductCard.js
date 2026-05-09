@@ -35,7 +35,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="group relative bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
-      <Link href={`/products/${product.slug}`} className="block aspect-[4/5] relative p-4 md:p-8 bg-[#fcfcfc] group-hover:bg-white transition-colors duration-500">
+      <Link href={`/products/${product.slug}`} className="block aspect-square relative p-4 md:p-8 bg-[#fcfcfc] group-hover:bg-white transition-colors duration-500">
         <Image 
           src={product.images?.[0] || product.image || "/images/placeholder-product.svg"} 
           alt={product.name} 
