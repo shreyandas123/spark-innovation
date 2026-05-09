@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, Mail } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { usePathname } from "next/navigation";
 
@@ -44,7 +44,7 @@ export default function TopBar() {
   ].filter(link => link.url);
 
   return (
-    <div className="bg-gradient-to-r from-brand-blue to-[#051c36] text-white py-1.5 md:py-2 border-b border-white/5 relative z-60">
+    <div className="bg-linear-to-r from-brand-blue to-[#051c36] text-white py-1.5 md:py-2 border-b border-white/5 relative z-60">
       <div className="container-wide flex flex-row justify-between items-center gap-2">
         {/* Left Side: Contact Info & Announcement */}
         <div className="flex items-center gap-4 md:gap-6">
@@ -70,7 +70,7 @@ export default function TopBar() {
             </div>
             <div className="hidden lg:flex items-center gap-1.5 group cursor-pointer">
               <MapPin size={10} className="text-brand" />
-              <span className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-[200px]">
+              <span className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-50">
                 {address}
               </span>
             </div>
