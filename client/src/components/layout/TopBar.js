@@ -44,33 +44,33 @@ export default function TopBar() {
   ].filter(link => link.url);
 
   return (
-    <div className="bg-linear-to-r from-brand-blue to-[#051c36] text-white py-1.5 md:py-2 border-b border-white/5 relative z-60">
-      <div className="container-wide flex flex-row justify-between items-center gap-2">
+    <div className="bg-linear-to-r from-brand-blue to-[#051c36] text-white py-1.5 md:py-2.5 border-b border-white/5 relative z-60">
+      <div className="container-wide flex flex-row justify-between items-center gap-4">
         {/* Left Side: Contact Info & Announcement */}
-        <div className="flex items-center gap-4 md:gap-6">
-          <div className="hidden sm:flex items-center gap-2">
+        <div className="flex items-center gap-4 md:gap-8 overflow-hidden">
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
             <span className="w-1 h-1 rounded-full bg-brand animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white">
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-white whitespace-nowrap">
               {topBarText}
             </span>
           </div>
           
-          <div className="flex items-center gap-3 md:gap-6 sm:border-l sm:border-white/10 sm:pl-6">
-            <div className="flex items-center gap-1.5 group cursor-pointer">
-              <Phone size={10} className="text-brand" />
-              <a href={`tel:${phone}`} className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider whitespace-nowrap">
+          <div className="flex items-center gap-3 md:gap-8 lg:border-l lg:border-white/10 lg:pl-8">
+            <div className="flex items-center gap-1.5 group cursor-pointer shrink-0">
+              <Phone size={11} className="text-brand" />
+              <a href={`tel:${phone}`} className="text-[10px] md:text-xs font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider whitespace-nowrap">
                 {phone}
               </a>
             </div>
-            <div className="flex items-center gap-1.5 group cursor-pointer">
-              <Mail size={10} className="text-brand" />
-              <a href={`mailto:${email}`} className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider whitespace-nowrap">
+            <div className="flex items-center gap-1.5 group cursor-pointer shrink-0">
+              <Mail size={11} className="text-brand" />
+              <a href={`mailto:${email}`} className="text-[10px] md:text-xs font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider whitespace-nowrap">
                 {email}
               </a>
             </div>
-            <div className="hidden lg:flex items-center gap-1.5 group cursor-pointer">
-              <MapPin size={10} className="text-brand" />
-              <span className="text-[9px] font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-50">
+            <div className="hidden xl:flex items-center gap-1.5 group cursor-pointer shrink-0">
+              <MapPin size={11} className="text-brand" />
+              <span className="text-xs font-bold text-slate-300 group-hover:text-white transition-colors tracking-wider truncate max-w-50">
                 {address}
               </span>
             </div>
@@ -78,19 +78,21 @@ export default function TopBar() {
         </div>
 
         {/* Right Side: Social Icons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center shrink-0">
           {socialLinks.length > 0 && (
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-1.5 md:gap-3">
               {socialLinks.map((link, idx) => (
                 <a 
                   key={idx}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-7 h-7 flex items-center justify-center rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand transition-all duration-300 hover:-translate-y-0.5 border border-white/5"
+                  className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-300 hover:text-white hover:bg-brand transition-all duration-300 hover:-translate-y-0.5 border border-white/5"
                   aria-label={link.label}
                 >
-                  {link.icon}
+                  <div className="scale-90 md:scale-100">
+                    {link.icon}
+                  </div>
                 </a>
               ))}
             </div>
