@@ -77,7 +77,7 @@ export default function Footer() {
 
         <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] text-center md:text-left">
-            © {currentYear} Commputer Software Solutions | All Rights Reserved
+            © {currentYear} Computer Software Solutions | All Rights Reserved
           </p>
           <div className="flex items-center gap-12">
             <div className="flex gap-12">
