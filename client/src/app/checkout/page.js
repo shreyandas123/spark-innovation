@@ -31,6 +31,9 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const totalMrp = cartItems.reduce((acc, item) => acc + ((item.mrp || item.price) * item.quantity), 0);
+  const totalSavings = totalMrp - cartTotal;
+
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -345,6 +348,18 @@ export default function CheckoutPage() {
             </div>
 
             <div className="space-y-4 pt-6 border-t border-slate-100 mb-10">
+              {totalSavings > 0 && (
+                <>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span>Total MRP</span>
+                    <span className="text-slate-500 line-through">₹{totalMrp.toLocaleString("en-IN")}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-emerald-500">
+                    <span>Discount on MRP</span>
+                    <span>- ₹{totalSavings.toLocaleString("en-IN")}</span>
+                  </div>
+                </>
+              )}
               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
                 <span>Subtotal</span>
                 <span>₹{cartTotal.toLocaleString("en-IN")}</span>

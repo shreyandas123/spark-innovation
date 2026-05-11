@@ -106,15 +106,18 @@ export default function WishlistPage() {
                 <h3 className="text-[13px] font-black text-brand-blue uppercase tracking-tight leading-tight line-clamp-2 min-h-[2.5em]">
                   {product.name}
                 </h3>
-                <div className="flex items-center justify-center lg:justify-start gap-2">
+                <div className="flex flex-col items-center lg:items-start gap-0.5">
                   <div className="flex items-center gap-0.5 text-brand-blue font-black text-lg">
                     <IndianRupee size={14} strokeWidth={4} />
                     <span>{product.price?.toLocaleString("en-IN")}</span>
                   </div>
                   {product.mrp && (
-                    <div className="flex items-center gap-0.5 text-slate-400 font-bold text-xs line-through">
-                      <IndianRupee size={10} strokeWidth={3} />
-                      <span>{product.mrp.toLocaleString("en-IN")}</span>
+                    <div className="flex items-center gap-1 text-slate-400">
+                      <span className="text-[7px] font-black uppercase tracking-widest">MRP (inclusive of all taxes)</span>
+                      <span className="flex items-center gap-0.5 font-bold text-[10px] line-through">
+                        <IndianRupee size={10} strokeWidth={3} />
+                        <span>{product.mrp.toLocaleString("en-IN")}</span>
+                      </span>
                     </div>
                   )}
                 </div>

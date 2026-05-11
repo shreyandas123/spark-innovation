@@ -72,15 +72,18 @@ export default function ProductCard({ product }) {
           <h3 className="text-xs md:text-base font-black text-brand-blue line-clamp-2 leading-tight tracking-tight uppercase">
             {product.name}
           </h3>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-1 text-brand font-black text-sm md:text-xl">
               <IndianRupee size={12} className="md:w-4 md:h-4" strokeWidth={4} />
               <span>{product.price?.toLocaleString("en-IN")}</span>
             </div>
             {product.mrp && (
-              <div className="flex items-center text-[10px] md:text-xs font-bold text-slate-400 line-through">
-                <IndianRupee size={10} className="md:w-3 md:h-3" strokeWidth={3} />
-                <span>{product.mrp.toLocaleString("en-IN")}</span>
+              <div className="flex items-center gap-1 text-slate-400">
+                <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest">MRP (inclusive of all taxes)</span>
+                <span className="text-[9px] md:text-[11px] font-bold line-through flex items-center">
+                  <IndianRupee size={10} className="md:w-3 md:h-3" strokeWidth={3} />
+                  {product.mrp.toLocaleString("en-IN")}
+                </span>
               </div>
             )}
           </div>
