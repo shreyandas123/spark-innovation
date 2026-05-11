@@ -40,6 +40,7 @@ export default function AdminProductsPage() {
     slug: "",
     category: "",
     price: "",
+    mrp: "",
     description: "",
     images: [""]
   });
@@ -116,7 +117,8 @@ export default function AdminProductsPage() {
       const productData = {
         ...newProduct,
         images: imageUrls,
-        price: Number(newProduct.price)
+        price: Number(newProduct.price),
+        mrp: newProduct.mrp ? Number(newProduct.mrp) : undefined
       };
 
       if (editingProduct) {
@@ -129,7 +131,7 @@ export default function AdminProductsPage() {
       }
       setIsAddingProduct(false);
       setEditingProduct(null);
-      setNewProduct({ name: "", slug: "", category: "", price: "", description: "", images: [""] });
+      setNewProduct({ name: "", slug: "", category: "", price: "", mrp: "", description: "", images: [""] });
       setImageFile(null);
       setImagePreview("");
     } catch (err) {
@@ -167,7 +169,7 @@ export default function AdminProductsPage() {
         <button 
           onClick={() => {
             setEditingProduct(null);
-            setNewProduct({ name: "", slug: "", category: "", price: "", description: "", images: [""] });
+            setNewProduct({ name: "", slug: "", category: "", price: "", mrp: "", description: "", images: [""] });
             setIsAddingProduct(true);
           }}
           className="bg-brand text-white py-3 px-6 rounded-sm font-black uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-brand-dark transition-all shadow-lg shadow-brand/20"
@@ -239,6 +241,7 @@ export default function AdminProductsPage() {
                               slug: product.slug,
                               category: product.category,
                               price: product.price,
+                              mrp: product.mrp || "",
                               description: product.description || "",
                               images: product.images || [""]
                             });
@@ -327,6 +330,16 @@ export default function AdminProductsPage() {
                     type="number" 
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                    placeholder="0.00" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">MRP (Inclusive of all taxes)</label>
+                  <input 
+                    type="number" 
+                    value={newProduct.mrp}
+                    onChange={(e) => setNewProduct({ ...newProduct, mrp: e.target.value })}
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
                     placeholder="0.00" 
                   />

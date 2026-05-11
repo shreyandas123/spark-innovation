@@ -112,9 +112,20 @@ export default function ProductDetailPage({ params }) {
                 {product.name}
               </h1>
               <div className="flex items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-2 text-brand font-black text-4xl">
-                  <IndianRupee size={28} strokeWidth={4} />
-                  <span>{product.price?.toLocaleString("en-IN")}</span>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1 text-brand font-black text-4xl">
+                    <IndianRupee size={28} strokeWidth={4} />
+                    <span>{product.price?.toLocaleString("en-IN")}</span>
+                  </div>
+                  {product.mrp && (
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">MRP (inclusive of all taxes)</span>
+                      <span className="text-xl font-black text-slate-300 line-through flex items-center">
+                        <IndianRupee size={16} strokeWidth={4} />
+                        {product.mrp.toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <button 
                   onClick={() => toggleWishlist(product)}
