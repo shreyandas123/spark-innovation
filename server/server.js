@@ -40,8 +40,9 @@ mongoose.connect(process.env.MONGO_URI)
 // security middlewares
 app.use(helmet())
 app.use(compression())
+const clientOrigin = (process.env.CLIENT_URL || 'http://localhost:3000').replace(/\/$/, '')
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: clientOrigin,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
