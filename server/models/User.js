@@ -31,11 +31,19 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user',
   },
+  phone: { type: String, trim: true },
+  address: {
+    street:  { type: String, trim: true },
+    city:    { type: String, trim: true },
+    state:   { type: String, trim: true },
+    zipCode: { type: String, trim: true },
+    country: { type: String, trim: true },
+  },
 }, { timestamps: true })
 
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return
-  this.password = await bcrypt.hash(this.password, 10)
+  this.password = await bcrypt.hash(this.password, 12)
 })
 
 userSchema.methods.comparePassword = function (plain) {

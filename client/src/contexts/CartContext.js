@@ -12,7 +12,7 @@ const cartApiAdd = (token, item) => addToCartApi(token, {
   slug: item.slug,
   name: item.name,
   price: item.price,
-  image: item.image || item.images?.[0],
+  image: item.images?.[0] || item.image,
   quantity: item.quantity
 });
 

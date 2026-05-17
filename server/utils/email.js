@@ -24,7 +24,7 @@ const send = async (options) => {
     return
   }
   await transporter.sendMail({
-    from: `"${process.env.EMAIL_FROM_NAME || 'Sparkel Sales'}" <${process.env.EMAIL_USER}>`,
+    from: `"${process.env.EMAIL_FROM_NAME || 'Spark Innovations'}" <${process.env.EMAIL_USER}>`,
     ...options,
   })
 }
@@ -36,16 +36,16 @@ export const sendOrderConfirmation = async ({ to, name, orderId, items, total, p
 
   await send({
     to,
-    subject: `Order Confirmed — Sparkel Sales (#${orderId})`,
+    subject: `Order Confirmed — Spark Innovations (#${orderId})`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b">
         <div style="background:#1e3a5f;padding:32px;text-align:center">
-          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARKEL SALES</h1>
+          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARK INNOVATIONS</h1>
           <p style="color:#94a3b8;margin:8px 0 0;font-size:11px;letter-spacing:1px">AUTHORIZED KUTCHINA DEALER</p>
         </div>
         <div style="padding:32px">
           <h2 style="font-size:18px;color:#1e3a5f">Hi ${esc(name)}, your order is confirmed!</h2>
-          <p style="color:#64748b;font-size:14px">Thank you for choosing Sparkel Sales. Our team will contact you shortly to confirm delivery and installation details.</p>
+          <p style="color:#64748b;font-size:14px">Thank you for choosing Spark Innovations. Our team will contact you shortly to confirm delivery and installation details.</p>
           <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;padding:20px;margin:24px 0">
             <p style="margin:0 0 4px;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px">Order ID</p>
             <p style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f">#${orderId}</p>
@@ -58,7 +58,7 @@ export const sendOrderConfirmation = async ({ to, name, orderId, items, total, p
           <p style="margin:24px 0 0;font-size:13px;color:#64748b">Payment: <strong>${paymentMethod === 'cod' ? 'Cash on Delivery' : 'UPI / QR Code'}</strong></p>
         </div>
         <div style="background:#f1f5f9;padding:20px;text-align:center;font-size:11px;color:#94a3b8">
-          Sparkel Sales — Authorized Kutchina Dealer
+          Spark Innovations — Authorized Kutchina Dealer
         </div>
       </div>
     `,
@@ -79,7 +79,7 @@ export const sendOrderStatusUpdate = async ({ to, name, orderId, status }) => {
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b">
         <div style="background:#1e3a5f;padding:32px;text-align:center">
-          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARKEL SALES</h1>
+          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARK INNOVATIONS</h1>
         </div>
         <div style="padding:32px">
           <h2 style="font-size:18px;color:#1e3a5f">Hi ${esc(name)}, your order has been updated</h2>
@@ -92,7 +92,7 @@ export const sendOrderStatusUpdate = async ({ to, name, orderId, status }) => {
           </div>
         </div>
         <div style="background:#f1f5f9;padding:20px;text-align:center;font-size:11px;color:#94a3b8">
-          Sparkel Sales — Authorized Kutchina Dealer
+          Spark Innovations — Authorized Kutchina Dealer
         </div>
       </div>
     `,
@@ -106,7 +106,7 @@ export const sendInquiryNotification = async ({ adminEmail, inquiryName, inquiry
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b">
         <div style="background:#1e3a5f;padding:32px;text-align:center">
-          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARKEL SALES</h1>
+          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARK INNOVATIONS</h1>
           <p style="color:#94a3b8;margin:8px 0 0;font-size:11px;letter-spacing:1px">NEW INQUIRY RECEIVED</p>
         </div>
         <div style="padding:32px">
@@ -129,11 +129,11 @@ export const sendInquiryNotification = async ({ adminEmail, inquiryName, inquiry
 export const sendInquiryAck = async ({ to, name }) => {
   await send({
     to,
-    subject: 'We received your inquiry — Sparkel Sales',
+    subject: 'We received your inquiry — Spark Innovations',
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b">
         <div style="background:#1e3a5f;padding:32px;text-align:center">
-          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARKEL SALES</h1>
+          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:2px">SPARK INNOVATIONS</h1>
         </div>
         <div style="padding:32px">
           <h2 style="font-size:18px;color:#1e3a5f">Hi ${esc(name)}, we've received your inquiry!</h2>
@@ -141,7 +141,7 @@ export const sendInquiryAck = async ({ to, name }) => {
           <p style="font-size:14px;color:#64748b;line-height:1.6">If you need immediate assistance, please call us directly.</p>
         </div>
         <div style="background:#f1f5f9;padding:20px;text-align:center;font-size:11px;color:#94a3b8">
-          Sparkel Sales — Authorized Kutchina Dealer
+          Spark Innovations — Authorized Kutchina Dealer
         </div>
       </div>
     `,

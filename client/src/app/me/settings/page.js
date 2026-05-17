@@ -31,7 +31,7 @@ export default function UserSettings() {
 
   if (!isAuthenticated || !user) return null
 
-  return <SettingsForm key={user.id} user={user} />
+  return <SettingsForm key={user._id} user={user} />
 }
 
 function SettingsForm({ user }) {

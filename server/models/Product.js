@@ -18,4 +18,7 @@ const productSchema = new mongoose.Schema({
   inStock: { type: Boolean, default: true },
 }, { timestamps: true })
 
+productSchema.index({ category: 1 })
+productSchema.index({ featured: 1 })
+
 export default mongoose.model('Product', productSchema)

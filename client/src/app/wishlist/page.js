@@ -4,17 +4,22 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { ShoppingBag, Trash2, ArrowRight, Heart, IndianRupee } from "lucide-react";
+import { ShoppingBag, Trash2, ArrowRight, Heart, IndianRupee, Loader2 } from "lucide-react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function WishlistPage() {
   const { wishlistItems, toggleWishlist, clearWishlist } = useWishlist();
   const { addToCart } = useCart();
   const { isAuthenticated, loading } = useAuth();
+  const { showToast } = useToast();
   const router = useRouter();
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [moveAllLoading, setMoveAllLoading] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -22,10 +27,20 @@ export default function WishlistPage() {
     }
   }, [loading, isAuthenticated, router]);
 
-  const handleMoveAllToCart = () => {
-    wishlistItems.forEach(item => addToCart(item));
-    clearWishlist();
-    router.push("/cart");
+  const handleMoveAllToCart = async () => {
+    setMoveAllLoading(true);
+    try {
+      for (const item of wishlistItems) {
+        await addToCart(item);
+      }
+      await clearWishlist();
+      showToast(`Moved ${wishlistItems.length} item${wishlistItems.length > 1 ? 's' : ''} to cart`, "success");
+      router.push("/cart");
+    } catch (err) {
+      showToast("Failed to move items to cart", "error");
+    } finally {
+      setMoveAllLoading(false);
+    }
   };
 
   if (loading) {
@@ -71,15 +86,16 @@ export default function WishlistPage() {
           />
           
           <div className="flex items-center gap-3">
-            <button 
-              onClick={handleMoveAllToCart}
-              className="px-6 py-4 bg-brand text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand-dark transition-all flex items-center gap-2 shadow-xl shadow-brand/10"
+            <button
+              onClick={() => setConfirmAction('moveAll')}
+              disabled={moveAllLoading}
+              className="px-6 py-4 bg-brand text-white font-black uppercase tracking-widest text-[10px] rounded-sm hover:bg-brand-dark transition-all flex items-center gap-2 shadow-xl shadow-brand/10 disabled:opacity-50"
             >
-              <ShoppingBag size={14} />
+              {moveAllLoading ? <Loader2 size={14} className="animate-spin" /> : <ShoppingBag size={14} />}
               Move All to Bag
             </button>
-            <button 
-              onClick={clearWishlist}
+            <button
+              onClick={() => setConfirmAction('clear')}
               className="px-6 py-4 bg-white border border-slate-200 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-sm hover:text-red-500 hover:border-red-100 transition-all"
             >
               <Trash2 size={14} />
@@ -143,6 +159,25 @@ export default function WishlistPage() {
           ))}
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmAction === 'moveAll'}
+        title="Move All to Cart"
+        message={`This will add all ${wishlistItems.length} item${wishlistItems.length > 1 ? 's' : ''} to your cart and clear your wishlist.`}
+        confirmLabel="Move All"
+        danger={false}
+        onCancel={() => setConfirmAction(null)}
+        onConfirm={() => { setConfirmAction(null); handleMoveAllToCart(); }}
+      />
+
+      <ConfirmDialog
+        isOpen={confirmAction === 'clear'}
+        title="Clear Wishlist"
+        message="This will remove all saved items from your wishlist. This action cannot be undone."
+        confirmLabel="Clear All"
+        onCancel={() => setConfirmAction(null)}
+        onConfirm={() => { setConfirmAction(null); clearWishlist(); }}
+      />
     </main>
   );
 }

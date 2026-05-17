@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { fetchProductBySlug } from "@/lib/api";
 import { SITE_CONFIG, SAMPLE_PRODUCTS } from "@/lib/constants";
+import { useSettings } from "@/contexts/SettingsContext";
 import { ArrowLeft, Check, IndianRupee, MessageSquare, Phone, ShieldCheck, Zap, Loader2, Heart, ShoppingBag, Plus, Minus } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
@@ -24,17 +25,13 @@ export default function ProductDetailPage({ params }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
 
-  const [settings, setSettings] = useState(null);
-  
+  const { settings } = useSettings();
+
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [productData, settingsData] = await Promise.all([
-          fetchProductBySlug(slug),
-          import("@/lib/api").then(m => m.fetchSiteSettings())
-        ]);
-        
+        const productData = await fetchProductBySlug(slug);
         if (productData && productData.product) {
           setProduct(productData.product);
         } else {
@@ -44,10 +41,6 @@ export default function ProductDetailPage({ params }) {
           } else {
             setError("Product not found");
           }
-        }
-        
-        if (settingsData) {
-          setSettings(settingsData.settings);
         }
       } catch (err) {
         console.error("Error loading product data:", err);

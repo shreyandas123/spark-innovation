@@ -57,11 +57,7 @@ export default function ProductCard({ product }) {
           </button>
         </div>
 
-        {product.isNew && (
-          <div className="absolute top-2 left-2 md:top-4 md:left-4">
-            <span className="bg-brand-blue text-white text-[7px] md:text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">New</span>
-          </div>
-        )}
+
       </Link>
 
       <div className="p-4 md:p-6 flex flex-col flex-1">

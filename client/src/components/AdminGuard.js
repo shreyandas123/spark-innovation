@@ -8,8 +8,6 @@ import { AlertCircle } from 'lucide-react'
 export default function AdminGuard({ children }) {
   const { user, loading } = useAuth()
   const router = useRouter()
-  const canAccess = user?.role === 'admin';
-
   useEffect(() => {
     if (!loading && !user) {
       router.push('/auth/login');
@@ -27,7 +25,7 @@ export default function AdminGuard({ children }) {
     )
   }
 
-  if (!canAccess) {
+  if (!user || user.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">

@@ -3,11 +3,12 @@ import { Phone, Mail, ArrowUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { SITE_CONFIG, NAV_LINKS } from "@/lib/constants";
-
+import { useSettings } from "@/contexts/SettingsContext";
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
+  const { settings } = useSettings();
   const currentYear = new Date().getFullYear();
 
 
@@ -51,7 +52,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-widest text-brand/60 mb-1">Direct Call</p>
-                  <p className="font-black text-white">{SITE_CONFIG.phone}</p>
+                  <p className="font-black text-white">{settings?.phone || SITE_CONFIG.phone}</p>
                 </div>
               </div>
               <div className="flex items-center gap-5 cursor-default">
@@ -60,7 +61,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-widest text-brand/60 mb-1">Email Inquiry</p>
-                  <p className="font-black text-white">{SITE_CONFIG.email}</p>
+                  <p className="font-black text-white">{settings?.email || SITE_CONFIG.email}</p>
                 </div>
               </div>
             </div>

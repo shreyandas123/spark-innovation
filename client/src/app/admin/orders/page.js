@@ -2,19 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
-  ShoppingBag, 
-  Search, 
+import {
+  Search,
   Calendar,
   ChevronRight,
   Filter,
-  CheckCircle2,
-  Truck,
-  Clock,
-  XCircle,
   IndianRupee,
-  Loader2,
-  Package
+  Loader2
 } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/contexts/ToastContext";
@@ -43,25 +37,9 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const initOrders = async () => {
-      if (!token) return;
-      try {
-        const data = await fetchAllOrders(token);
-        if (isMounted) {
-          setOrders(data.orders || []);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Failed to fetch orders", err);
-          setLoading(false);
-        }
-      }
-    };
-    initOrders();
-    return () => { isMounted = false; };
-  }, [token]);
+    if (!token) return;
+    (async () => { await loadOrders(); })();
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleUpdateStatus = async (id, status) => {
     try {

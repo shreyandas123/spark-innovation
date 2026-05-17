@@ -1,4 +1,4 @@
-const API_URL = '/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 // Centralized request helper to handle 401s and common logic
 const apiRequest = async (endpoint, options = {}) => {
@@ -244,9 +244,6 @@ export const fetchUsers = (token) =>
 
 export const updateAdminUser = (token, id, data) => 
   apiRequest(`/admin/users/${id}`, { method: 'PATCH', token, body: JSON.stringify(data) });
-
-export const updateProfile = (token, profileData) => 
-  apiRequest('/auth/profile', { method: 'PUT', token, body: JSON.stringify(profileData) });
 
 export const updatePassword = (token, passwordData) => 
   apiRequest('/auth/password', { method: 'PUT', token, body: JSON.stringify(passwordData) });

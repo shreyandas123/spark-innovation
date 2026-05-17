@@ -5,14 +5,12 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { createOrder } from "@/lib/api";
 import { useToast } from "@/contexts/ToastContext";
-import SectionHeader from "@/components/ui/SectionHeader";
-import { 
-  CreditCard, 
-  Truck, 
-  ShieldCheck, 
-  ArrowLeft, 
-  CheckCircle2, 
-  QrCode, 
+import {
+  Truck,
+  ShieldCheck,
+  ArrowLeft,
+  CheckCircle2,
+  QrCode,
   Smartphone,
   IndianRupee,
   Loader2
@@ -88,6 +86,7 @@ export default function CheckoutPage() {
     } else if (step === 2) {
       try {
         setIsProcessing(true);
+        const { zipCode, ...shippingRest } = formData;
         const orderData = {
           items: cartItems.map(item => ({
             slug: item.slug,
@@ -96,7 +95,7 @@ export default function CheckoutPage() {
             quantity: item.quantity,
             image: item.images?.[0] || item.image
           })),
-          shipping: formData,
+          shipping: { ...shippingRest, pincode: zipCode },
           paymentMethod,
           total: cartTotal
         };

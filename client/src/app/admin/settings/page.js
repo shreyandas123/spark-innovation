@@ -42,8 +42,6 @@ export default function SettingsPage() {
     try {
       if (showLoading) setLoading(true);
       const data = await fetchSiteSettings();
-      console.log("Loaded Settings:", data);
-      
       if (data && data.settings) {
         // Ensure we don't overwrite with empty values if some fields are missing
         setSettings(prev => ({

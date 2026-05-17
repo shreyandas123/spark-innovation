@@ -92,11 +92,11 @@ export default function Navbar() {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black uppercase tracking-tighter">
-                {settings?.websiteName && (
-                  <>
-                    {settings.websiteName.split(' ')[0]} <span className="text-brand">{settings.websiteName.split(' ').slice(1).join(' ')}</span>
-                  </>
-                )}
+                {(() => {
+                  const name = settings?.websiteName || SITE_CONFIG.name;
+                  const parts = name.split(' ');
+                  return <>{parts[0]} <span className="text-brand">{parts.slice(1).join(' ')}</span></>;
+                })()}
               </span>
             </div>
           </Link>

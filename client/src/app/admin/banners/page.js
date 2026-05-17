@@ -5,11 +5,14 @@ import { Plus, Image as ImageIcon, Trash2, Edit2, Link as LinkIcon, Check, X, Lo
 import { fetchBanners, createBanner, updateBanner, deleteBanner, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Image from "next/image";
 
 export default function BannersPage() {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [isAddingBanner, setIsAddingBanner] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
   const { token } = useAuth();
@@ -27,37 +30,24 @@ export default function BannersPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
-  useEffect(() => {
-    let isMounted = true;
-    const initBanners = async () => {
-      try {
-        const data = await fetchBanners();
-        if (isMounted) {
-          setBanners(data.banners || []);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Error loading banners:", err);
-          setLoading(false);
-        }
-      }
-    };
-    initBanners();
-    return () => { isMounted = false; };
-  }, []);
-
-  const loadBanners = async (showLoading = true) => {
+  const loadBanners = async () => {
     try {
-      if (showLoading) setLoading(true);
+      setLoading(true);
+      setError(null);
       const data = await fetchBanners();
       setBanners(data.banners || []);
     } catch (err) {
       console.error("Error loading banners:", err);
+      setError("Failed to load banners.");
+      showToast("Failed to load banners", "error");
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    (async () => { await loadBanners(); })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSaveBanner = async () => {
     if (!formData.title || (!formData.image && !imageFile)) {
@@ -162,7 +152,12 @@ export default function BannersPage() {
         </button>
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-red-500">{error}</p>
+          <button onClick={loadBanners} className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">Try Again</button>
+        </div>
+      ) : loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
           <Loader2 className="animate-spin text-brand" size={32} />
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Banners...</p>
@@ -239,8 +234,8 @@ export default function BannersPage() {
                     >
                       <Edit2 size={14} />
                     </button>
-                    <button 
-                      onClick={() => handleDeleteBanner(banner._id)}
+                    <button
+                      onClick={() => setConfirmDelete(banner._id)}
                       className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-white border border-slate-200 rounded-sm hover:border-red-500"
                     >
                       <Trash2 size={14} />
@@ -253,6 +248,15 @@ export default function BannersPage() {
         </table>
       </div>
       )}
+
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Delete Banner"
+        message="This will permanently remove this banner from the carousel. This action cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => { handleDeleteBanner(confirmDelete); setConfirmDelete(null); }}
+      />
 
       {isAddingBanner && (
         <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">

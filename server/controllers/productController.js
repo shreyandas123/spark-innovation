@@ -5,27 +5,48 @@ export const getProducts = async (req, res) => {
   if (req.query.category) filter.category = req.query.category
   if (req.query.featured === 'true') filter.featured = true
 
-  const products = await Product.find(filter).sort({ createdAt: -1 })
-  res.json({ products })
+  const page = Math.max(1, parseInt(req.query.page) || 1)
+  const limit = Math.min(100, parseInt(req.query.limit) || 20)
+  const skip = (page - 1) * limit
+
+  const [products, total] = await Promise.all([
+    Product.find(filter).lean().sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Product.countDocuments(filter),
+  ])
+
+  res.json({ products, total, page, pages: Math.ceil(total / limit) })
 }
 
 export const searchProducts = async (req, res) => {
   const { q } = req.query
-  if (!q) return res.status(400).json({ message: 'Search query q is required' })
+  if (!q || typeof q !== 'string' || !q.trim())
+    return res.status(400).json({ message: 'Search query q is required' })
 
-  const products = await Product.find({
+  // escape regex special chars to prevent ReDoS
+  const escaped = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  const page = Math.max(1, parseInt(req.query.page) || 1)
+  const limit = Math.min(100, parseInt(req.query.limit) || 20)
+  const skip = (page - 1) * limit
+
+  const filter = {
     $or: [
-      { name: { $regex: q, $options: 'i' } },
-      { description: { $regex: q, $options: 'i' } },
-      { category: { $regex: q, $options: 'i' } },
+      { name: { $regex: escaped, $options: 'i' } },
+      { description: { $regex: escaped, $options: 'i' } },
+      { category: { $regex: escaped, $options: 'i' } },
     ],
-  }).sort({ createdAt: -1 })
+  }
 
-  res.json({ products })
+  const [products, total] = await Promise.all([
+    Product.find(filter).lean().sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Product.countDocuments(filter),
+  ])
+
+  res.json({ products, total, page, pages: Math.ceil(total / limit) })
 }
 
 export const getProductBySlug = async (req, res) => {
-  const product = await Product.findOne({ slug: req.params.slug })
+  const product = await Product.findOne({ slug: req.params.slug }).lean()
   if (!product) return res.status(404).json({ message: 'Product not found' })
   res.json({ product })
 }
@@ -34,6 +55,8 @@ export const createProduct = async (req, res) => {
   const { name, slug, category, price, description, specs, images, featured, inStock } = req.body
   if (!name || !slug || !category || !price)
     return res.status(400).json({ message: 'name, slug, category and price are required' })
+  if (!/^[a-z0-9-]+$/.test(slug))
+    return res.status(400).json({ message: 'Slug must contain only lowercase letters, numbers and hyphens' })
 
   const existing = await Product.findOne({ slug })
   if (existing) return res.status(409).json({ message: 'Slug already exists' })
@@ -43,10 +66,14 @@ export const createProduct = async (req, res) => {
 }
 
 export const updateProduct = async (req, res) => {
+  const { name, slug, category, price, description, specs, images, featured, inStock } = req.body
+  const updates = { name, slug, category, price, description, specs, images, featured, inStock }
+  Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k])
+
   const product = await Product.findOneAndUpdate(
     { slug: req.params.slug },
-    req.body,
-    { new: true, runValidators: true }
+    updates,
+    { returnDocument: 'after', runValidators: true }
   )
   if (!product) return res.status(404).json({ message: 'Product not found' })
   res.json({ product })

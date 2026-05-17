@@ -1,5 +1,9 @@
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import compression from 'compression'
+import mongoSanitize from 'express-mongo-sanitize'
+import rateLimit from 'express-rate-limit'
 import mongoose from 'mongoose'
 import 'dotenv/config'
 import authRoutes from './routes/auth.js'
@@ -11,10 +15,20 @@ import adminRoutes from './routes/admin.js'
 import wishlistRoutes from './routes/wishlist.js'
 import jobRoutes from './routes/jobs.js'
 import settingsRoutes from './routes/settings.js'
-import cartRoutes from './routes/cart.js'
 import uploadRoutes from './routes/upload.js'
+import cartRoutes from './routes/cart.js'
 
-
+// validate required env vars before anything else
+const required = ['MONGO_URI', 'JWT_SECRET', 'CLOUDINARY_URL', 'GOOGLE_CLIENT_ID']
+for (const key of required) {
+  if (!process.env[key]) {
+    console.error(`Missing required environment variable: ${key}`)
+    process.exit(1)
+  }
+}
+if (!process.env.ADMIN_EMAIL) {
+  console.warn('[Warning] ADMIN_EMAIL is not set — admin inquiry/order notifications will not be sent')
+}
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -23,13 +37,34 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err))
 
-// middlewares
-app.use(express.json())
-app.use(cors())
+// security middlewares
+app.use(helmet())
+app.use(compression())
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ limit: '10mb', extended: true }))
+// express-mongo-sanitize can't reassign req.query in Express 5 (read-only getter)
+// so we manually sanitize only req.body
+app.use((req, res, next) => {
+  if (req.body) req.body = mongoSanitize.sanitize(req.body)
+  next()
+})
 
+const limiterDefaults = { standardHeaders: true, legacyHeaders: false, message: { message: 'Too many requests, please try again later' } }
+
+// auth — 20 req / 15 min (login, register, google)
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, ...limiterDefaults })
+// product search — 30 req / min
+const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 30, ...limiterDefaults })
 // routes
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authLimiter, authRoutes)
 app.use('/api/categories', categoryRoutes)
+app.use('/api/products/search', searchLimiter)
 app.use('/api/products', productRoutes)
 app.use('/api/inquiries', inquiryRoutes)
 app.use('/api/orders', orderRoutes)
@@ -37,20 +72,45 @@ app.use('/api/admin', adminRoutes)
 app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/jobs', jobRoutes)
 app.use('/api/settings', settingsRoutes)
-app.use('/api/cart', cartRoutes)
 app.use('/api/upload', uploadRoutes)
+app.use('/api/cart', cartRoutes)
 
-
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).json({ message: `Route ${req.method} ${req.path} not found` })
+})
 
 // global error handler — returns JSON instead of HTML for all unhandled errors
 app.use((err, req, res, next) => {
   console.error(err.stack)
+
+  // Mongoose validation error — extract readable messages
+  if (err.name === 'ValidationError') {
+    const messages = Object.values(err.errors).map(e => e.message)
+    return res.status(400).json({ message: messages.join(', ') })
+  }
+
+  // Mongoose duplicate key error
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue || {})[0] || 'field'
+    return res.status(409).json({ message: `${field} already exists` })
+  }
+
   res.status(err.status || 500).json({ message: err.message || 'Internal server error' })
 })
 
-app.listen(port, () => {
-  console.log('================================')
-  console.log(`  Sparkel Sales API`)
-  console.log(`  Running on http://localhost:${port}`)
-  console.log('================================')
+// Only bind a port when running locally; Vercel handles the port in serverless mode
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log('================================')
+    console.log(`  Spark Innovations API`)
+    console.log(`  Running on http://localhost:${port}`)
+    console.log('================================')
+  })
+}
+
+export default app
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection:', err)
 })

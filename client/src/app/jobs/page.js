@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { Briefcase, MapPin, Clock, ArrowRight, X, Send, Paperclip } from "lucide-react";
+import { Briefcase, MapPin, Clock, ArrowRight, X, Send } from "lucide-react";
 import { applyForJob } from "@/lib/api";
 
 export default function JobsPage() {

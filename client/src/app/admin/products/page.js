@@ -5,16 +5,8 @@ import { fetchProducts, fetchCategories, createProduct, updateProduct, deletePro
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { validateImageFile } from "@/lib/utils";
-import { 
-  Plus, 
-  Search, 
-  Edit2, 
-  Trash2, 
-  MoreVertical,
-  X,
-  Loader2,
-  Image as ImageIcon
-} from "lucide-react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { Plus, Search, Edit2, Trash2, X, Loader2, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminProductsPage() {
@@ -24,6 +16,8 @@ export default function AdminProductsPage() {
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const { token } = useAuth();
   const { showToast } = useToast();
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
@@ -48,27 +42,28 @@ export default function AdminProductsPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [productsData, categoriesData] = await Promise.all([
+        fetchProducts(),
+        fetchCategories()
+      ]);
+      setProducts(productsData.products || []);
+      setCategories(categoriesData.categories || []);
+    } catch (err) {
+      console.error("Error loading admin products:", err);
+      setError("Failed to load products.");
+      showToast("Failed to load products", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      try {
-        const [productsData, categoriesData] = await Promise.all([
-          fetchProducts(),
-          fetchCategories()
-        ]);
-        if (isMounted) {
-          setProducts(productsData.products || []);
-          setCategories(categoriesData.categories || []);
-        }
-      } catch (err) {
-        console.error("Error loading admin products:", err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    load();
-    return () => { isMounted = false; };
-  }, []);
+    (async () => { await loadData(); })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filteredProducts = (products || []).filter(p => 
     (p.name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
@@ -180,7 +175,12 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-sm overflow-hidden shadow-sm">
-        {loading ? (
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-40 gap-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-red-500">{error}</p>
+            <button onClick={loadData} className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">Try Again</button>
+          </div>
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
             <Loader2 className="animate-spin text-brand" size={40} />
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Inventory...</p>
@@ -253,8 +253,8 @@ export default function AdminProductsPage() {
                         >
                           <Edit2 size={14} />
                         </button>
-                        <button 
-                          onClick={() => handleDelete(product.slug)}
+                        <button
+                          onClick={() => setConfirmDelete(product.slug)}
                           className="p-1.5 text-slate-300 hover:text-red-500 transition-colors"
                         >
                           <Trash2 size={14} />
@@ -407,6 +407,15 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Delete Product"
+        message="This will permanently remove this product from the catalogue. This action cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => { handleDelete(confirmDelete); setConfirmDelete(null); }}
+      />
     </div>
   );
 }

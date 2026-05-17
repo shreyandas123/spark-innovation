@@ -42,7 +42,12 @@ export function WishlistProvider({ children }) {
         } else {
           setWishlistItems(prev => [...prev, product]);
           showToast(`Saved ${product.name} to wishlist`);
-          await addToWishlist(token, product);
+          await addToWishlist(token, {
+            slug: product.slug,
+            name: product.name,
+            price: product.price,
+            image: product.images?.[0] || product.image
+          });
         }
       } catch (err) {
         console.error("Wishlist update failed:", err);

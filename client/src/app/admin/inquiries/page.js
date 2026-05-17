@@ -17,6 +17,7 @@ import {
   Loader2
 } from "lucide-react";
 import { fetchInquiries, updateInquiryStatus, deleteInquiry } from "@/lib/api";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
@@ -24,41 +25,30 @@ export default function AdminInquiriesPage() {
   const { token } = useAuth();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const loadInquiries = async (showLoading = true) => {
+  const loadInquiries = async () => {
     if (!token) return;
     try {
-      if (showLoading) setLoading(true);
+      setLoading(true);
+      setError(null);
       const data = await fetchInquiries(token);
       setInquiries(data.inquiries || []);
     } catch (err) {
       console.error("Failed to fetch inquiries", err);
+      setError("Failed to load inquiries.");
+      showToast("Failed to load inquiries", "error");
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const initInquiries = async () => {
-      if (!token) return;
-      try {
-        const data = await fetchInquiries(token);
-        if (isMounted) {
-          setInquiries(data.inquiries || []);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Failed to fetch inquiries", err);
-          setLoading(false);
-        }
-      }
-    };
-    initInquiries();
-    return () => { isMounted = false; };
-  }, [token]);
+    if (!token) return;
+    (async () => { await loadInquiries(); })();
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDelete = async (id) => {
     try {
@@ -107,7 +97,12 @@ export default function AdminInquiriesPage() {
           </button>
         </div>
 
-        {loading ? (
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
+            <p className="text-[10px] font-black uppercase tracking-widest text-red-500">{error}</p>
+            <button onClick={loadInquiries} className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">Try Again</button>
+          </div>
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
             <Loader2 className="animate-spin text-brand" size={32} />
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Fetching Inquiries...</p>
@@ -231,8 +226,8 @@ export default function AdminInquiriesPage() {
                 </div>
               </div>
 
-              <button 
-                onClick={() => handleDelete(selectedInquiry._id)}
+              <button
+                onClick={() => setConfirmDelete(selectedInquiry._id)}
                 className="w-full flex items-center justify-center gap-2 py-4 text-red-500 text-[9px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-50 transition-colors rounded-sm mt-4"
               >
                 <Trash2 size={14} />
@@ -249,6 +244,14 @@ export default function AdminInquiriesPage() {
           </div>
         )}
       </div>
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Delete Inquiry"
+        message="This will permanently remove this inquiry. This action cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => { handleDelete(confirmDelete); setConfirmDelete(null); }}
+      />
     </div>
   );
 }
