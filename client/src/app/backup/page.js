@@ -6,10 +6,16 @@ export default function BackupPage() {
   const [isUploading, setIsUploading] = useState(false)
   const [message, setMessage] = useState('')
 
+  // Safely get base URL (prevents /api/api/ issues if NEXT_PUBLIC_API_URL ends in /api)
+  const getBaseUrl = () => {
+    const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+    return url.replace(/\/api\/?$/, '')
+  }
+
   const handleDownload = async () => {
     try {
       setMessage('Downloading...')
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/backup/download`, {
+      const response = await fetch(`${getBaseUrl()}/api/backup/download`, {
         method: 'GET'
       })
 
@@ -46,7 +52,7 @@ export default function BackupPage() {
 
       setMessage('Uploading to database (this may take a moment)...')
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/backup/upload`, {
+      const response = await fetch(`${getBaseUrl()}/api/backup/upload`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
