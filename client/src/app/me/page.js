@@ -23,7 +23,8 @@ import {
   Eye
 } from 'lucide-react'
 import { useWishlist } from '@/contexts/WishlistContext'
-import { fetchUserOrders, fetchMyPayments } from '@/lib/api'
+import { fetchUserOrders, fetchMyPayments, uploadImage, submitQrPayment } from '@/lib/api'
+import { useToast } from '@/contexts/ToastContext'
 
 export default function UserDashboard() {
   const { user, loading, logout, isAuthenticated, token } = useAuth()
@@ -38,6 +39,47 @@ export default function UserDashboard() {
   const [payments, setPayments] = useState([])
   const [fetchingPayments, setFetchingPayments] = useState(false)
   const [screenshotPreview, setScreenshotPreview] = useState(null)
+  const { showToast } = useToast()
+
+  const [uploadProofOrder, setUploadProofOrder] = useState(null)
+  const [paymentProof, setPaymentProof] = useState({
+    screenshot: null,
+    screenshotPreview: null,
+    senderPhone: '',
+    senderUpi: '',
+  })
+  const [isSubmittingProof, setIsSubmittingProof] = useState(false)
+
+  const handleSubmitProof = async () => {
+    if (!paymentProof.screenshot || !paymentProof.senderPhone || !paymentProof.senderUpi) {
+      showToast("Please fill all fields and upload the screenshot.", "error");
+      return;
+    }
+    try {
+      setIsSubmittingProof(true);
+      const imgForm = new FormData();
+      imgForm.append("image", paymentProof.screenshot);
+      const imgRes = await uploadImage(token, imgForm);
+
+      await submitQrPayment(token, {
+        orderId: uploadProofOrder._id,
+        screenshot: imgRes.url,
+        senderPhone: paymentProof.senderPhone,
+        senderUpi: paymentProof.senderUpi,
+        amount: uploadProofOrder.total || 0,
+      });
+
+      showToast("Payment proof submitted successfully! We'll verify it shortly.", "success");
+      setUploadProofOrder(null);
+      
+      const paymentsData = await fetchMyPayments(token);
+      setPayments(paymentsData.payments || []);
+    } catch (err) {
+      showToast(err.message || "Failed to submit payment proof.", "error");
+    } finally {
+      setIsSubmittingProof(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -356,16 +398,30 @@ export default function UserDashboard() {
                             </div>
                           </div>
                           <div className="p-6">
-                            <div className="flex flex-wrap gap-4">
-                              {order.items?.slice(0, 4).map((item, idx) => (
-                                <div key={idx} className="w-16 h-16 bg-white border border-slate-100 rounded-sm p-1 relative group-hover:border-brand/20 transition-colors">
-                                  <Image src={item.image || '/images/placeholder.png'} alt={item.name} fill className="object-contain p-1" sizes="64px" />
-                                </div>
-                              ))}
-                              {order.items?.length > 4 && (
-                                <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-sm flex items-center justify-center text-[10px] font-black text-slate-400">
-                                  +{order.items.length - 4} MORE
-                                </div>
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                              <div className="flex flex-wrap gap-4">
+                                {order.items?.slice(0, 4).map((item, idx) => (
+                                  <div key={idx} className="w-16 h-16 bg-white border border-slate-100 rounded-sm p-1 relative group-hover:border-brand/20 transition-colors">
+                                    <Image src={item.image || '/images/placeholder.png'} alt={item.name} fill className="object-contain p-1" sizes="64px" />
+                                  </div>
+                                ))}
+                                {order.items?.length > 4 && (
+                                  <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-sm flex items-center justify-center text-[10px] font-black text-slate-400">
+                                    +{order.items.length - 4} MORE
+                                  </div>
+                                )}
+                              </div>
+
+                              {order.paymentMethod === 'qr' && order.status === 'pending' && !payments.some(p => p.order && (p.order._id === order._id || p.order === order._id)) && (
+                                <button
+                                  onClick={() => {
+                                    setUploadProofOrder(order);
+                                    setPaymentProof({ screenshot: null, screenshotPreview: null, senderPhone: user?.phone || '', senderUpi: '' });
+                                  }}
+                                  className="w-full sm:w-auto bg-brand text-white px-5 py-3 rounded-sm font-black uppercase tracking-widest text-[9px] hover:bg-brand-dark transition-all shadow-md shadow-brand/10 flex items-center justify-center gap-2"
+                                >
+                                  <IndianRupee size={12} /> Upload Payment Proof
+                                </button>
                               )}
                             </div>
                           </div>
@@ -482,6 +538,104 @@ export default function UserDashboard() {
                       })}
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Upload Payment Proof Modal */}
+            {uploadProofOrder && (
+              <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+                <div className="bg-white border border-slate-200 rounded-lg max-w-md w-full p-6 md:p-8 space-y-6 shadow-2xl relative animate-reveal">
+                  <button
+                    onClick={() => setUploadProofOrder(null)}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold"
+                  >
+                    ✕
+                  </button>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-3">
+                      <IndianRupee size={22} />
+                    </div>
+                    <h3 className="text-lg font-black text-brand-blue uppercase tracking-tight">Upload Payment Proof</h3>
+                    <p className="text-slate-500 text-xs mt-1">
+                      Order ID: #{uploadProofOrder._id.substring(uploadProofOrder._id.length - 8).toUpperCase()} &middot; Total: ₹{uploadProofOrder.total?.toLocaleString('en-IN')}
+                    </p>
+                  </div>
+
+                  {/* Screenshot Upload */}
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block">Payment Screenshot</label>
+                    {paymentProof.screenshotPreview ? (
+                      <div className="relative w-full aspect-square max-w-[180px] mx-auto border-2 border-brand/20 rounded-sm overflow-hidden">
+                        <Image src={paymentProof.screenshotPreview} alt="Screenshot" fill className="object-contain" sizes="180px" />
+                        <button
+                          onClick={() => setPaymentProof(prev => ({ ...prev, screenshot: null, screenshotPreview: null }))}
+                          className="absolute top-1 right-1 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center text-[10px] font-black hover:bg-rose-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center gap-2 w-full py-8 border-2 border-dashed border-slate-200 rounded-sm bg-slate-50 cursor-pointer hover:border-brand transition-all">
+                        <ShoppingBag size={24} className="text-slate-300" />
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Select screenshot</span>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setPaymentProof(prev => ({ ...prev, screenshotPreview: URL.createObjectURL(file), screenshot: file }));
+                            }
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Phone Number */}
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block">Phone Number (used to send)</label>
+                    <input
+                      type="tel"
+                      value={paymentProof.senderPhone}
+                      onChange={(e) => setPaymentProof(prev => ({ ...prev, senderPhone: e.target.value }))}
+                      placeholder="+91 9876543210"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-xs font-medium"
+                    />
+                  </div>
+
+                  {/* UPI ID */}
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block">UPI ID (used to send)</label>
+                    <input
+                      type="text"
+                      value={paymentProof.senderUpi}
+                      onChange={(e) => setPaymentProof(prev => ({ ...prev, senderUpi: e.target.value }))}
+                      placeholder="yourname@upi"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand text-xs font-medium"
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={handleSubmitProof}
+                      disabled={isSubmittingProof}
+                      className="flex-1 bg-brand text-white py-3 rounded-sm font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-brand-dark transition-all disabled:opacity-50"
+                    >
+                      {isSubmittingProof ? <Loader2 className="animate-spin" size={14} /> : null}
+                      {isSubmittingProof ? "Submitting..." : "Submit Proof"}
+                    </button>
+                    <button
+                      onClick={() => setUploadProofOrder(null)}
+                      disabled={isSubmittingProof}
+                      className="px-4 py-3 border border-slate-200 rounded-sm font-black uppercase tracking-widest text-[10px] text-slate-400 hover:border-rose-300 hover:text-rose-500 transition-all"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

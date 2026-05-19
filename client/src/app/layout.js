@@ -77,6 +77,7 @@ export const metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true,
