@@ -34,9 +34,22 @@ if (!process.env.ADMIN_EMAIL) {
 const app = express()
 const port = process.env.PORT || 4000
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err))
+// database connection middleware for serverless robustness
+app.use(async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      console.log('Connecting to MongoDB...');
+      await mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 5000,
+      });
+      console.log('MongoDB connected');
+    }
+    next();
+  } catch (err) {
+    console.error('MongoDB connection error in middleware:', err);
+    res.status(500).json({ message: 'Database connection failed. Please try again.' });
+  }
+});
 
 // security middlewares
 app.use(helmet())
