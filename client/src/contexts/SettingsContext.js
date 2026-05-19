@@ -6,14 +6,7 @@ import { fetchSiteSettings } from "@/lib/api";
 const SettingsContext = createContext();
 
 export function SettingsProvider({ children }) {
-  const [settings, setSettings] = useState(() => {
-    // Try to load from localStorage on initial render
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("site_settings");
-      return saved ? JSON.parse(saved) : null;
-    }
-    return null;
-  });
+  const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const loadSettings = async () => {
@@ -33,6 +26,16 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     const init = async () => {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("site_settings");
+        if (saved) {
+          try {
+            setSettings(JSON.parse(saved));
+          } catch (e) {
+            console.error("Failed to parse cached settings", e);
+          }
+        }
+      }
       await loadSettings();
     };
     init();

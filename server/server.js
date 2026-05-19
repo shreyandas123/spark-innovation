@@ -17,7 +17,7 @@ import jobRoutes from './routes/jobs.js'
 import settingsRoutes from './routes/settings.js'
 import uploadRoutes from './routes/upload.js'
 import cartRoutes from './routes/cart.js'
-import backupRoutes from './routes/backup.js'
+import qrPaymentRoutes from './routes/qrPayments.js'
 
 // validate required env vars before anything else
 const required = ['MONGO_URI', 'JWT_SECRET', 'CLOUDINARY_URL', 'GOOGLE_CLIENT_ID']
@@ -34,9 +34,22 @@ if (!process.env.ADMIN_EMAIL) {
 const app = express()
 const port = process.env.PORT || 4000
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err))
+// database connection middleware for serverless robustness
+app.use(async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      console.log('Connecting to MongoDB...');
+      await mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 5000,
+      });
+      console.log('MongoDB connected');
+    }
+    next();
+  } catch (err) {
+    console.error('MongoDB connection error in middleware:', err);
+    res.status(500).json({ message: 'Database connection failed. Please try again.' });
+  }
+});
 
 // security middlewares
 app.use(helmet())
@@ -76,7 +89,7 @@ app.use('/api/jobs', jobRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/cart', cartRoutes)
-app.use('/api/backup', backupRoutes)
+app.use('/api/qr-payments', qrPaymentRoutes)
 
 // 404 handler for unknown routes
 app.use((req, res) => {

@@ -123,11 +123,6 @@ function LoginForm() {
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-lg text-sm focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/5 outline-none transition-all"
                 placeholder="Password"
               />
-              <div className="text-right">
-                <button type="button" onClick={() => showToast("Forgot password feature coming soon!", "warning")} className="text-[10px] font-bold text-brand uppercase tracking-widest hover:text-brand-dark transition-colors">
-                  Forgot?
-                </button>
-              </div>
             </div>
 
             <button
