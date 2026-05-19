@@ -64,6 +64,7 @@ export const updateSiteSettings = async (req, res) => {
   if (email !== undefined) updates.email = email
   if (address !== undefined) updates.address = address
   if (mapsUrl !== undefined) updates.mapsUrl = mapsUrl
+  if (req.body.upiQrCode !== undefined) updates.upiQrCode = req.body.upiQrCode
 
   // dot notation so partial social updates don't wipe the other social fields
   if (social && typeof social === 'object') {

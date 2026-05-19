@@ -13,6 +13,7 @@ const siteSettingsSchema = new Schema(
     email: { type: String },
     address: { type: String },
     mapsUrl: { type: String },
+    upiQrCode: { type: String },
     social: {
       facebook: String,
       instagram: String,

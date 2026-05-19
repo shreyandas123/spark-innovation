@@ -15,10 +15,15 @@ import {
   Edit2,
   LayoutDashboard,
   ArrowLeft,
-  Loader2
+  Loader2,
+  IndianRupee,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Eye
 } from 'lucide-react'
 import { useWishlist } from '@/contexts/WishlistContext'
-import { fetchUserOrders } from '@/lib/api'
+import { fetchUserOrders, fetchMyPayments } from '@/lib/api'
 
 export default function UserDashboard() {
   const { user, loading, logout, isAuthenticated, token } = useAuth()
@@ -30,6 +35,9 @@ export default function UserDashboard() {
   const [totalOrders, setTotalOrders] = useState(0)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
+  const [payments, setPayments] = useState([])
+  const [fetchingPayments, setFetchingPayments] = useState(false)
+  const [screenshotPreview, setScreenshotPreview] = useState(null)
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -55,6 +63,24 @@ export default function UserDashboard() {
     }
     if (isAuthenticated) {
       loadOrders()
+    }
+  }, [isAuthenticated, token])
+
+  useEffect(() => {
+    const loadPayments = async () => {
+      if (!isAuthenticated || !token) return
+      try {
+        setFetchingPayments(true)
+        const data = await fetchMyPayments(token)
+        setPayments(data.payments || [])
+      } catch (error) {
+        console.error('Failed to fetch payments:', error)
+      } finally {
+        setFetchingPayments(false)
+      }
+    }
+    if (isAuthenticated) {
+      loadPayments()
     }
   }, [isAuthenticated, token])
 
@@ -143,6 +169,20 @@ export default function UserDashboard() {
                 >
                   <ShoppingBag size={18} />
                   Orders
+                </button>
+                <button
+                  onClick={() => setActiveTab('payments')}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition ${
+                    activeTab === 'payments' ? 'bg-brand text-white shadow-md' : 'text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <IndianRupee size={18} />
+                  Payments
+                  {payments.filter(p => p.status === 'pending').length > 0 && (
+                    <span className="ml-auto bg-amber-100 text-amber-600 text-[9px] font-black px-2 py-0.5 rounded-full">
+                      {payments.filter(p => p.status === 'pending').length}
+                    </span>
+                  )}
                 </button>
                 <button
                   onClick={() => setActiveTab('profile')}
@@ -347,6 +387,125 @@ export default function UserDashboard() {
                       )}
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Payments Tab */}
+            {activeTab === 'payments' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-bold text-lg text-brand-blue uppercase tracking-tight">Your Payments</h3>
+                  </div>
+
+                  {fetchingPayments ? (
+                    <div className="text-center py-20">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand mx-auto mb-4"></div>
+                      <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Loading Payments...</p>
+                    </div>
+                  ) : payments.length === 0 ? (
+                    <div className="text-center py-20 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                      <IndianRupee size={48} className="text-slate-200 mx-auto mb-4" />
+                      <p className="text-slate-500 font-bold">No QR payments yet.</p>
+                      <p className="text-slate-400 text-sm mt-1">When you pay via QR code at checkout, your payments will appear here.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {payments.map(payment => {
+                        const statusConfig = {
+                          pending: { color: 'bg-amber-50 text-amber-600 border-amber-100', icon: <Clock size={12} />, label: 'Pending' },
+                          accepted: { color: 'bg-emerald-50 text-emerald-600 border-emerald-100', icon: <CheckCircle2 size={12} />, label: 'Accepted' },
+                          declined: { color: 'bg-rose-50 text-rose-600 border-rose-100', icon: <XCircle size={12} />, label: 'Declined' },
+                        }
+                        const sc = statusConfig[payment.status] || statusConfig.pending
+
+                        return (
+                          <div key={payment._id} className="border border-slate-100 rounded-lg overflow-hidden hover:border-brand/30 transition-all hover:shadow-lg">
+                            <div className="bg-slate-50 px-4 md:px-6 py-4 flex flex-wrap justify-between items-center gap-3 border-b border-slate-100">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 bg-brand/10 text-brand rounded-full flex items-center justify-center shrink-0">
+                                  <IndianRupee size={16} />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount</p>
+                                  <p className="text-sm font-black text-brand">₹{payment.amount?.toLocaleString('en-IN')}</p>
+                                </div>
+                              </div>
+                              <div className="hidden sm:block">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</p>
+                                <p className="text-xs font-bold text-brand-blue">
+                                  {new Date(payment.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </p>
+                              </div>
+                              <span className={`flex items-center gap-1.5 px-3 py-1.5 border text-[9px] font-black uppercase tracking-widest rounded-full ${sc.color}`}>
+                                {sc.icon} {sc.label}
+                              </span>
+                            </div>
+                            <div className="p-4 md:p-6">
+                              <div className="flex flex-col sm:flex-row gap-4">
+                                {/* Screenshot Thumbnail */}
+                                <div
+                                  className="relative w-20 h-20 bg-slate-50 border border-slate-100 rounded-sm overflow-hidden shrink-0 cursor-pointer group"
+                                  onClick={() => setScreenshotPreview(payment.screenshot)}
+                                >
+                                  <Image src={payment.screenshot} alt="Payment proof" fill className="object-cover" sizes="80px" />
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                    <Eye size={16} className="text-white" />
+                                  </div>
+                                </div>
+
+                                <div className="flex-1 space-y-2">
+                                  <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-500">
+                                    <span><span className="text-slate-400 font-bold">UPI:</span> {payment.senderUpi}</span>
+                                    <span><span className="text-slate-400 font-bold">Phone:</span> {payment.senderPhone}</span>
+                                  </div>
+                                  {payment.order && (
+                                    <p className="text-[10px] text-slate-400 font-bold">
+                                      Order #{payment.order._id?.substring(payment.order._id.length - 8).toUpperCase()}
+                                      {' '}&middot;{' '}
+                                      {payment.order.items?.length} item{payment.order.items?.length !== 1 ? 's' : ''}
+                                      {' '}&middot;{' '}
+                                      ₹{payment.order.total?.toLocaleString('en-IN')}
+                                    </p>
+                                  )}
+                                  {payment.status === 'declined' && payment.adminNote && (
+                                    <p className="text-xs text-rose-500 font-medium bg-rose-50 px-3 py-2 rounded-sm mt-2">
+                                      Note: {payment.adminNote}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Screenshot Preview Modal */}
+            {screenshotPreview && (
+              <div
+                className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+                onClick={() => setScreenshotPreview(null)}
+              >
+                <div className="relative w-full max-w-lg">
+                  <Image
+                    src={screenshotPreview}
+                    alt="Payment screenshot"
+                    width={600}
+                    height={600}
+                    className="w-full h-auto max-h-[85vh] object-contain rounded-sm"
+                  />
+                  <button
+                    onClick={() => setScreenshotPreview(null)}
+                    className="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-slate-500 hover:text-brand shadow-lg"
+                  >
+                    <XCircle size={20} />
+                  </button>
                 </div>
               </div>
             )}

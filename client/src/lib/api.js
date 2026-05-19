@@ -248,5 +248,29 @@ export const updateAdminUser = (token, id, data) =>
 export const updatePassword = (token, passwordData) => 
   apiRequest('/auth/password', { method: 'PUT', token, body: JSON.stringify(passwordData) });
 
-export const applyForJob = (jobData) => 
+export const applyForJob = (jobData) =>
   apiRequest('/jobs/apply', { method: 'POST', body: JSON.stringify(jobData) });
+
+// QR Payments
+export const submitQrPayment = (token, paymentData) =>
+  apiRequest('/qr-payments', { method: 'POST', token, body: JSON.stringify(paymentData) });
+
+export const fetchMyPayments = async (token) => {
+  try {
+    return await apiRequest('/qr-payments/me', { token });
+  } catch (error) {
+    return { payments: [] };
+  }
+};
+
+export const fetchAdminPayments = async (token, status = '') => {
+  try {
+    const query = status ? `?status=${status}` : '';
+    return await apiRequest(`/qr-payments/admin${query}`, { token });
+  } catch (error) {
+    return { payments: [] };
+  }
+};
+
+export const updatePaymentStatus = (token, id, status) =>
+  apiRequest(`/qr-payments/admin/${id}`, { method: 'PATCH', token, body: JSON.stringify({ status }) });

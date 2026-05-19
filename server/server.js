@@ -17,7 +17,7 @@ import jobRoutes from './routes/jobs.js'
 import settingsRoutes from './routes/settings.js'
 import uploadRoutes from './routes/upload.js'
 import cartRoutes from './routes/cart.js'
-import backupRoutes from './routes/backup.js'
+import qrPaymentRoutes from './routes/qrPayments.js'
 
 // validate required env vars before anything else
 const required = ['MONGO_URI', 'JWT_SECRET', 'CLOUDINARY_URL', 'GOOGLE_CLIENT_ID']
@@ -76,7 +76,7 @@ app.use('/api/jobs', jobRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/cart', cartRoutes)
-app.use('/api/backup', backupRoutes)
+app.use('/api/qr-payments', qrPaymentRoutes)
 
 // 404 handler for unknown routes
 app.use((req, res) => {
