@@ -14,6 +14,7 @@ const siteSettingsSchema = new Schema(
     address: { type: String },
     mapsUrl: { type: String },
     upiQrCode: { type: String },
+    whatsappNumber: { type: String, default: '918808409295' },
     social: {
       facebook: String,
       instagram: String,

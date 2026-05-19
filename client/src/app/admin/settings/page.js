@@ -30,6 +30,7 @@ export default function SettingsPage() {
     favicon: "",
     topBarText: "",
     upiQrCode: "",
+    whatsappNumber: "",
     social: {
       facebook: "",
       instagram: "",
@@ -289,7 +290,7 @@ export default function SettingsPage() {
                       <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Primary Phone</label>
                       <input 
                         type="text" 
-                        value={settings.phone}
+                        value={settings.phone || ""}
                         onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
                         className="w-full border-2 border-slate-100 rounded-sm px-5 py-4 text-sm font-bold focus:border-brand outline-none transition-all" 
                       />
@@ -298,8 +299,21 @@ export default function SettingsPage() {
                       <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Support Email</label>
                       <input 
                         type="email" 
-                        value={settings.email}
+                        value={settings.email || ""}
                         onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                        className="w-full border-2 border-slate-100 rounded-sm px-5 py-4 text-sm font-bold focus:border-brand outline-none transition-all" 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">WhatsApp Floating Support Number (With Country Code, e.g. 918808409295)</label>
+                      <input 
+                        type="text" 
+                        value={settings.whatsappNumber || ""}
+                        onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
+                        placeholder="918808409295"
                         className="w-full border-2 border-slate-100 rounded-sm px-5 py-4 text-sm font-bold focus:border-brand outline-none transition-all" 
                       />
                     </div>

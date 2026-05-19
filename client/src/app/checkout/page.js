@@ -35,6 +35,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState(null);
+  const [placedOrderTotal, setPlacedOrderTotal] = useState(0);
 
   // Payment proof state (for QR payments)
   const [paymentProof, setPaymentProof] = useState({
@@ -122,6 +123,7 @@ export default function CheckoutPage() {
           return;
         }
         const result = await createOrder(token, orderData);
+        setPlacedOrderTotal(result.order?.total || cartTotal);
         clearCart();
 
         // If QR payment, go to proof upload step; otherwise success
@@ -176,7 +178,7 @@ export default function CheckoutPage() {
           screenshot: imgRes.url,
           senderPhone: paymentProof.senderPhone,
           senderUpi: paymentProof.senderUpi,
-          amount: cartTotal || 0,
+          amount: placedOrderTotal || 0,
         });
 
         setStep(4);

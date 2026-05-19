@@ -50,7 +50,7 @@ export const getSiteSettings = async (req, res) => {
 }
 
 export const updateSiteSettings = async (req, res) => {
-  const { websiteName, metaDescription, heroHeadline, heroSubheadline, topBarText, logo, favicon, phone, email, address, mapsUrl, social } = req.body
+  const { websiteName, metaDescription, heroHeadline, heroSubheadline, topBarText, logo, favicon, phone, email, address, mapsUrl, social, whatsappNumber } = req.body
   const updates = {}
 
   if (websiteName !== undefined) updates.websiteName = websiteName
@@ -65,6 +65,7 @@ export const updateSiteSettings = async (req, res) => {
   if (address !== undefined) updates.address = address
   if (mapsUrl !== undefined) updates.mapsUrl = mapsUrl
   if (req.body.upiQrCode !== undefined) updates.upiQrCode = req.body.upiQrCode
+  if (whatsappNumber !== undefined) updates.whatsappNumber = whatsappNumber
 
   // dot notation so partial social updates don't wipe the other social fields
   if (social && typeof social === 'object') {
