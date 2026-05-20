@@ -1,0 +1,127 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts";
+import { Calendar } from "lucide-react";
+import { fetchAnalyticsData } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
+
+export default function WeeklyComparison() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { token } = useAuth();
+
+  useEffect(() => {
+    if (!token) return;
+    loadData();
+  }, [token]);
+
+  const loadData = async () => {
+    try {
+      const result = await fetchAnalyticsData(token);
+      setData(result.data);
+    } catch (err) {
+      console.error("Error loading analytics:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="bg-slate-100 h-96 rounded-sm animate-pulse"></div>;
+  }
+
+  if (!data) return null;
+
+  return (
+    <div className="space-y-6">
+      {/* Combined Chart */}
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+        <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Weekly Trend Comparison</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data.weeklyComparison}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis dataKey="week" stroke="#94a3b8" />
+            <YAxis stroke="#94a3b8" />
+            <Tooltip
+              contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "4px" }}
+            />
+            <Legend />
+            <Bar dataKey="users" fill="#3b82f6" name="Users" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="sessions" fill="#8b5cf6" name="Sessions" radius={[8, 8, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Session Duration Trend */}
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+        <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Avg Session Duration Trend</h2>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={data.weeklyComparison}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis dataKey="week" stroke="#94a3b8" />
+            <YAxis stroke="#94a3b8" label={{ value: "Duration (seconds)", angle: -90, position: "insideLeft" }} />
+            <Tooltip
+              contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "4px" }}
+              formatter={(value) => `${value}s`}
+            />
+            <Line type="monotone" dataKey="avgDuration" stroke="#ec4899" strokeWidth={2} dot={{ fill: "#ec4899", r: 4 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Detailed Table */}
+      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-200">
+          <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Weekly Performance Details</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">Week</th>
+                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Users</th>
+                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Sessions</th>
+                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Avg Duration</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {data.weeklyComparison?.map((week, idx) => (
+                <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-100 text-purple-600 rounded-sm">
+                        <Calendar size={16} />
+                      </div>
+                      <p className="text-sm font-bold text-slate-700">{week.week}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <span className="text-sm font-black text-brand-blue">{week.users}</span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <span className="text-sm font-bold text-slate-600">{week.sessions}</span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <span className="text-sm font-bold text-slate-600">{week.avgDuration}s</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

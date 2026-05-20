@@ -4,9 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Package, 
+import {
+  LayoutDashboard,
+  Package,
   Tags,
   ShoppingBag,
   MessageSquare,
@@ -18,7 +18,8 @@ import {
   Globe,
   Users,
   Menu,
-  X
+  X,
+  BarChart3
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import AdminGuard from "@/components/AdminGuard";
@@ -81,6 +82,7 @@ export default function AdminLayout({ children }) {
 
   const menuItems = [
     { icon: <LayoutDashboard size={18} />, label: "Dashboard", href: "/admin" },
+    { icon: <BarChart3 size={18} />, label: "Analytics", href: "/admin/analytics" },
     { icon: <Package size={18} />, label: "Products", href: "/admin/products" },
     { icon: <Tags size={18} />, label: "Categories", href: "/admin/categories" },
     { icon: <ShoppingBag size={18} />, label: "Orders", href: "/admin/orders" },
