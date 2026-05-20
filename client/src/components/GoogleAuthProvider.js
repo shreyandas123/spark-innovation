@@ -8,8 +8,7 @@ export default function GoogleAuthProvider({ children }) {
 
   useEffect(() => {
     if (!clientId) {
-      console.error('CRITICAL: NEXT_PUBLIC_GOOGLE_CLIENT_ID is missing from environment variables.')
-      console.log('Please ensure you have set it in your .env file or Vercel dashboard.')
+      console.warn('Google OAuth is not configured. Google sign-in will not be available.')
     }
   }, [clientId])
 
