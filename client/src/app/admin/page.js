@@ -9,13 +9,27 @@ import {
   Clock,
   Eye,
   Image as ImageIcon,
-  Settings
+  Settings,
+  BarChart3
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { fetchInquiries, fetchStats } from "@/lib/api";
+import { fetchInquiries, fetchStats, fetchAnalyticsData } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import {
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState([
@@ -25,10 +39,13 @@ export default function AdminDashboard() {
     { label: "Total Users", value: "0", icon: <Users size={24} />, color: "bg-slate-800", trend: "Loading..." },
   ]);
   const [recentInquiries, setRecentInquiries] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { token } = useAuth();
   const { showToast } = useToast();
+
+  const TRAFFIC_COLORS = ["#f43f5e", "#3b82f6", "#8b5cf6", "#ec4899"];
 
   const loadDashboardData = async (showLoading = true) => {
     if (!token) return;
@@ -37,43 +54,47 @@ export default function AdminDashboard() {
         setLoading(true);
         setError(null);
       }
-      const [statsData, inquiriesData] = await Promise.all([
+      const [statsData, inquiriesData, analyticsResult] = await Promise.all([
         fetchStats(token),
-        fetchInquiries(token)
+        fetchInquiries(token),
+        fetchAnalyticsData(token).catch(() => null)
       ]);
 
       const liveStats = [
-        { 
-          label: "Total Products", 
-          value: statsData.products?.total || "0", 
-          icon: <Package size={24} />, 
+        {
+          label: "Total Products",
+          value: statsData.products?.total || "0",
+          icon: <Package size={24} />,
           color: "bg-blue-500",
           trend: `${statsData.products?.inStock || 0} In Stock`
         },
-        { 
-          label: "New Inquiries", 
-          value: statsData.inquiries?.byStatus?.New || "0", 
-          icon: <MessageSquare size={24} />, 
+        {
+          label: "New Inquiries",
+          value: statsData.inquiries?.byStatus?.New || "0",
+          icon: <MessageSquare size={24} />,
           color: "bg-brand",
           trend: `${statsData.inquiries?.total || 0} Total`
         },
-        { 
-          label: "Active Banners", 
-          value: statsData.banners?.active || "0", 
-          icon: <Eye size={24} />, 
+        {
+          label: "Active Banners",
+          value: statsData.banners?.active || "0",
+          icon: <Eye size={24} />,
           color: "bg-indigo-500",
           trend: "Live"
         },
-        { 
-          label: "Total Users", 
-          value: statsData.users?.total || "0", 
-          icon: <Users size={24} />, 
+        {
+          label: "Total Users",
+          value: statsData.users?.total || "0",
+          icon: <Users size={24} />,
           color: "bg-slate-800",
           trend: "Registered"
         },
       ];
       setStats(liveStats);
       setRecentInquiries((inquiriesData.inquiries || []).slice(0, 5));
+      if (analyticsResult?.data) {
+        setAnalyticsData(analyticsResult.data);
+      }
     } catch (err) {
       console.error("Error loading dashboard data:", err);
       if (showLoading) {
@@ -121,6 +142,70 @@ export default function AdminDashboard() {
           </div>
         ))}
       </div>
+
+      {/* Analytics Summary Section */}
+      {analyticsData && (
+        <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight">Analytics Summary</h2>
+            <Link href="/admin/analytics" className="text-[10px] font-black text-brand uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+              View Full Analytics <ArrowUpRight size={14} />
+            </Link>
+          </div>
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Users & Sessions Chart */}
+            <div className="bg-slate-50 p-4 rounded-sm">
+              <h3 className="text-sm font-black text-slate-700 uppercase tracking-wide mb-4">Users & Sessions (30 Days)</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={analyticsData.usersOverTime}>
+                  <defs>
+                    <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 10 }} />
+                  <YAxis stroke="#94a3b8" tick={{ fontSize: 10 }} />
+                  <Tooltip
+                    contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "4px" }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="users"
+                    stroke="#3b82f6"
+                    fill="url(#colorUsers)"
+                    name="Users"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Traffic Sources Chart */}
+            <div className="bg-slate-50 p-4 rounded-sm">
+              <h3 className="text-sm font-black text-slate-700 uppercase tracking-wide mb-4">Traffic Sources</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={analyticsData.trafficSources}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {analyticsData.trafficSources?.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={TRAFFIC_COLORS[index % TRAFFIC_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-10">
         {}
