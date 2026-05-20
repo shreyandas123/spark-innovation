@@ -19,6 +19,7 @@ import uploadRoutes from './routes/upload.js'
 import cartRoutes from './routes/cart.js'
 import qrPaymentRoutes from './routes/qrPayments.js'
 import analyticsRoutes from './routes/analytics.js'
+import gaAuthRoutes from './routes/gaAuth.js'
 
 // validate required env vars before anything else
 const required = ['MONGO_URI', 'JWT_SECRET', 'CLOUDINARY_URL', 'GOOGLE_CLIENT_ID']
@@ -105,6 +106,7 @@ app.use('/api/upload', uploadRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/qr-payments', qrPaymentRoutes)
 app.use('/api/analytics', analyticsRoutes)
+app.use('/api/ga-auth', gaAuthRoutes)
 
 // 404 handler for unknown routes
 app.use((req, res) => {

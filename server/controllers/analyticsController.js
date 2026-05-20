@@ -1,20 +1,26 @@
-import { BetaAnalyticsDataClient } from '@google-analytics/data'
+import { google } from 'googleapis'
 
 export const getAnalyticsData = async (req, res, next) => {
   try {
     const measurementId = process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID
     const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID
-    const credentialsJson = process.env.GOOGLE_ANALYTICS_CREDENTIALS
+    const refreshToken = process.env.GOOGLE_REFRESH_TOKEN
 
-    if (!measurementId || !propertyId || !credentialsJson) {
+    if (!measurementId || !propertyId || !refreshToken) {
       return res.status(400).json({
-        message: 'Google Analytics not fully configured. Please add GOOGLE_ANALYTICS_MEASUREMENT_ID, GOOGLE_ANALYTICS_PROPERTY_ID, and GOOGLE_ANALYTICS_CREDENTIALS to environment variables.',
+        message: 'Google Analytics not fully configured. Please add GOOGLE_ANALYTICS_MEASUREMENT_ID, GOOGLE_ANALYTICS_PROPERTY_ID, and GOOGLE_REFRESH_TOKEN to environment variables.',
         error: 'GA_NOT_CONFIGURED'
       })
     }
 
-    const credentials = JSON.parse(credentialsJson)
-    const analyticsDataClient = new BetaAnalyticsDataClient({ credentials })
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET
+    )
+
+    oauth2Client.setCredentials({ refresh_token: refreshToken })
+
+    const analyticsdata = google.analyticsdata({ version: 'v1beta', auth: oauth2Client })
 
     const today = new Date()
     const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
@@ -22,7 +28,7 @@ export const getAnalyticsData = async (req, res, next) => {
     const formatDate = (date) => date.toISOString().split('T')[0]
 
     // Fetch 30-day overview metrics
-    const [overviewResponse] = await analyticsDataClient.runReport({
+    const [overviewResponse] = await analyticsdata.properties.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [
@@ -35,7 +41,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch daily data for chart
-    const [dailyResponse] = await analyticsDataClient.runReport({
+    const [dailyResponse] = await analyticsdata.properties.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [
@@ -47,7 +53,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch top pages
-    const [pagesResponse] = await analyticsDataClient.runReport({
+    const [pagesResponse] = await analyticsdata.properties.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [
@@ -61,7 +67,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch traffic sources
-    const [sourcesResponse] = await analyticsDataClient.runReport({
+    const [sourcesResponse] = await analyticsdata.properties.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [{ name: 'sessions' }],
@@ -70,7 +76,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch device categories
-    const [deviceResponse] = await analyticsDataClient.runReport({
+    const [deviceResponse] = await analyticsdata.properties.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [{ name: 'sessions' }],
