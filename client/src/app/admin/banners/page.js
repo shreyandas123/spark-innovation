@@ -5,11 +5,14 @@ import { Plus, Image as ImageIcon, Trash2, Edit2, Link as LinkIcon, Check, X, Lo
 import { fetchBanners, createBanner, updateBanner, deleteBanner, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Image from "next/image";
 
 export default function BannersPage() {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const [isAddingBanner, setIsAddingBanner] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
   const { token } = useAuth();
@@ -17,6 +20,8 @@ export default function BannersPage() {
 
   const [formData, setFormData] = useState({
     title: "",
+    subtitle: "",
+    description: "",
     image: "",
     link: "",
     active: true
@@ -25,41 +30,28 @@ export default function BannersPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
-  useEffect(() => {
-    let isMounted = true;
-    const initBanners = async () => {
-      try {
-        const data = await fetchBanners();
-        if (isMounted) {
-          setBanners(data.banners || []);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Error loading banners:", err);
-          setLoading(false);
-        }
-      }
-    };
-    initBanners();
-    return () => { isMounted = false; };
-  }, []);
-
-  const loadBanners = async (showLoading = true) => {
+  const loadBanners = async () => {
     try {
-      if (showLoading) setLoading(true);
+      setLoading(true);
+      setError(null);
       const data = await fetchBanners();
       setBanners(data.banners || []);
     } catch (err) {
       console.error("Error loading banners:", err);
+      setError("Failed to load banners.");
+      showToast("Failed to load banners", "error");
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    (async () => { await loadBanners(); })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleSaveBanner = async () => {
-    if (!formData.title || !formData.image) {
-      showToast("Title and Image URL are required", "error");
+    if (!formData.title || (!formData.image && !imageFile)) {
+      showToast("Title and Image are required", "error");
       return;
     }
 
@@ -106,14 +98,16 @@ export default function BannersPage() {
         showToast("Only image files are allowed", "error");
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Image size should be less than 5MB", "error");
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("Image size should be less than 10MB", "error");
         return;
       }
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+      
+      // Cleanup the object URL
+      return () => URL.revokeObjectURL(objectUrl);
     }
   };
 
@@ -147,8 +141,10 @@ export default function BannersPage() {
         <button 
           onClick={() => {
             setEditingBanner(null);
-            setFormData({ title: "", image: "", link: "", active: true });
+            setFormData({ title: "", subtitle: "", description: "", image: "", link: "", active: true });
             setIsAddingBanner(true);
+            setImagePreview("");
+            setImageFile(null);
           }}
           className="flex items-center gap-2 bg-brand text-white px-6 py-3 rounded-sm font-black uppercase tracking-widest text-[10px] hover:bg-brand-dark transition-all shadow-lg"
         >
@@ -156,7 +152,12 @@ export default function BannersPage() {
         </button>
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-red-500">{error}</p>
+          <button onClick={loadBanners} className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">Try Again</button>
+        </div>
+      ) : loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4 bg-white border border-slate-200 rounded-sm">
           <Loader2 className="animate-spin text-brand" size={32} />
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Banners...</p>
@@ -190,6 +191,7 @@ export default function BannersPage() {
                 </td>
                 <td className="px-6 py-4">
                   <p className="font-bold text-brand-blue">{banner.title}</p>
+                  <p className="text-[10px] text-slate-400 line-clamp-1">{banner.subtitle}</p>
                   <div className="flex items-center gap-1 text-slate-400 mt-1">
                     <LinkIcon size={12} />
                     <span className="text-xs">{banner.link || "No link"}</span>
@@ -216,7 +218,14 @@ export default function BannersPage() {
                     <button 
                       onClick={() => {
                         setEditingBanner(banner);
-                        setFormData({ title: banner.title, image: banner.image, link: banner.link, active: banner.active });
+                        setFormData({ 
+                          title: banner.title, 
+                          subtitle: banner.subtitle || "", 
+                          description: banner.description || "", 
+                          image: banner.image, 
+                          link: banner.link, 
+                          active: banner.active 
+                        });
                         setIsAddingBanner(true);
                         setImagePreview(banner.image || "");
                         setImageFile(null);
@@ -225,8 +234,8 @@ export default function BannersPage() {
                     >
                       <Edit2 size={14} />
                     </button>
-                    <button 
-                      onClick={() => handleDeleteBanner(banner._id)}
+                    <button
+                      onClick={() => setConfirmDelete(banner._id)}
                       className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-white border border-slate-200 rounded-sm hover:border-red-500"
                     >
                       <Trash2 size={14} />
@@ -240,6 +249,15 @@ export default function BannersPage() {
       </div>
       )}
 
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Delete Banner"
+        message="This will permanently remove this banner from the carousel. This action cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => { handleDeleteBanner(confirmDelete); setConfirmDelete(null); }}
+      />
+
       {isAddingBanner && (
         <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-lg rounded-sm shadow-2xl overflow-hidden animate-reveal">
@@ -250,6 +268,7 @@ export default function BannersPage() {
               <button 
                 onClick={() => {
                   setIsAddingBanner(false);
+                  setEditingBanner(null);
                   setImageFile(null);
                   setImagePreview("");
                 }} 
@@ -258,7 +277,7 @@ export default function BannersPage() {
                 <X size={20} />
               </button>
             </div>
-            <div className="p-8 space-y-6">
+            <div className="p-8 space-y-5">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Banner Title</label>
                 <input 
@@ -269,13 +288,37 @@ export default function BannersPage() {
                   placeholder="e.g. Summer Sale" 
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Subtitle</label>
+                <input 
+                  type="text" 
+                  value={formData.subtitle}
+                  onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
+                  placeholder="e.g. Up to 50% Off" 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Description</label>
+                <textarea 
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium resize-none" 
+                  placeholder="Banner description..."
+                  rows="2"
+                />
+              </div>
               
               <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Banner Image</label>
                 <div className="flex items-center gap-6">
                   <div className="w-32 h-16 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
-                    {imagePreview || formData.image ? (
-                      <Image src={imagePreview || formData.image} alt="Preview" fill className="object-cover" sizes="100vw" />
+                    {(imagePreview || formData.image) ? (
+                      <img 
+                        src={imagePreview || formData.image} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover" 
+                      />
                     ) : (
                       <ImageIcon className="text-slate-200" size={24} />
                     )}
@@ -307,7 +350,7 @@ export default function BannersPage() {
                   placeholder="/products?sale=true" 
                 />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pt-2">
                 <input 
                   type="checkbox" 
                   id="active"

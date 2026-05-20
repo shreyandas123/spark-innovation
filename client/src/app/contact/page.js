@@ -4,8 +4,11 @@ import { useState } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { createInquiry } from "@/lib/api";
 import { Mail, MapPin, Phone, Send, MessageSquare } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export default function ContactPage() {
+  const { settings } = useSettings();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,13 +44,13 @@ export default function ContactPage() {
     {
       icon: <Phone size={20} />,
       title: "Phone",
-      details: "+91 (Your Number)",
+      details: settings?.phone || SITE_CONFIG.phone,
       subtext: "Mon-Sat: 10AM - 8PM"
     },
     {
       icon: <Mail size={20} />,
       title: "Email",
-      details: "sparkinnovations@gmail.com",
+      details: settings?.email || SITE_CONFIG.email,
       subtext: "24/7 Support available"
     },
     {

@@ -1,106 +1,65 @@
-"use client";
+import CategoryDetailPage from "./CategoryClient";
 
-import { use, useState, useEffect } from "react";
-import { fetchProducts, fetchCategories } from "@/lib/api";
-import { CATEGORIES, SAMPLE_PRODUCTS } from "@/lib/constants";
-import SectionHeader from "@/components/ui/SectionHeader";
-import ProductCard from "@/components/ui/ProductCard";
-import { Loader2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sparkinnovations.com";
 
-export default function CategoryDetailPage({ params }) {
-  const resolvedParams = use(params);
-  const { slug } = resolvedParams;
-
-  const [products, setProducts] = useState([]);
-  const [category, setCategory] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [productsData, categoriesData] = await Promise.all([
-          fetchProducts({ category: slug }),
-          fetchCategories()
-        ]);
-        
-        if (categoriesData && categoriesData.categories && categoriesData.categories.length > 0) {
-          const currentCat = categoriesData.categories.find(c => c.slug === slug);
-          setCategory(currentCat || CATEGORIES.find(c => c.slug === slug));
-        } else {
-          setCategory(CATEGORIES.find(c => c.slug === slug));
-        }
-        
-        if (productsData && productsData.products && productsData.products.length > 0) {
-          setProducts(productsData.products);
-        } else {
-          setProducts(SAMPLE_PRODUCTS.filter(p => p.category === slug));
-        }
-      } catch (err) {
-        console.error("Error loading category data:", err);
-        setError("Failed to load category.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <Loader2 className="animate-spin text-brand" size={40} />
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Category...</p>
-      </div>
-    );
+async function getCategory(slug) {
+  try {
+    const res = await fetch(`${API_URL}/api/categories`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.categories?.find((c) => c.slug === slug) || null;
+  } catch {
+    return null;
   }
-
-  return (
-    <main className="min-h-screen pt-24 pb-20">
-      <div className="container-wide">
-        <Link 
-          href="/products" 
-          className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand transition-colors mb-8"
-        >
-          <ArrowLeft size={14} />
-          All Products
-        </Link>
-
-        <SectionHeader 
-          badge="Category"
-          title={<>{category?.name || slug.replace(/-/g, " ")} <span className="text-brand">COLLECTION.</span></>}
-          description={category?.description || `Explore our range of premium ${slug.replace(/-/g, " ")}.`}
-        />
-
-        {products.length > 0 ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 lg:gap-12 mt-16">
-            {products.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 border border-dashed border-slate-200 rounded-sm mt-16">
-            <p className="text-slate-500 font-medium">No products found in this category.</p>
-            <Link 
-              href="/products"
-              className="mt-4 inline-block text-brand font-black uppercase tracking-widest text-[10px]"
-            >
-              Browse All Products
-            </Link>
-          </div>
-        )}
-      </div>
-    </main>
-  );
 }
 
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const category = await getCategory(slug);
+  const name = category?.name || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
+  const title = `${name} — Buy Kutchina ${name} Online at Best Prices`;
+  const description = category?.description
+    ? `${category.description}. Shop genuine Kutchina ${name.toLowerCase()} at best prices with free installation & official warranty from Spark Innovations.`
+    : `Explore our range of premium Kutchina ${name.toLowerCase()}. Best prices, free installation & official warranty. Shop now at Spark Innovations.`;
 
+  return {
+    title,
+    description,
+    keywords: [name, `Kutchina ${name.toLowerCase()}`, `buy ${name.toLowerCase()}`, `${name.toLowerCase()} price`, "kitchen appliances", "Kutchina"],
+    alternates: { canonical: `/categories/${slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `/categories/${slug}`,
+      images: category?.image ? [{ url: category.image, width: 800, height: 600, alt: name }] : undefined,
+    },
+  };
+}
 
+export default async function CategoryPage({ params }) {
+  const { slug } = await params;
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Categories", item: `${SITE_URL}/categories` },
+      { "@type": "ListItem", position: 3, name: slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), item: `${SITE_URL}/categories/${slug}` },
+    ],
+  };
 
-
-
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <CategoryDetailPage params={params} />
+    </>
+  );
+}

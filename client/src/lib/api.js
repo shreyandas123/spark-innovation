@@ -1,4 +1,4 @@
-const API_URL = '/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 // Centralized request helper to handle 401s and common logic
 const apiRequest = async (endpoint, options = {}) => {
@@ -15,7 +15,7 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
+  const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60s for mobile uploads
 
   try {
     const res = await fetch(`${API_URL}${endpoint}`, {
@@ -45,6 +45,10 @@ const apiRequest = async (endpoint, options = {}) => {
 
     return res.json();
   } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error("Request timed out. Please check your internet connection.");
+    }
+    console.error(`API Error [${endpoint}]:`, error);
     throw error;
   }
 };
@@ -229,10 +233,10 @@ export const uploadImage = (token, formData) => {
   // Client-side validation: Max 5MB, images only
   const file = formData.get('image');
   if (file) {
-    if (file.size > 5 * 1024 * 1024) throw new Error("File size exceeds 5MB limit");
+    if (file.size > 10 * 1024 * 1024) throw new Error("File size exceeds 10MB limit");
     if (!file.type.startsWith('image/')) throw new Error("Only image files are allowed");
   }
-  return apiRequest('/upload', { method: 'POST', body: formData });
+  return apiRequest('/upload', { method: 'POST', token, body: formData });
 };
 
 export const fetchUsers = (token) => 
@@ -241,11 +245,32 @@ export const fetchUsers = (token) =>
 export const updateAdminUser = (token, id, data) => 
   apiRequest(`/admin/users/${id}`, { method: 'PATCH', token, body: JSON.stringify(data) });
 
-export const updateProfile = (token, profileData) => 
-  apiRequest('/auth/profile', { method: 'PUT', token, body: JSON.stringify(profileData) });
-
 export const updatePassword = (token, passwordData) => 
   apiRequest('/auth/password', { method: 'PUT', token, body: JSON.stringify(passwordData) });
 
-export const applyForJob = (jobData) => 
+export const applyForJob = (jobData) =>
   apiRequest('/jobs/apply', { method: 'POST', body: JSON.stringify(jobData) });
+
+// QR Payments
+export const submitQrPayment = (token, paymentData) =>
+  apiRequest('/qr-payments', { method: 'POST', token, body: JSON.stringify(paymentData) });
+
+export const fetchMyPayments = async (token) => {
+  try {
+    return await apiRequest('/qr-payments/me', { token });
+  } catch (error) {
+    return { payments: [] };
+  }
+};
+
+export const fetchAdminPayments = async (token, status = '') => {
+  try {
+    const query = status ? `?status=${status}` : '';
+    return await apiRequest(`/qr-payments/admin${query}`, { token });
+  } catch (error) {
+    return { payments: [] };
+  }
+};
+
+export const updatePaymentStatus = (token, id, status) =>
+  apiRequest(`/qr-payments/admin/${id}`, { method: 'PATCH', token, body: JSON.stringify({ status }) });

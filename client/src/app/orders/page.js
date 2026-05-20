@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingBag, ChevronRight, Calendar, DollarSign, Truck } from 'lucide-react'
+import { ShoppingBag, ChevronRight, Calendar, IndianRupee } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -90,7 +90,7 @@ export default function OrderHistory() {
                         <span>{Array.isArray(order.items) ? order.items.length : (order.items || 0)} items</span>
                       </div>
                       <div className="flex items-center gap-2 text-brand font-bold">
-                        <DollarSign size={16} />
+                        <IndianRupee size={16} />
                         <span>₹{order.total}</span>
                       </div>
                     </div>

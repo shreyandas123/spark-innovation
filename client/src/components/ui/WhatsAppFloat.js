@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { MessageSquare, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function WhatsAppFloat() {
   const pathname = usePathname();
+  const { settings } = useSettings();
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -22,8 +24,9 @@ export default function WhatsAppFloat() {
   }
 
   const handleClick = () => {
+    const num = settings?.whatsappNumber || "918808409295";
     window.open(
-      `https://wa.me/918808409295?text=Hi! I'm interested in Kutchina products from Spark Innovations.`,
+      `https://wa.me/${num}?text=Hi! I'm interested in Kutchina products from Spark Innovations.`,
       "_blank"
     );
   };
