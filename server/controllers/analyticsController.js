@@ -1,85 +1,136 @@
-// Get analytics data - currently returns sample/demo data
-// TODO: Integrate with Google Analytics Data API when credentials are available
+import { BetaAnalyticsDataClient } from '@google-analytics/data'
+
 export const getAnalyticsData = async (req, res, next) => {
   try {
-    const gaId = process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID
+    const measurementId = process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID
+    const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID
+    const credentialsJson = process.env.GOOGLE_ANALYTICS_CREDENTIALS
 
-    if (!gaId) {
+    if (!measurementId || !propertyId || !credentialsJson) {
       return res.status(400).json({
-        message: 'Google Analytics not configured. Please add GOOGLE_ANALYTICS_MEASUREMENT_ID to Vercel environment variables.',
+        message: 'Google Analytics not fully configured. Please add GOOGLE_ANALYTICS_MEASUREMENT_ID, GOOGLE_ANALYTICS_PROPERTY_ID, and GOOGLE_ANALYTICS_CREDENTIALS to environment variables.',
         error: 'GA_NOT_CONFIGURED'
       })
     }
 
-    // TODO: Replace with actual Google Analytics Data API call
-    // For now, return realistic demo data
-    const analyticsData = getDemoAnalyticsData()
-    
-    res.json({ 
-      data: analyticsData,
-      configured: !!gaId,
-      measurmentId: gaId 
+    const credentials = JSON.parse(credentialsJson)
+    const analyticsDataClient = new BetaAnalyticsDataClient({ credentials })
+
+    const today = new Date()
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+
+    const formatDate = (date) => date.toISOString().split('T')[0]
+
+    // Fetch 30-day overview metrics
+    const [overviewResponse] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
+      metrics: [
+        { name: 'activeUsers' },
+        { name: 'sessions' },
+        { name: 'screenPageViews' },
+        { name: 'bounceRate' },
+        { name: 'userConversionRate' }
+      ]
+    })
+
+    // Fetch daily data for chart
+    const [dailyResponse] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
+      metrics: [
+        { name: 'activeUsers' },
+        { name: 'sessions' },
+        { name: 'screenPageViews' }
+      ],
+      dimensions: [{ name: 'date' }]
+    })
+
+    // Fetch top pages
+    const [pagesResponse] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
+      metrics: [
+        { name: 'screenPageViews' },
+        { name: 'activeUsers' },
+        { name: 'averageSessionDuration' }
+      ],
+      dimensions: [{ name: 'pagePath' }],
+      orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
+      limit: 5
+    })
+
+    // Fetch traffic sources
+    const [sourcesResponse] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
+      metrics: [{ name: 'sessions' }],
+      dimensions: [{ name: 'sessionDefaultChannelGroup' }],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }]
+    })
+
+    // Fetch device categories
+    const [deviceResponse] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
+      metrics: [{ name: 'sessions' }],
+      dimensions: [{ name: 'deviceCategory' }],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }]
+    })
+
+    const summary = overviewResponse.rows?.[0]?.metricValues || []
+    const usersOverTime = dailyResponse.rows?.map(row => ({
+      date: row.dimensionValues?.[0]?.value,
+      users: parseInt(row.metricValues?.[0]?.value || 0),
+      sessions: parseInt(row.metricValues?.[1]?.value || 0),
+      pageViews: parseInt(row.metricValues?.[2]?.value || 0)
+    })) || []
+
+    const topPages = pagesResponse.rows?.map(row => ({
+      page: row.dimensionValues?.[0]?.value,
+      pageViews: parseInt(row.metricValues?.[0]?.value || 0),
+      users: parseInt(row.metricValues?.[1]?.value || 0),
+      avgTime: row.metricValues?.[2]?.value || '0'
+    })) || []
+
+    const trafficSources = sourcesResponse.rows?.map(row => {
+      const sessions = parseInt(row.metricValues?.[0]?.value || 0)
+      const totalSessions = sourcesResponse.rows?.reduce((sum, r) => sum + parseInt(r.metricValues?.[0]?.value || 0), 0) || 1
+      return {
+        name: row.dimensionValues?.[0]?.value,
+        value: sessions,
+        percentage: ((sessions / totalSessions) * 100).toFixed(1)
+      }
+    }) || []
+
+    const deviceCategories = deviceResponse.rows?.map(row => {
+      const sessions = parseInt(row.metricValues?.[0]?.value || 0)
+      const totalSessions = deviceResponse.rows?.reduce((sum, r) => sum + parseInt(r.metricValues?.[0]?.value || 0), 0) || 1
+      return {
+        device: row.dimensionValues?.[0]?.value,
+        sessions,
+        percentage: ((sessions / totalSessions) * 100).toFixed(1)
+      }
+    }) || []
+
+    res.json({
+      data: {
+        summary: {
+          totalUsers: parseInt(summary[0]?.value || 0),
+          totalSessions: parseInt(summary[1]?.value || 0),
+          totalPageViews: parseInt(summary[2]?.value || 0),
+          bounceRate: parseFloat(summary[3]?.value || 0).toFixed(1),
+          conversionRate: parseFloat(summary[4]?.value || 0).toFixed(1)
+        },
+        usersOverTime,
+        topPages,
+        trafficSources,
+        deviceCategories
+      },
+      configured: true,
+      measurementId
     })
   } catch (err) {
     next(err)
-  }
-}
-
-// Demo data - Replace this with actual GA API call later
-function getDemoAnalyticsData() {
-  const today = new Date()
-  const last30Days = []
-  
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - i)
-    last30Days.push({
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      users: Math.floor(Math.random() * 150) + 50,
-      sessions: Math.floor(Math.random() * 200) + 80,
-      pageViews: Math.floor(Math.random() * 400) + 150,
-    })
-  }
-
-  return {
-    summary: {
-      totalUsers: 2847,
-      totalSessions: 3542,
-      totalPageViews: 12543,
-      avgSessionDuration: '3m 24s',
-      bounceRate: 42.3,
-      conversionRate: 3.8,
-    },
-    usersOverTime: last30Days,
-    topPages: [
-      { page: '/products', pageViews: 2543, users: 1847, avgTime: '2:45' },
-      { page: '/categories', pageViews: 1842, users: 1234, avgTime: '1:52' },
-      { page: '/about', pageViews: 1456, users: 987, avgTime: '1:34' },
-      { page: '/contact', pageViews: 982, users: 654, avgTime: '2:12' },
-      { page: '/', pageViews: 3284, users: 2156, avgTime: '3:21' },
-    ],
-    trafficSources: [
-      { name: 'Organic', value: 4524, percentage: 45.2 },
-      { name: 'Direct', value: 3218, percentage: 32.1 },
-      { name: 'Referral', value: 1456, percentage: 14.5 },
-      { name: 'Social', value: 802, percentage: 8.0 },
-    ],
-    topReferrers: [
-      { referrer: 'google.com', sessions: 1234, users: 987 },
-      { referrer: 'facebook.com', sessions: 456, users: 387 },
-      { referrer: 'instagram.com', sessions: 324, users: 298 },
-      { referrer: 'Direct', sessions: 3218, users: 2156 },
-    ],
-    deviceCategories: [
-      { device: 'Mobile', sessions: 4234, percentage: 42.3 },
-      { device: 'Desktop', sessions: 4124, percentage: 41.2 },
-      { device: 'Tablet', sessions: 1184, percentage: 11.8 },
-    ],
-    weeklyComparison: [
-      { week: 'Week 1', users: 320, sessions: 425, avgDuration: 195 },
-      { week: 'Week 2', users: 380, sessions: 485, avgDuration: 204 },
-      { week: 'Week 3', users: 410, sessions: 520, avgDuration: 215 },
-      { week: 'Week 4', users: 520, sessions: 612, avgDuration: 234 },
-    ],
   }
 }
