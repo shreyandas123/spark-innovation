@@ -141,7 +141,3 @@ if (!process.env.VERCEL) {
 }
 
 export default app
-
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled rejection:', err)
-})
