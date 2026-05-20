@@ -60,7 +60,6 @@ const allowedOrigins = [
   clientOrigin,
   'https://spark-innovations.vercel.app',
   'https://sparkel-sales.vercel.app',
-  'https://sparkel-sales-server.vercel.app',
   'http://localhost:3000',
   'http://localhost:3001'
 ]
@@ -75,9 +74,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  maxAge: 86400,
 }))
-app.options('*', cors())
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 // express-mongo-sanitize can't reassign req.query in Express 5 (read-only getter)
