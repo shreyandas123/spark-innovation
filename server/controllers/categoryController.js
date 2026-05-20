@@ -11,7 +11,7 @@ export const getCategories = async (req, res, next) => {
 
 export const createCategory = async (req, res, next) => {
   try {
-    const { name, slug, image, description } = req.body
+    const { name, slug, icon, description } = req.body
     if (!name || !slug)
       return res.status(400).json({ message: 'name and slug are required' })
     if (!/^[a-z0-9-]+$/.test(slug))
@@ -20,7 +20,7 @@ export const createCategory = async (req, res, next) => {
     const existing = await Category.findOne({ slug })
     if (existing) return res.status(409).json({ message: 'Slug already exists' })
 
-    const category = await Category.create({ name, slug, image, description })
+    const category = await Category.create({ name, slug, icon, description })
     res.status(201).json({ category })
   } catch (error) {
     next(error)
@@ -29,8 +29,8 @@ export const createCategory = async (req, res, next) => {
 
 export const updateCategory = async (req, res, next) => {
   try {
-    const { name, slug, image, description } = req.body
-    const updates = { name, slug, image, description }
+    const { name, slug, icon, description } = req.body
+    const updates = { name, slug, icon, description }
     Object.keys(updates).forEach(k => updates[k] === undefined && delete updates[k])
 
     if (updates.slug && updates.slug !== req.params.slug) {

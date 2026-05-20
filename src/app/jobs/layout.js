@@ -1,0 +1,15 @@
+export const metadata = {
+  title: "Careers — Join Spark Innovations Team",
+  description: "Explore career opportunities at Spark Innovations, Kolkata's authorized Kutchina distributor. Join our growing team in sales, marketing, installation & support.",
+  keywords: ["Spark Innovations careers", "jobs Kolkata", "kitchen appliances jobs", "sales jobs Kolkata", "Kutchina dealer jobs"],
+  alternates: { canonical: "/jobs" },
+  openGraph: {
+    title: "Careers at Spark Innovations",
+    description: "Join our team. We're hiring for sales, marketing, installation & customer support roles.",
+    url: "/jobs",
+  },
+};
+
+export default function JobsLayout({ children }) {
+  return children;
+}

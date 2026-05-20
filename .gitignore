@@ -24,3 +24,9 @@ frontend/
 # logs
 *.log
 npm-debug.log*
+
+# generated / stray files
+deployed_chunk.js
+signup_source.html
+client/lint_report_full.json
+client/lint_results.json
