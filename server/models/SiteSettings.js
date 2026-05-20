@@ -22,6 +22,9 @@ const siteSettingsSchema = new Schema(
       youtube: String,
       linkedin: String,
     },
+    analytics: {
+      gaMeasurementId: { type: String, default: '' },
+    },
   },
   { timestamps: true }
 )

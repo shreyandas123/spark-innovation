@@ -180,6 +180,9 @@ export const fetchSiteSettings = async () => {
 export const updateSiteSettings = (token, settingsData) => 
   apiRequest('/settings/site', { method: 'PUT', token, body: JSON.stringify(settingsData) });
 
+export const fetchAnalyticsData = (token) => 
+  apiRequest('/analytics/data', { token });
+
 export const loginWithGoogle = (idToken) => 
   apiRequest('/auth/google', { method: 'POST', body: JSON.stringify({ token: idToken }) });
 

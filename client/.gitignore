@@ -1,43 +1,32 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# macOS
 .DS_Store
-*.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# editor
+.vscode/
+.idea/
 
-# env files (commit .env.example, ignore actual secrets)
+# env files
 .env
 .env.local
-.env.*.local
+.env.*
 
-# vercel
-.vercel
+# dependencies
+node_modules/
+package-lock.json
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Claude Code
+.claude/
+memory/
+
+# stale leftover folder (only contains node_modules)
+frontend/
+
+# logs
+*.log
+npm-debug.log*
+
+# generated / stray files
+deployed_chunk.js
+signup_source.html
+client/lint_report_full.json
+client/lint_results.json

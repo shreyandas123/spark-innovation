@@ -1,7 +1,13 @@
+"use client";
+
 import Script from "next/script";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function GoogleAnalytics() {
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const { settings } = useSettings();
+  
+  // Try to get GA ID from settings first, then fall back to env var
+  const gaId = settings?.analytics?.gaMeasurementId || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   if (!gaId || gaId === "G-XXXXXXXXXX") return null;
 

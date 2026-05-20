@@ -18,6 +18,7 @@ import settingsRoutes from './routes/settings.js'
 import uploadRoutes from './routes/upload.js'
 import cartRoutes from './routes/cart.js'
 import qrPaymentRoutes from './routes/qrPayments.js'
+import analyticsRoutes from './routes/analytics.js'
 
 // validate required env vars before anything else
 const required = ['MONGO_URI', 'JWT_SECRET', 'CLOUDINARY_URL', 'GOOGLE_CLIENT_ID']
@@ -55,8 +56,21 @@ app.use(async (req, res, next) => {
 app.use(helmet())
 app.use(compression())
 const clientOrigin = (process.env.CLIENT_URL || 'http://localhost:3000').replace(/\/$/, '')
+const allowedOrigins = [
+  clientOrigin,
+  'https://spark-innovations.vercel.app',
+  'https://sparkel-sales.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001'
+]
 app.use(cors({
-  origin: clientOrigin,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -90,6 +104,7 @@ app.use('/api/settings', settingsRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/qr-payments', qrPaymentRoutes)
+app.use('/api/analytics', analyticsRoutes)
 
 // 404 handler for unknown routes
 app.use((req, res) => {

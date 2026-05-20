@@ -75,7 +75,7 @@ export const getSiteSettings = async (req, res, next) => {
 
 export const updateSiteSettings = async (req, res, next) => {
   try {
-    const { websiteName, metaDescription, heroHeadline, heroSubheadline, topBarText, logo, favicon, phone, email, address, mapsUrl, social, whatsappNumber } = req.body
+    const { websiteName, metaDescription, heroHeadline, heroSubheadline, topBarText, logo, favicon, phone, email, address, mapsUrl, social, whatsappNumber, analytics } = req.body
     const updates = {}
 
     if (websiteName !== undefined) updates.websiteName = websiteName
@@ -96,6 +96,13 @@ export const updateSiteSettings = async (req, res, next) => {
     if (social && typeof social === 'object') {
       for (const [key, val] of Object.entries(social)) {
         if (val !== undefined) updates[`social.${key}`] = val
+      }
+    }
+
+    // Analytics updates
+    if (analytics && typeof analytics === 'object') {
+      for (const [key, val] of Object.entries(analytics)) {
+        if (val !== undefined) updates[`analytics.${key}`] = val
       }
     }
 

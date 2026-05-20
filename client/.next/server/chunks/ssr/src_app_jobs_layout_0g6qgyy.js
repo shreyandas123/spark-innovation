@@ -1,0 +1,3 @@
+module.exports=[96227,a=>{"use strict";a.s(["default",0,function({children:a}){return a},"metadata",0,{title:"Careers — Join Spark Innovations Team",description:"Explore career opportunities at Spark Innovations, Kolkata's authorized Kutchina distributor. Join our growing team in sales, marketing, installation & support.",keywords:["Spark Innovations careers","jobs Kolkata","kitchen appliances jobs","sales jobs Kolkata","Kutchina dealer jobs"],alternates:{canonical:"/jobs"},openGraph:{title:"Careers at Spark Innovations",description:"Join our team. We're hiring for sales, marketing, installation & customer support roles.",url:"/jobs"}}])},30342,a=>{a.n(a.i(96227))}];
+
+//# sourceMappingURL=src_app_jobs_layout_0g6qgyy.js.map

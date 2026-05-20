@@ -3,13 +3,18 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Save, LayoutTemplate, Phone, Share2, Loader2,
-  Upload, Trash2, Globe, Info, QrCode, Move
+  Upload, Trash2, Globe, Info, QrCode, Move, BarChart3,
+  TrendingUp, Users, Eye, Activity, Smartphone, MousePointerClick
 } from "lucide-react";
-import { fetchSiteSettings, updateSiteSettings, uploadImage } from "@/lib/api";
+import { fetchSiteSettings, updateSiteSettings, uploadImage, fetchAnalyticsData } from "@/lib/api";
 import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useSettings } from "@/contexts/SettingsContext";
+import {
+  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area
+} from 'recharts';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
@@ -37,6 +42,9 @@ export default function SettingsPage() {
       twitter: "",
       youtube: "",
       linkedin: ""
+    },
+    analytics: {
+      gaMeasurementId: ""
     }
   });
 
@@ -52,6 +60,10 @@ export default function SettingsPage() {
           social: {
             ...prev.social,
             ...(data.settings.social || {})
+          },
+          analytics: {
+            ...prev.analytics,
+            ...(data.settings.analytics || {})
           }
         }));
       }
@@ -111,6 +123,7 @@ export default function SettingsPage() {
     { id: "general", label: "Branding", icon: <LayoutTemplate size={16} /> },
     { id: "contact", label: "Contact Info", icon: <Phone size={16} /> },
     { id: "social", label: "Social Media", icon: <Share2 size={16} /> },
+    { id: "analytics", label: "Analytics", icon: <BarChart3 size={16} /> },
     { id: "qr", label: "UPI / QR Code", icon: <QrCode size={16} /> },
   ];
 
@@ -371,6 +384,10 @@ export default function SettingsPage() {
               </div>
             )}
 
+            {activeTab === "analytics" && (
+              <AnalyticsDashboard token={token} showToast={showToast} />
+            )}
+
             {activeTab === "qr" && (
               <QrCodeTab settings={settings} setSettings={setSettings} token={token} showToast={showToast} />
             )}
@@ -378,6 +395,211 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ─── Analytics Dashboard ─── */
+function AnalyticsDashboard({ token, showToast }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchAnalyticsData(token);
+        if (res.data) {
+          setData(res.data);
+        }
+      } catch (err) {
+        console.error('Error loading analytics:', err);
+        showToast(err.message || 'Failed to load analytics data', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAnalytics();
+  }, [token, showToast]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-40 gap-4">
+        <Loader2 className="animate-spin text-brand" size={32} />
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Loading analytics data...</p>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-sm p-6">
+        <p className="text-[10px] font-black uppercase tracking-widest text-red-900">
+          ⚠️ No Analytics Data Available
+        </p>
+        <p className="text-[9px] text-red-800 mt-2 font-bold uppercase">
+          Please configure your Google Analytics Measurement ID in the settings above and wait 24 hours for data collection.
+        </p>
+      </div>
+    );
+  }
+
+  const COLORS = ['#0066cc', '#00d4ff', '#ffb700', '#ff6b6b', '#51cf66'];
+
+  return (
+    <div className="space-y-10">
+      <div className="border-b border-slate-100 pb-6">
+        <h3 className="text-base font-black text-brand-blue uppercase tracking-widest">Analytics Dashboard</h3>
+        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Real-time website performance metrics and insights.</p>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <MetricCard icon={<Users size={18} />} label="Total Users" value={data.summary?.totalUsers?.toLocaleString() || '0'} />
+        <MetricCard icon={<Activity size={18} />} label="Sessions" value={data.summary?.totalSessions?.toLocaleString() || '0'} />
+        <MetricCard icon={<Eye size={18} />} label="Page Views" value={data.summary?.totalPageViews?.toLocaleString() || '0'} />
+        <MetricCard icon={<TrendingUp size={18} />} label="Avg Session" value={data.summary?.avgSessionDuration || '0'} />
+        <MetricCard icon={<MousePointerClick size={18} />} label="Bounce Rate" value={`${data.summary?.bounceRate || 0}%`} />
+        <MetricCard icon={<BarChart3 size={18} />} label="Conversion" value={`${data.summary?.conversionRate || 0}%`} />
+      </div>
+
+      {/* Users & Sessions Over Time */}
+      <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm">
+        <h4 className="text-[11px] font-black uppercase tracking-widest text-brand-blue mb-4">Users & Sessions (Last 30 Days)</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={data.usersOverTime || []}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+            <YAxis tick={{ fontSize: 11 }} />
+            <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #cbd5e1' }} />
+            <Legend />
+            <Area type="monotone" dataKey="users" stackId="1" stroke="#0066cc" fill="#0066cc" fillOpacity={0.6} name="Users" />
+            <Area type="monotone" dataKey="sessions" stackId="1" stroke="#00d4ff" fill="#00d4ff" fillOpacity={0.6} name="Sessions" />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Pages */}
+        <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm">
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-brand-blue mb-4">Top Pages</h4>
+          <div className="space-y-3">
+            {(data.topPages || []).map((page, i) => (
+              <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-sm">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-800 truncate">{page.page}</p>
+                  <p className="text-[8px] text-slate-500 mt-1">{page.pageViews} views • {page.users} users</p>
+                </div>
+                <span className="text-[10px] font-black text-brand ml-2 shrink-0">{page.avgTime}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Traffic Sources Pie Chart */}
+        <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm">
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-brand-blue mb-4">Traffic Sources</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={data.trafficSources || []}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={(entry) => `${entry.name} (${entry.percentage}%)`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {(data.trafficSources || []).map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => value.toLocaleString()} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Device Categories */}
+      <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm">
+        <h4 className="text-[11px] font-black uppercase tracking-widest text-brand-blue mb-4">Traffic by Device</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data.deviceCategories || []}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis dataKey="device" tick={{ fontSize: 11 }} />
+            <YAxis tick={{ fontSize: 11 }} />
+            <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #cbd5e1' }} />
+            <Bar dataKey="sessions" fill="#0066cc" name="Sessions" />
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="grid grid-cols-3 gap-4 mt-6">
+          {(data.deviceCategories || []).map((device, i) => (
+            <div key={i} className="p-3 bg-slate-50 rounded-sm text-center">
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-600">{device.device}</p>
+              <p className="text-lg font-black text-brand mt-2">{device.percentage}%</p>
+              <p className="text-[8px] text-slate-400 mt-1">{device.sessions} sessions</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Weekly Comparison */}
+        <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm">
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-brand-blue mb-4">Weekly Comparison</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={data.weeklyComparison || []}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="week" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #cbd5e1' }} />
+              <Legend />
+              <Bar dataKey="users" fill="#0066cc" name="Users" />
+              <Bar dataKey="sessions" fill="#00d4ff" name="Sessions" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Top Referrers */}
+        <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm">
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-brand-blue mb-4">Top Referrers</h4>
+          <div className="space-y-3">
+            {(data.topReferrers || []).map((referrer, i) => (
+              <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-sm">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-800 truncate">{referrer.referrer}</p>
+                  <p className="text-[8px] text-slate-500 mt-1">{referrer.sessions} sessions</p>
+                </div>
+                <div className="text-right ml-2">
+                  <p className="text-[10px] font-black text-brand">{referrer.users}</p>
+                  <p className="text-[8px] text-slate-400">users</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-sm p-4">
+        <p className="text-[9px] font-black uppercase tracking-widest text-blue-900 flex items-center gap-2">
+          <Info size={14} />
+          Data Updated Hourly
+        </p>
+        <p className="text-[9px] text-blue-800 mt-2 font-bold">
+          These are your website analytics from Google Analytics 4. Data includes all visitors, page views, and engagement metrics.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ icon, label, value }) {
+  return (
+    <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-sm p-4 text-center">
+      <div className="flex justify-center text-brand mb-2">{icon}</div>
+      <p className="text-[8px] font-black uppercase tracking-widest text-slate-600">{label}</p>
+      <p className="text-lg md:text-xl font-black text-brand-blue mt-2">{value}</p>
     </div>
   );
 }
