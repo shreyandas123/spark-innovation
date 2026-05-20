@@ -72,7 +72,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center p-6 sm:p-12">
+    <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center p-6 sm:p-12 pt-28 sm:pt-32">
       <div className="w-full max-w-[440px] bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden animate-reveal">
         <div className="p-8 sm:p-10">
           <div className="text-center mb-10">
