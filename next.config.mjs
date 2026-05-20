@@ -1,9 +1,3 @@
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const nextConfig = {
   reactCompiler: true,
   images: {
@@ -35,7 +29,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: http: https://accounts.google.com; frame-src https://accounts.google.com;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: http: https://accounts.google.com; frame-src https://accounts.google.com;"
           },
           {
             key: 'X-Content-Type-Options',
@@ -43,7 +37,7 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
+            value: 'SAMEORIGIN'
           },
           {
             key: 'X-XSS-Protection',
@@ -51,17 +45,24 @@ const nextConfig = {
           },
           {
             key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups'
+            value: 'unsafe-none'
           }
         ]
       }
     ];
+
   },
   async rewrites() {
-    let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:4000';
+    let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+    
+    // Ensure protocol is present for valid rewrites
+    if (backendUrl && !backendUrl.startsWith('http')) {
+      backendUrl = `https://${backendUrl}`;
+    }
     
     // Cleanup URL to ensure no trailing slash
     backendUrl = backendUrl.replace(/\/$/, "");
+
     
     return [
       {

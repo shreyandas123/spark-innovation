@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { fetchOrderById } from '@/lib/api'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard, ShoppingBag, AlertCircle, DollarSign } from 'lucide-react'
+import { ChevronLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard, ShoppingBag, AlertCircle, IndianRupee } from 'lucide-react'
 
 export default function OrderDetailPage({ params }) {
   const { id } = useParams()
@@ -118,12 +118,8 @@ export default function OrderDetailPage({ params }) {
               <div className="p-6 bg-slate-50 border-t border-slate-100">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-slate-600">
-                    <span>Subtotal</span>
-                    <span>₹{(order.total - (order.shippingPrice || 0)).toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-slate-600">
                     <span>Shipping</span>
-                    <span>{order.shippingPrice ? `₹${order.shippingPrice.toLocaleString('en-IN')}` : 'Free'}</span>
+                    <span className="text-emerald-600 font-bold">Free</span>
                   </div>
                   <div className="flex justify-between text-lg font-black text-brand-blue pt-2 border-t border-slate-200">
                     <span>Total Amount</span>
@@ -158,11 +154,11 @@ export default function OrderDetailPage({ params }) {
                 Shipping Address
               </h3>
               <div className="text-sm text-slate-600 space-y-1">
-                <p className="font-bold text-slate-900">{order.shippingAddress.name}</p>
-                <p>{order.shippingAddress.street}</p>
-                <p>{order.shippingAddress.city}, {order.shippingAddress.state}</p>
-                <p>{order.shippingAddress.zipCode}, {order.shippingAddress.country}</p>
-                <p className="pt-2 text-brand font-bold">{order.shippingAddress.phone}</p>
+                <p className="font-bold text-slate-900">{order.shipping?.name}</p>
+                <p>{order.shipping?.address}</p>
+                <p>{order.shipping?.city}{order.shipping?.state ? `, ${order.shipping.state}` : ''}</p>
+                {order.shipping?.pincode && <p>{order.shipping.pincode}{order.shipping?.country ? `, ${order.shipping.country}` : ''}</p>}
+                <p className="pt-2 text-brand font-bold">{order.shipping?.phone}</p>
               </div>
             </div>
 
@@ -174,12 +170,14 @@ export default function OrderDetailPage({ params }) {
               </h3>
               <div className="p-3 bg-slate-50 rounded-lg flex items-center gap-3">
                 <div className="w-8 h-8 bg-white rounded flex items-center justify-center shadow-xs">
-                   <DollarSign size={16} className="text-brand" />
+                  <IndianRupee size={16} className="text-brand" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-brand-blue uppercase">{order.paymentMethod || 'Cash on Delivery'}</p>
-                  <p className={`text-[10px] font-black uppercase tracking-widest ${order.isPaid ? 'text-green-600' : 'text-yellow-600'}`}>
-                    {order.isPaid ? 'Paid' : 'Payment Pending'}
+                  <p className="text-xs font-bold text-brand-blue uppercase">
+                    {order.paymentMethod === 'qr' ? 'UPI / QR Code' : 'Cash on Delivery'}
+                  </p>
+                  <p className={`text-[10px] font-black uppercase tracking-widest ${order.status === 'delivered' ? 'text-green-600' : 'text-yellow-600'}`}>
+                    {order.status === 'delivered' ? 'Paid' : 'Payment on Delivery'}
                   </p>
                 </div>
               </div>

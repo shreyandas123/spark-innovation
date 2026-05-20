@@ -1,4 +1,4 @@
-export const validateImageFile = (file, maxSizeMB = 5) => {
+export const validateImageFile = (file, maxSizeMB = 10) => {
   if (!file) return null;
   
   if (!file.type.startsWith('image/')) {

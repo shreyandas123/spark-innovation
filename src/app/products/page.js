@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchProducts, fetchCategories } from "@/lib/api";
+import { fetchProducts, fetchCategories, searchProducts } from "@/lib/api";
 import { SAMPLE_PRODUCTS } from "@/lib/constants";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ProductCard from "@/components/ui/ProductCard";
@@ -35,10 +35,11 @@ export default function ProductsPage() {
         setLoading(true);
         const params = { limit: 12, page: 1 };
         if (selectedCategory !== "all") params.category = selectedCategory;
-        if (debouncedSearchQuery) params.search = debouncedSearchQuery;
 
         const [productsData, categoriesData] = await Promise.all([
-          fetchProducts(params),
+          debouncedSearchQuery
+            ? searchProducts({ q: debouncedSearchQuery, limit: 12, page: 1, ...(selectedCategory !== "all" && { category: selectedCategory }) })
+            : fetchProducts(params),
           fetchCategories()
         ]);
         
@@ -74,9 +75,10 @@ export default function ProductsPage() {
       const nextPage = page + 1;
       const params = { limit: 12, page: nextPage };
       if (selectedCategory !== "all") params.category = selectedCategory;
-      if (debouncedSearchQuery) params.search = debouncedSearchQuery;
-      
-      const productsData = await fetchProducts(params);
+
+      const productsData = debouncedSearchQuery
+        ? await searchProducts({ q: debouncedSearchQuery, limit: 12, page: nextPage, ...(selectedCategory !== "all" && { category: selectedCategory }) })
+        : await fetchProducts(params);
       
       setProducts(prev => [...prev, ...(productsData.products || [])]);
       setHasMore(productsData.page < productsData.pages);
@@ -89,7 +91,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <main className="min-h-screen pt-24 pb-20">
+    <main className="min-h-screen pt-32 md:pt-40 pb-20">
       <div className="container-wide">
         <SectionHeader 
           badge="Product Catalogue"

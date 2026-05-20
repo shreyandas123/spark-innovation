@@ -22,6 +22,9 @@ export default function CartPage() {
   const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
 
+  const totalMrp = cartItems.reduce((acc, item) => acc + ((item.mrp || item.price) * item.quantity), 0);
+  const totalSavings = totalMrp - cartTotal;
+
   // Remove force login to allow guest cart viewing
   /*
   useEffect(() => {
@@ -96,6 +99,15 @@ export default function CartPage() {
                         <div className="md:hidden mt-2 flex justify-between items-end">
                           <div>
                             <p className="text-[10px] font-black text-brand">₹{item.price.toLocaleString("en-IN")}</p>
+                            {item.mrp && (
+                              <div className="flex items-center gap-1 text-slate-400 mt-0.5">
+                                <span className="text-[6px] font-black uppercase tracking-widest">MRP (inclusive of all taxes)</span>
+                                <span className="text-[8px] font-bold line-through flex items-center">
+                                  <IndianRupee size={6} strokeWidth={3} />
+                                  {item.mrp.toLocaleString("en-IN")}
+                                </span>
+                              </div>
+                            )}
                           </div>
                           <button 
                             onClick={() => removeFromCart(item.slug)}
@@ -107,8 +119,19 @@ export default function CartPage() {
                       </div>
                     </div>
 
-                    <div className="hidden md:block text-center w-full">
-                      <p className="text-sm font-bold text-slate-600">₹{item.price.toLocaleString("en-IN")}</p>
+                    <div className="hidden md:block w-full">
+                      <div className="flex flex-col items-center gap-0.5">
+                        <p className="text-sm font-bold text-slate-600">₹{item.price.toLocaleString("en-IN")}</p>
+                        {item.mrp && (
+                          <div className="flex flex-col items-center text-slate-400">
+                            <span className="text-[6px] font-black uppercase tracking-widest">MRP (inclusive of all taxes)</span>
+                            <span className="text-[10px] font-bold line-through flex items-center">
+                              <IndianRupee size={8} strokeWidth={3} />
+                              {item.mrp.toLocaleString("en-IN")}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between w-full md:justify-center md:w-auto mt-2 md:mt-0 bg-slate-50 md:bg-transparent p-3 md:p-0 rounded-sm border border-slate-100 md:border-0">
@@ -164,6 +187,18 @@ export default function CartPage() {
             <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-10 pb-4 border-b border-slate-100">Order Summary</h3>
             
             <div className="space-y-6 mb-10">
+              {totalSavings > 0 && (
+                <>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span>Total MRP</span>
+                    <span className="text-slate-500 line-through">₹{totalMrp.toLocaleString("en-IN")}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-emerald-500">
+                    <span>Discount on MRP</span>
+                    <span>- ₹{totalSavings.toLocaleString("en-IN")}</span>
+                  </div>
+                </>
+              )}
               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
                 <span>Subtotal</span>
                 <span className="text-slate-600">₹{cartTotal.toLocaleString("en-IN")}</span>

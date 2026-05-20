@@ -2,9 +2,11 @@
 
 import { Phone, Mail, MapPin } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
+import { useSettings } from "@/contexts/SettingsContext";
 import InquiryForm from "@/components/ui/InquiryForm";
 
 export default function InquiryPage() {
+  const { settings } = useSettings();
   return (
     <main className="min-h-screen bg-white">
       <div className="pt-32 pb-20">
@@ -29,7 +31,7 @@ export default function InquiryPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Call Us</p>
-                      <p className="text-xl font-black text-brand-blue">{SITE_CONFIG.phone}</p>
+                      <p className="text-xl font-black text-brand-blue">{settings?.phone || SITE_CONFIG.phone}</p>
                     </div>
                   </div>
 
@@ -39,7 +41,7 @@ export default function InquiryPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Email Us</p>
-                      <p className="text-xl font-black text-brand-blue">{SITE_CONFIG.email}</p>
+                      <p className="text-xl font-black text-brand-blue">{settings?.email || SITE_CONFIG.email}</p>
                     </div>
                   </div>
 
@@ -49,7 +51,7 @@ export default function InquiryPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Visit Us</p>
-                      <p className="text-xl font-black text-brand-blue">{SITE_CONFIG.address}</p>
+                      <p className="text-xl font-black text-brand-blue">{settings?.address || SITE_CONFIG.address}</p>
                     </div>
                   </div>
                 </div>

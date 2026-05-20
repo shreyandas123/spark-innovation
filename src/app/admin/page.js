@@ -1,20 +1,19 @@
 "use client";
 
-import { 
-  Package, 
-  MessageSquare, 
-  Users, 
-  ArrowUpRight, 
-  TrendingUp, 
+import {
+  Package,
+  MessageSquare,
+  Users,
+  ArrowUpRight,
+  TrendingUp,
   Clock,
   Eye,
   Image as ImageIcon,
-  Settings,
-  Loader2
+  Settings
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { fetchProducts, fetchInquiries, fetchBanners, fetchStats } from "@/lib/api";
+import { fetchInquiries, fetchStats } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 
@@ -87,61 +86,9 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const initDashboard = async () => {
-      if (!token) return;
-      try {
-        const [statsData, inquiriesData] = await Promise.all([
-          fetchStats(token),
-          fetchInquiries(token)
-        ]);
-
-        if (isMounted) {
-          const liveStats = [
-            { 
-              label: "Total Products", 
-              value: statsData.products?.total || "0", 
-              icon: <Package size={24} />, 
-              color: "bg-blue-500",
-              trend: `${statsData.products?.inStock || 0} In Stock`
-            },
-            { 
-              label: "New Inquiries", 
-              value: statsData.inquiries?.byStatus?.New || "0", 
-              icon: <MessageSquare size={24} />, 
-              color: "bg-brand",
-              trend: `${statsData.inquiries?.total || 0} Total`
-            },
-            { 
-              label: "Active Banners", 
-              value: statsData.banners?.active || "0", 
-              icon: <Eye size={24} />, 
-              color: "bg-indigo-500",
-              trend: "Live"
-            },
-            { 
-              label: "Total Users", 
-              value: statsData.users?.total || "0", 
-              icon: <Users size={24} />, 
-              color: "bg-slate-800",
-              trend: "Registered"
-            },
-          ];
-          setStats(liveStats);
-          setRecentInquiries((inquiriesData.inquiries || []).slice(0, 5));
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Error loading dashboard data:", err);
-          setError("Failed to load dashboard statistics.");
-          setLoading(false);
-        }
-      }
-    };
-    initDashboard();
-    return () => { isMounted = false; };
-  }, [token]);
+    if (!token) return;
+    (async () => { await loadDashboardData(); })();
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-10">

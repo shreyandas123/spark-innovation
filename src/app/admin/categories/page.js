@@ -4,18 +4,17 @@ import { useState, useEffect } from "react";
 import { fetchCategories, createCategory, updateCategory, deleteCategory, uploadImage } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import Image from "next/image";
-import { 
-  Plus, 
-  Search, 
-  Edit2, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
   X,
   Loader2,
   Layers,
-  ImageIcon,
   Image as ImageIconLucide
 } from "lucide-react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([]);
@@ -23,6 +22,8 @@ export default function AdminCategoriesPage() {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const { token } = useAuth();
   const { showToast } = useToast();
   
@@ -36,37 +37,24 @@ export default function AdminCategoriesPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
-  const loadCategories = async (showLoading = true) => {
+  const loadCategories = async () => {
     try {
-      if (showLoading) setLoading(true);
+      setLoading(true);
+      setError(null);
       const data = await fetchCategories();
       setCategories(data.categories || []);
     } catch (err) {
       console.error("Error loading categories:", err);
+      setError("Failed to load categories.");
+      showToast("Failed to load categories", "error");
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const initCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        if (isMounted) {
-          setCategories(data.categories || []);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Error loading categories:", err);
-          setLoading(false);
-        }
-      }
-    };
-    initCategories();
-    return () => { isMounted = false; };
-  }, []);
+    (async () => { await loadCategories(); })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSaveCategory = async () => {
     if (!newCategory.name || !newCategory.slug) {
@@ -119,14 +107,16 @@ export default function AdminCategoriesPage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("Image size should be less than 5MB", "warning");
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("Image size should be less than 10MB", "warning");
         return;
       }
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl);
+      
+      // Cleanup the object URL when component unmounts or image changes
+      return () => URL.revokeObjectURL(objectUrl);
     }
   };
 
@@ -171,7 +161,12 @@ export default function AdminCategoriesPage() {
         </button>
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-40 gap-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-red-500">{error}</p>
+          <button onClick={loadCategories} className="text-[10px] font-black uppercase tracking-widest text-brand hover:underline">Try Again</button>
+        </div>
+      ) : loading ? (
         <div className="flex flex-col items-center justify-center py-40 gap-4">
           <Loader2 className="animate-spin text-brand" size={40} />
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Categories...</p>
@@ -202,8 +197,8 @@ export default function AdminCategoriesPage() {
                   >
                     <Edit2 size={14} />
                   </button>
-                  <button 
-                    onClick={() => handleDeleteCategory(category.slug)}
+                  <button
+                    onClick={() => setConfirmDelete(category.slug)}
                     className="p-2 text-slate-300 hover:text-red-500 transition-colors"
                   >
                     <Trash2 size={14} />
@@ -224,9 +219,18 @@ export default function AdminCategoriesPage() {
         </div>
       )}
 
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        title="Delete Category"
+        message="This will permanently remove this category. Products assigned to it will become uncategorized."
+        confirmLabel="Delete"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={() => { handleDeleteCategory(confirmDelete); setConfirmDelete(null); }}
+      />
+
       {isAddingCategory && (
         <div className="fixed inset-0 bg-brand-blue/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-lg rounded-sm shadow-2xl overflow-hidden animate-reveal">
+          <div className="bg-white w-full max-w-lg rounded-sm shadow-2xl overflow-hidden animate-reveal">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h2 className="text-sm font-black text-brand-blue uppercase tracking-widest">
                 {editingCategory ? "Edit Category" : "Add New Category"}
@@ -268,8 +272,12 @@ export default function AdminCategoriesPage() {
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category Image</label>
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 bg-slate-50 border border-slate-200 rounded-sm overflow-hidden flex items-center justify-center relative">
-                    {imagePreview || newCategory.image ? (
-                      <Image src={imagePreview || newCategory.image} alt="Preview" fill className="object-contain" sizes="100vw" />
+                    {(imagePreview || newCategory.image) ? (
+                      <img 
+                        src={imagePreview || newCategory.image} 
+                        alt="Preview" 
+                        className="w-full h-full object-contain" 
+                      />
                     ) : (
                       <ImageIconLucide className="text-slate-200" size={24} />
                     )}
