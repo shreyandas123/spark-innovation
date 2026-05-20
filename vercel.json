@@ -1,0 +1,7 @@
+{
+  "root": "client",
+  "framework": "nextjs",
+  "buildCommand": "npm install && npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install"
+}
