@@ -28,9 +28,10 @@ import AdminGuard from "@/components/AdminGuard";
 const SidebarContent = ({ menuItems, pathname, setMobileMenuOpen, logout }) => (
   <>
     <div className="p-6">
-      <h2 className="text-xl font-black tracking-tighter uppercase leading-none">
-        Spark <span className="text-brand">Innovations</span>
-        <span className="block text-[9px] text-white/40 mt-1">Admin Dashboard</span>
+      <h2 className="text-lg font-black tracking-tight uppercase leading-none">
+        KUTCHINA
+        <span className="block text-[8px] font-black uppercase tracking-[0.12em] text-brand mt-0.5">Spark Innovations</span>
+        <span className="block text-[8px] text-white/40 mt-1 font-medium tracking-normal">Admin Dashboard</span>
       </h2>
     </div>
 

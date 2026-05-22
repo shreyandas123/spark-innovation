@@ -90,13 +90,12 @@ export default function Navbar() {
                 sizes="32px" 
               />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black uppercase tracking-tighter">
-                {(() => {
-                  const name = settings?.websiteName || SITE_CONFIG.name;
-                  const parts = name.split(' ');
-                  return <>{parts[0]} <span className="text-brand">{parts.slice(1).join(' ')}</span></>;
-                })()}
+            <div className="flex flex-col leading-none">
+              <span className="text-[17px] font-black uppercase tracking-tight text-brand-blue">
+                KUTCHINA
+              </span>
+              <span className="text-[8px] font-black uppercase tracking-[0.12em] text-brand mt-0.5">
+                Spark Innovations
               </span>
             </div>
           </Link>

@@ -36,7 +36,8 @@ export default function AdminProductsPage() {
     price: "",
     mrp: "",
     description: "",
-    images: [""]
+    images: [""],
+    featured: false
   });
   const [isSaving, setIsSaving] = useState(false);
   const [imageFile, setImageFile] = useState(null);
@@ -126,7 +127,7 @@ export default function AdminProductsPage() {
       }
       setIsAddingProduct(false);
       setEditingProduct(null);
-      setNewProduct({ name: "", slug: "", category: "", price: "", mrp: "", description: "", images: [""] });
+      setNewProduct({ name: "", slug: "", category: "", price: "", mrp: "", description: "", images: [""], featured: false });
       setImageFile(null);
       setImagePreview("");
     } catch (err) {
@@ -164,7 +165,7 @@ export default function AdminProductsPage() {
         <button 
           onClick={() => {
             setEditingProduct(null);
-            setNewProduct({ name: "", slug: "", category: "", price: "", mrp: "", description: "", images: [""] });
+            setNewProduct({ name: "", slug: "", category: "", price: "", mrp: "", description: "", images: [""], featured: false });
             setIsAddingProduct(true);
           }}
           className="bg-brand text-white py-3 px-6 rounded-sm font-black uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-brand-dark transition-all shadow-lg shadow-brand/20"
@@ -212,7 +213,14 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[12px] font-bold text-brand-blue line-clamp-1">{product.name}</p>
+                          <p className="text-[12px] font-bold text-brand-blue flex items-center gap-1.5">
+                            <span className="line-clamp-1">{product.name}</span>
+                            {product.featured && (
+                              <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-600 text-[6px] font-black uppercase tracking-widest rounded-full shrink-0">
+                                Featured
+                              </span>
+                            )}
+                          </p>
                           <p className="text-[8px] text-slate-300 font-medium uppercase tracking-widest">SKU: {product.slug?.slice(0, 6).toUpperCase() || 'N/A'}</p>
                         </div>
                       </div>
@@ -243,7 +251,8 @@ export default function AdminProductsPage() {
                               price: product.price,
                               mrp: product.mrp || "",
                               description: product.description || "",
-                              images: product.images || [""]
+                              images: product.images || [""],
+                              featured: product.featured || false
                             });
                             setIsAddingProduct(true);
                             setImagePreview(product.images?.[0] || "");
@@ -343,6 +352,18 @@ export default function AdminProductsPage() {
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-sm focus:outline-none focus:border-brand transition-all text-sm font-medium" 
                     placeholder="0.00" 
                   />
+                </div>
+                <div className="flex items-center gap-3 pt-6">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={newProduct.featured || false}
+                      onChange={(e) => setNewProduct({ ...newProduct, featured: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+                    <span className="ml-3 text-[10px] font-black uppercase tracking-widest text-slate-400 select-none">Featured Product</span>
+                  </label>
                 </div>
               </div>
               <div className="space-y-4">

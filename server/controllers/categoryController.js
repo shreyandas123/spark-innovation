@@ -1,4 +1,5 @@
 import Category from '../models/Category.js'
+import Product from '../models/Product.js'
 
 export const getCategories = async (req, res, next) => {
   try {
@@ -52,6 +53,10 @@ export const updateCategory = async (req, res, next) => {
 
 export const deleteCategory = async (req, res, next) => {
   try {
+    const productCount = await Product.countDocuments({ category: req.params.slug })
+    if (productCount > 0) {
+      return res.status(400).json({ message: 'Cannot delete category containing products. Move or delete the products first.' })
+    }
     const category = await Category.findOneAndDelete({ slug: req.params.slug })
     if (!category) return res.status(404).json({ message: 'Category not found' })
     res.json({ message: 'Category deleted' })

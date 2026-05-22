@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { ArrowRight, IndianRupee } from "lucide-react";
-import { SAMPLE_PRODUCTS } from "@/lib/constants";
+import { useEffect, useState, useRef } from "react";
+import { ArrowRight } from "lucide-react";
 import { fetchProducts } from "@/lib/api";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Link from "next/link";
@@ -12,19 +10,23 @@ import ProductCard from "@/components/ui/ProductCard";
 export default function FeaturedProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollRef = useRef(null);
+  const animationRef = useRef(null);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         const data = await fetchProducts({ featured: true });
         if (data && data.products && data.products.length > 0) {
-          setProducts(data.products.slice(0, 4));
+          // Double the list for continuous premium loop
+          setProducts([...data.products, ...data.products]);
         } else {
-          setProducts(SAMPLE_PRODUCTS.slice(0, 4));
+          setProducts([]);
         }
       } catch (error) {
-        console.error("Error fetching products:", error);
-        setProducts(SAMPLE_PRODUCTS.slice(0, 4));
+        console.error("Error fetching featured products:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -33,11 +35,38 @@ export default function FeaturedProducts() {
     getProducts();
   }, []);
 
+  // Smooth Auto-Scrolling using scrollLeft
+  useEffect(() => {
+    if (loading || !scrollRef.current || products.length === 0) return;
+
+    const scrollContainer = scrollRef.current;
+    
+    const animate = () => {
+      if (!isPaused) {
+        scrollContainer.scrollLeft += 0.8;
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
+          scrollContainer.scrollLeft = 0;
+        }
+      }
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [loading, isPaused, products.length]);
+
+  if (!loading && products.length === 0) {
+    return null; // Premium layout hides cleanly if empty
+  }
+
   return (
-    <section className="section-padding bg-white border-t border-slate-200">
+    <section className="section-padding bg-white border-t border-slate-200 overflow-hidden">
       <div className="container-wide">
         
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <SectionHeader 
             badge="Best Sellers"
             title={<>FEATURED <br className="hidden md:block" /><span className="text-brand">INNOVATIONS.</span></>}
@@ -52,18 +81,35 @@ export default function FeaturedProducts() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-12">
-          {loading ? (
-            [...Array(4)].map((_, i) => (
-              <div key={i} className="aspect-[4/5] bg-slate-50 animate-pulse rounded-sm"></div>
-            ))
-          ) : (
-            products.map((product, idx) => (
-              <div key={product.slug || product._id} className={`animate-reveal delay-${(idx + 1) * 100}`}>
-                <ProductCard product={product} />
-              </div>
-            ))
-          )}
+        <div 
+          className="relative group"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div 
+            ref={scrollRef}
+            className="flex gap-6 md:gap-8 overflow-x-auto pb-8 scrollbar-hide select-none cursor-grab active:cursor-grabbing"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {loading ? (
+              [...Array(4)].map((_, i) => (
+                <div key={i} className="min-w-[280px] md:min-w-[320px] aspect-square bg-slate-50 animate-pulse rounded-sm" />
+              ))
+            ) : (
+              products.map((product, idx) => (
+                <div 
+                  key={`${product._id || product.slug}-${idx}`} 
+                  className="min-w-[280px] md:min-w-[320px] shrink-0 transition-all duration-500 hover:scale-[1.03] hover:z-20"
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))
+            )}
+          </div>
+          
+          {/* Fading Gradients */}
+          <div className="hidden md:block absolute top-0 left-0 h-full w-24 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
+          <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
         </div>
 
         <div className="mt-12 md:hidden">
@@ -72,11 +118,16 @@ export default function FeaturedProducts() {
           </Link>
         </div>
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }
-
-
-
-
-

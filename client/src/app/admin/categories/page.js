@@ -222,7 +222,7 @@ export default function AdminCategoriesPage() {
       <ConfirmDialog
         isOpen={!!confirmDelete}
         title="Delete Category"
-        message="This will permanently remove this category. Products assigned to it will become uncategorized."
+        message="This will permanently remove this category. Note: You cannot delete a category if it contains any products."
         confirmLabel="Delete"
         onCancel={() => setConfirmDelete(null)}
         onConfirm={() => { handleDeleteCategory(confirmDelete); setConfirmDelete(null); }}
