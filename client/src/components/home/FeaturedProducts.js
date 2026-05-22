@@ -19,17 +19,12 @@ export default function FeaturedProducts() {
     const getProducts = async () => {
       try {
         const data = await fetchProducts({ featured: true });
-        let list = data?.products;
+        let list = data?.products?.length > 0 ? data.products : [];
 
         // If no featured products exist in the database, fetch regular products to keep section populated
-        if (!list || list.length === 0) {
+        if (list.length === 0) {
           const allProductsData = await fetchProducts({ limit: 10 });
-          list = allProductsData?.products;
-        }
-
-        // If still no products, use high-quality fallback products
-        if (!list || list.length === 0) {
-          list = SAMPLE_PRODUCTS;
+          list = allProductsData?.products?.length > 0 ? allProductsData.products : SAMPLE_PRODUCTS;
         }
 
         // Guarantee a minimum of 8 base items to fill space and ensure horizontal overflow even on 4K/ultrawide screens
@@ -93,19 +88,16 @@ export default function FeaturedProducts() {
   return (
     <section className="section-padding bg-white border-t border-slate-200 overflow-hidden">
       <div className="container-wide">
-        
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 animate-reveal">
           <SectionHeader 
             badge="Best Sellers"
             title={<>FEATURED <br className="hidden md:block" /><span className="text-brand">INNOVATIONS.</span></>}
             description="Explore our best-selling smart appliances designed for the modern Indian kitchen."
             className="mb-0"
           />
-          <Link href="/products" className="hidden md:flex items-center gap-3 text-brand-blue font-black uppercase tracking-widest text-[10px] cursor-pointer group opacity-60 hover:opacity-100 transition-opacity">
+          
+          <Link href="/products" className="w-fit px-6 py-3 bg-brand-blue text-white font-black uppercase tracking-widest text-[9px] rounded-sm hover:bg-brand transition-all flex items-center gap-2">
             View All Products
-            <div className="w-10 h-10 border border-slate-200 flex items-center justify-center rounded-full group-hover:bg-brand-blue group-hover:text-white transition-all">
-              <ArrowRight size={14} />
-            </div>
           </Link>
         </div>
 
@@ -141,12 +133,6 @@ export default function FeaturedProducts() {
           {/* Fading Gradients */}
           <div className="hidden md:block absolute top-0 left-0 h-full w-24 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
           <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
-        </div>
-
-        <div className="mt-12 md:hidden">
-          <Link href="/products" className="block w-full py-4 bg-brand-blue border border-brand-blue/20 text-white text-center font-black uppercase tracking-widest text-[10px] rounded-sm">
-            View All Products
-          </Link>
         </div>
       </div>
 
