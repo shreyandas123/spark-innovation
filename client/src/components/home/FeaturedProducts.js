@@ -57,9 +57,9 @@ export default function FeaturedProducts() {
     getProducts();
   }, []);
 
-  // Smooth Auto-Scrolling using scrollLeft
+  // Smooth Auto-Scrolling using scrollLeft (allows manual scroll)
   useEffect(() => {
-    if (loading || !scrollRef.current || products.length === 0) return;
+    if (loading || !scrollRef.current) return;
 
     const scrollContainer = scrollRef.current;
     
@@ -84,7 +84,7 @@ export default function FeaturedProducts() {
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [loading, isPaused, products.length]);
+  }, [loading, isPaused]);
 
   if (!loading && products.length === 0) {
     return null; // Premium layout hides cleanly if empty
@@ -123,7 +123,7 @@ export default function FeaturedProducts() {
             }}
           >
             {loading ? (
-              [...Array(4)].map((_, i) => (
+              [...Array(6)].map((_, i) => (
                 <div key={i} className="min-w-[280px] md:min-w-[320px] aspect-square bg-slate-50 animate-pulse rounded-sm" />
               ))
             ) : (
