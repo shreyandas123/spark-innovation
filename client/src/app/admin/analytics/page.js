@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -19,11 +19,7 @@ export default function AnalyticsOverview() {
   const { token } = useAuth();
   const { showToast } = useToast();
 
-  useEffect(() => {
-    loadData();
-  }, [token]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!token) return;
     try {
       setLoading(true);
@@ -39,7 +35,22 @@ export default function AnalyticsOverview() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, showToast]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const { summary = {}, usersOverTime = [], trafficSources = [], deviceCategories = [], topPages = [], weeklyComparison = [] } = analyticsData || {};
+
+  const productPerformance = useMemo(() => {
+    return products.slice(0, 10).map((p, idx) => ({
+      name: p.name.substring(0, 20),
+      sales: Math.floor((idx + 1) * 12) + 10,
+      views: Math.floor((idx + 1) * 65) + 50,
+      rating: (3.5 + (idx % 2) * 1.5).toFixed(1)
+    }));
+  }, [products]);
 
   if (loading) {
     return (
@@ -52,16 +63,6 @@ export default function AnalyticsOverview() {
       </div>
     );
   }
-
-  const { summary = {}, usersOverTime = [], trafficSources = [], deviceCategories = [], topPages = [], weeklyComparison = [] } = analyticsData;
-
-  // Calculate product performance
-  const productPerformance = products.slice(0, 10).map(p => ({
-    name: p.name.substring(0, 20),
-    sales: Math.floor(Math.random() * 100) + 10,
-    views: Math.floor(Math.random() * 500) + 50,
-    rating: (Math.random() * 2 + 3).toFixed(1)
-  }));
 
   const metrics = [
     { label: "Total Users", value: summary.totalUsers || 0, icon: Users, color: "bg-blue-100 text-blue-600" },

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { ArrowRight } from "lucide-react";
 import { fetchProducts } from "@/lib/api";
 import { SAMPLE_PRODUCTS } from "@/lib/constants";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -131,8 +130,8 @@ export default function FeaturedProducts() {
           </div>
           
           {/* Fading Gradients */}
-          <div className="hidden md:block absolute top-0 left-0 h-full w-24 bg-linear-to-r from-white to-transparent pointer-events-none z-10" />
-          <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-linear-to-l from-white to-transparent pointer-events-none z-10" />
+          <div className="hidden md:block absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-white to-transparent pointer-events-none z-10" />
+          <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
         </div>
       </div>
 

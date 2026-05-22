@@ -36,14 +36,13 @@ export default function ProductCard({ product }) {
   return (
     <div className="group relative bg-white border border-slate-100 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
       <Link href={`/products/${product.slug}`} className="block aspect-square relative p-4 md:p-8 bg-[#fcfcfc] group-hover:bg-white transition-colors duration-500">
-        <Image 
-          src={product.images?.[0] || product.image || "/images/placeholder-product.svg"} 
-          alt={product.name} 
-          fill 
-          className="object-contain p-4 md:p-6 group-hover:scale-110 transition-transform duration-700" 
+        <Image
+          src={product.images?.[0] || product.image || "/images/placeholder-product.svg"}
+          alt={product.name}
+          fill
+          className="object-contain p-4 md:p-6 group-hover:scale-110 transition-transform duration-700"
           sizes="(max-width: 1023px) 50vw, 25vw"
         />
-        {}
         <div className="absolute top-2 right-2 md:top-4 md:right-4 flex flex-col gap-2 z-10">
           <button 
             onClick={handleWishlistClick}
@@ -98,7 +97,3 @@ export default function ProductCard({ product }) {
     </div>
   );
 }
-
-
-
-

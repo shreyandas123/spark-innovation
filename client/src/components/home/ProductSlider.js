@@ -121,8 +121,8 @@ export default function ProductSlider() {
           </div>
           
           {/* Side Gradients (Removed on small mobile to avoid "white box" issues) */}
-          <div className="hidden md:block absolute top-0 left-0 h-full w-24 bg-linear-to-r from-slate-50/50 to-transparent pointer-events-none z-10" />
-          <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-linear-to-l from-slate-50/50 to-transparent pointer-events-none z-10" />
+          <div className="hidden md:block absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-slate-50/50 to-transparent pointer-events-none z-10" />
+          <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-slate-50/50 to-transparent pointer-events-none z-10" />
         </div>
       </div>
 

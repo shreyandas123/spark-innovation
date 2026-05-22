@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   BarChart,
   Bar,
@@ -22,12 +22,7 @@ export default function WeeklyComparison() {
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
-  useEffect(() => {
-    if (!token) return;
-    loadData();
-  }, [token]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const result = await fetchAnalyticsData(token);
       setData(result.data);
@@ -36,7 +31,12 @@ export default function WeeklyComparison() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    loadData();
+  }, [token, loadData]);
 
   if (loading) {
     return <div className="bg-slate-100 h-96 rounded-sm animate-pulse"></div>;
