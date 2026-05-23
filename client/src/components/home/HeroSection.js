@@ -122,7 +122,7 @@ export default function HeroSection() {
         ))}
       </div>
 
-      <div className="relative h-full container-wide flex items-center z-20">
+      <div className="relative h-full container-wide flex items-end md:items-center z-20 pb-8 md:pb-0">
         <div className="max-w-2xl space-y-4 md:space-y-8 animate-reveal">
           <div className="space-y-2 md:space-y-4">
             <div className="inline-flex items-center gap-2 px-2 md:px-3 py-1 bg-white border border-slate-100 rounded-sm">

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Save, LayoutTemplate, Phone, Share2, Loader2,
-  Upload, Trash2, Globe, Info, QrCode, Move
+  Upload, Trash2, Globe, Info, QrCode, Move, BarChart3, CheckCircle2
 } from "lucide-react";
 import { fetchSiteSettings, updateSiteSettings, uploadImage } from "@/lib/api";
 import Image from "next/image";
@@ -15,6 +15,8 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [gaConnected, setGaConnected] = useState(false);
+  const [gaConnecting, setGaConnecting] = useState(false);
   const { token } = useAuth();
   const { showToast } = useToast();
   const { refreshSettings } = useSettings();
@@ -107,11 +109,32 @@ export default function SettingsPage() {
     }
   };
 
+  const handleGAAuth = async () => {
+    try {
+      setGaConnecting(true);
+      const response = await fetch("/api/ga-auth/auth-url");
+
+      if (!response.ok) throw new Error("Failed to get auth URL");
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No auth URL returned");
+      }
+    } catch (err) {
+      console.error("GA Auth Error:", err);
+      showToast("Failed to connect Google Analytics", "error");
+      setGaConnecting(false);
+    }
+  };
+
   const tabs = [
     { id: "general", label: "Branding", icon: <LayoutTemplate size={16} /> },
     { id: "contact", label: "Contact Info", icon: <Phone size={16} /> },
     { id: "social", label: "Social Media", icon: <Share2 size={16} /> },
     { id: "qr", label: "UPI / QR Code", icon: <QrCode size={16} /> },
+    { id: "ga-analytics", label: "Google Analytics", icon: <BarChart3 size={16} /> },
   ];
 
   if (loading) {
@@ -373,6 +396,65 @@ export default function SettingsPage() {
 
             {activeTab === "qr" && (
               <QrCodeTab settings={settings} setSettings={setSettings} token={token} showToast={showToast} />
+            )}
+
+            {activeTab === "ga-analytics" && (
+              <div className="space-y-10">
+                <div className="border-b border-slate-100 pb-6">
+                  <h3 className="text-base font-black text-brand-blue uppercase tracking-widest">Google Analytics Integration</h3>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Connect your Google Analytics account to track visitor analytics.</p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-sm p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      {gaConnected ? (
+                        <CheckCircle2 className="text-green-600" size={24} />
+                      ) : (
+                        <BarChart3 className="text-blue-600" size={24} />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-black text-sm text-slate-900 uppercase tracking-widest">
+                        {gaConnected ? "✓ Google Analytics Connected" : "Connect Google Analytics"}
+                      </h4>
+                      <p className="text-[10px] text-slate-600 mt-2 leading-relaxed">
+                        {gaConnected
+                          ? "Your Google Analytics account is successfully connected. Analytics data will be fetched and displayed on the analytics dashboard."
+                          : "Click the button below to authorize and connect your Google Analytics account. This will enable real-time analytics tracking and reporting on your dashboard."
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleGAAuth}
+                    disabled={gaConnecting}
+                    className="mt-6 flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-sm font-black uppercase tracking-widest text-[10px] hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {gaConnecting ? (
+                      <>
+                        <Loader2 className="animate-spin" size={16} />
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <BarChart3 size={16} />
+                        {gaConnected ? "Reconnect Google Analytics" : "Connect Google Analytics"}
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-200 rounded-sm p-6">
+                  <h4 className="font-black text-sm text-slate-900 uppercase tracking-widest mb-4">What's Required?</h4>
+                  <ul className="space-y-3 text-[10px] text-slate-600 list-disc list-inside">
+                    <li>A Google account with access to Google Analytics</li>
+                    <li>A Google Analytics property set up for your website</li>
+                    <li>Permission to manage Google Analytics on your property</li>
+                  </ul>
+                </div>
+              </div>
             )}
 
           </div>
