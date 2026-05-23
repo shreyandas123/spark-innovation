@@ -55,10 +55,10 @@ const nextConfig = {
   async rewrites() {
     let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    // Production: use sparkel-sales-server.vercel.app
+    // Production: use api.sparkinnovations.org
     if (!backendUrl) {
       if (process.env.VERCEL_ENV === 'production') {
-        backendUrl = 'https://sparkel-sales-server.vercel.app';
+        backendUrl = 'https://api.sparkinnovations.org';
       } else {
         // Development: use localhost
         backendUrl = 'http://localhost:4000';
