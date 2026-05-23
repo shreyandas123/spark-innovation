@@ -1,14 +1,14 @@
 import { google } from 'googleapis'
+import fetch from 'node-fetch'
 
 export const getAnalyticsData = async (req, res, next) => {
   try {
-    const measurementId = process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID
     const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID
     const refreshToken = process.env.GOOGLE_REFRESH_TOKEN
 
-    if (!measurementId || !propertyId || !refreshToken) {
+    if (!propertyId || !refreshToken) {
       return res.status(400).json({
-        message: 'Google Analytics not fully configured. Please add GOOGLE_ANALYTICS_MEASUREMENT_ID, GOOGLE_ANALYTICS_PROPERTY_ID, and GOOGLE_REFRESH_TOKEN to environment variables.',
+        message: 'Google Analytics not fully configured. Please add GOOGLE_ANALYTICS_PROPERTY_ID and GOOGLE_REFRESH_TOKEN to environment variables.',
         error: 'GA_NOT_CONFIGURED'
       })
     }
@@ -19,17 +19,31 @@ export const getAnalyticsData = async (req, res, next) => {
     )
 
     oauth2Client.setCredentials({ refresh_token: refreshToken })
-
-    const analyticsdata = google.analyticsdata({ version: 'v1beta', auth: oauth2Client })
+    const { credentials } = await oauth2Client.refreshAccessToken()
+    const accessToken = credentials.access_token
 
     const today = new Date()
     const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
 
     const formatDate = (date) => date.toISOString().split('T')[0]
 
+    const apiUrl = `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`
+
+    const makeRequest = async (body) => {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+      if (!response.ok) throw new Error(`GA API error: ${response.statusText}`)
+      return response.json()
+    }
+
     // Fetch 30-day overview metrics
-    const [overviewResponse] = await analyticsdata.properties.runReport({
-      property: `properties/${propertyId}`,
+    const overviewResponse = await makeRequest({
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [
         { name: 'activeUsers' },
@@ -41,8 +55,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch daily data for chart
-    const [dailyResponse] = await analyticsdata.properties.runReport({
-      property: `properties/${propertyId}`,
+    const dailyResponse = await makeRequest({
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [
         { name: 'activeUsers' },
@@ -53,8 +66,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch top pages
-    const [pagesResponse] = await analyticsdata.properties.runReport({
-      property: `properties/${propertyId}`,
+    const pagesResponse = await makeRequest({
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [
         { name: 'screenPageViews' },
@@ -67,8 +79,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch traffic sources
-    const [sourcesResponse] = await analyticsdata.properties.runReport({
-      property: `properties/${propertyId}`,
+    const sourcesResponse = await makeRequest({
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [{ name: 'sessions' }],
       dimensions: [{ name: 'sessionDefaultChannelGroup' }],
@@ -76,8 +87,7 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     // Fetch device categories
-    const [deviceResponse] = await analyticsdata.properties.runReport({
-      property: `properties/${propertyId}`,
+    const deviceResponse = await makeRequest({
       dateRanges: [{ startDate: formatDate(thirtyDaysAgo), endDate: formatDate(today) }],
       metrics: [{ name: 'sessions' }],
       dimensions: [{ name: 'deviceCategory' }],
@@ -85,39 +95,41 @@ export const getAnalyticsData = async (req, res, next) => {
     })
 
     const summary = overviewResponse.rows?.[0]?.metricValues || []
-    const usersOverTime = dailyResponse.rows?.map(row => ({
+    const usersOverTime = (dailyResponse.rows || []).map(row => ({
       date: row.dimensionValues?.[0]?.value,
       users: parseInt(row.metricValues?.[0]?.value || 0),
       sessions: parseInt(row.metricValues?.[1]?.value || 0),
       pageViews: parseInt(row.metricValues?.[2]?.value || 0)
-    })) || []
+    }))
 
-    const topPages = pagesResponse.rows?.map(row => ({
+    const topPages = (pagesResponse.rows || []).map(row => ({
       page: row.dimensionValues?.[0]?.value,
       pageViews: parseInt(row.metricValues?.[0]?.value || 0),
       users: parseInt(row.metricValues?.[1]?.value || 0),
       avgTime: row.metricValues?.[2]?.value || '0'
-    })) || []
+    }))
 
-    const trafficSources = sourcesResponse.rows?.map(row => {
+    const sourcesRows = sourcesResponse.rows || []
+    const trafficSources = sourcesRows.map(row => {
       const sessions = parseInt(row.metricValues?.[0]?.value || 0)
-      const totalSessions = sourcesResponse.rows?.reduce((sum, r) => sum + parseInt(r.metricValues?.[0]?.value || 0), 0) || 1
+      const totalSessions = sourcesRows.reduce((sum, r) => sum + parseInt(r.metricValues?.[0]?.value || 0), 0) || 1
       return {
         name: row.dimensionValues?.[0]?.value,
         value: sessions,
         percentage: ((sessions / totalSessions) * 100).toFixed(1)
       }
-    }) || []
+    })
 
-    const deviceCategories = deviceResponse.rows?.map(row => {
+    const deviceRows = deviceResponse.rows || []
+    const deviceCategories = deviceRows.map(row => {
       const sessions = parseInt(row.metricValues?.[0]?.value || 0)
-      const totalSessions = deviceResponse.rows?.reduce((sum, r) => sum + parseInt(r.metricValues?.[0]?.value || 0), 0) || 1
+      const totalSessions = deviceRows.reduce((sum, r) => sum + parseInt(r.metricValues?.[0]?.value || 0), 0) || 1
       return {
         device: row.dimensionValues?.[0]?.value,
         sessions,
         percentage: ((sessions / totalSessions) * 100).toFixed(1)
       }
-    }) || []
+    })
 
     res.json({
       data: {
@@ -133,8 +145,7 @@ export const getAnalyticsData = async (req, res, next) => {
         trafficSources,
         deviceCategories
       },
-      configured: true,
-      measurementId
+      configured: true
     })
   } catch (err) {
     next(err)

@@ -8,7 +8,7 @@ router.get('/auth-url', (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.VERCEL ? 'https://sparkel-sales-server.vercel.app/api/ga-auth/callback' : 'http://localhost:4000/api/ga-auth/callback'
+      process.env.VERCEL ? 'https://api.sparkinnovations.org/api/ga-auth/callback' : 'http://localhost:4000/api/ga-auth/callback'
     )
 
     const scopes = [
@@ -41,7 +41,7 @@ router.get('/callback', async (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.VERCEL ? 'https://sparkel-sales-server.vercel.app/api/ga-auth/callback' : 'http://localhost:4000/api/ga-auth/callback'
+      process.env.VERCEL ? 'https://api.sparkinnovations.org/api/ga-auth/callback' : 'http://localhost:4000/api/ga-auth/callback'
     )
 
     const { tokens } = await oauth2Client.getToken(code)
