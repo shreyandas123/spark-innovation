@@ -12,6 +12,25 @@ import { useToast } from "@/contexts/ToastContext";
 
 const COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#f59e0b", "#10b981"];
 
+const formatDuration = (value) => {
+  const seconds = parseFloat(value || 0);
+  if (isNaN(seconds)) return "0s";
+  if (seconds < 60) return `${seconds.toFixed(1)}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.round(seconds % 60);
+  return `${mins}m ${secs}s`;
+};
+
+const formatDateString = (dateStr) => {
+  if (!dateStr || dateStr.length !== 8) return dateStr;
+  const year = dateStr.substring(0, 4);
+  const month = dateStr.substring(4, 6);
+  const day = dateStr.substring(6, 8);
+  const date = new Date(`${year}-${month}-${day}`);
+  if (isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
+
 export default function AnalyticsOverview() {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [products, setProducts] = useState([]);
@@ -54,12 +73,18 @@ export default function AnalyticsOverview() {
   const { summary = {}, usersOverTime = [], trafficSources = [], deviceCategories = [], topPages = [], weeklyComparison = [] } = analyticsData || {};
 
   const productPerformance = useMemo(() => {
-    return products.slice(0, 10).map((p, idx) => ({
-      name: p.name.substring(0, 20),
-      sales: Math.floor((idx + 1) * 12) + 10,
-      views: Math.floor((idx + 1) * 65) + 50,
-      rating: (3.5 + (idx % 2) * 1.5).toFixed(1)
-    }));
+    const sliced = products.slice(0, 10);
+    const count = sliced.length;
+    return sliced.map((p, idx) => {
+      const reverseIdx = count - idx;
+      return {
+        fullName: p.name,
+        name: p.name.length > 12 ? p.name.substring(0, 10) + '...' : p.name,
+        sales: Math.floor(reverseIdx * 12) + 10,
+        views: Math.floor(reverseIdx * 65) + 50,
+        rating: (3.5 + (idx % 2) * 1.5).toFixed(1)
+      };
+    });
   }, [products]);
 
   if (loading) {
@@ -103,8 +128,8 @@ export default function AnalyticsOverview() {
       </div>
 
       {/* Users & Sessions Chart */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+      <div className="grid lg:grid-cols-3 gap-6 w-full overflow-hidden min-w-0">
+        <div className="lg:col-span-2 bg-white p-6 rounded-lg border border-slate-200 shadow-sm w-full overflow-hidden min-w-0">
           <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Traffic Overview (30 Days)</h2>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={usersOverTime}>
@@ -115,9 +140,9 @@ export default function AnalyticsOverview() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="date" stroke="#94a3b8" style={{ fontSize: "12px" }} />
+              <XAxis dataKey="date" stroke="#94a3b8" style={{ fontSize: "12px" }} tickFormatter={formatDateString} />
               <YAxis stroke="#94a3b8" style={{ fontSize: "12px" }} />
-              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }} labelFormatter={formatDateString} />
               <Legend />
               <Area type="monotone" dataKey="users" stroke="#3b82f6" fillOpacity={1} fill="url(#colorUsers)" name="Users" />
             </AreaChart>
@@ -125,7 +150,7 @@ export default function AnalyticsOverview() {
         </div>
 
         {/* Traffic Sources */}
-        <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm w-full overflow-hidden min-w-0">
           <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Traffic Sources</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -149,8 +174,8 @@ export default function AnalyticsOverview() {
       </div>
 
       {/* Device Categories & Weekly Comparison */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+      <div className="grid lg:grid-cols-2 gap-6 w-full overflow-hidden min-w-0">
+        <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm w-full overflow-hidden min-w-0">
           <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Device Breakdown</h2>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={deviceCategories}>
@@ -163,7 +188,7 @@ export default function AnalyticsOverview() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+        <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm w-full overflow-hidden min-w-0">
           <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Weekly Trend</h2>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={weeklyComparison}>
@@ -198,7 +223,7 @@ export default function AnalyticsOverview() {
                   <td className="font-bold text-slate-700 py-3">{page.page}</td>
                   <td className="text-right text-brand font-black">{page.pageViews}</td>
                   <td className="text-right text-slate-600">{page.users}</td>
-                  <td className="text-right text-slate-600">{page.avgTime}</td>
+                  <td className="text-right text-slate-600">{formatDuration(page.avgTime)}</td>
                 </tr>
               ))}
             </tbody>
@@ -209,30 +234,30 @@ export default function AnalyticsOverview() {
       {/* Product Performance */}
       <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Top Products This Week</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full overflow-hidden min-w-0">
           {/* Product Sales Chart */}
-          <div>
+          <div className="w-full overflow-hidden min-w-0">
             <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-widest mb-4">Sales Performance</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={productPerformance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" stroke="#94a3b8" style={{ fontSize: "11px" }} angle={-45} textAnchor="end" height={80} />
+                <XAxis dataKey="name" stroke="#94a3b8" style={{ fontSize: "10px" }} />
                 <YAxis stroke="#94a3b8" style={{ fontSize: "12px" }} />
-                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }} />
+                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }} labelFormatter={(label, items) => items[0]?.payload?.fullName || label} />
                 <Bar dataKey="sales" fill="#10b981" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Product Views Chart */}
-          <div>
+          <div className="w-full overflow-hidden min-w-0">
             <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-widest mb-4">Product Views</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={productPerformance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" stroke="#94a3b8" style={{ fontSize: "11px" }} angle={-45} textAnchor="end" height={80} />
+                <XAxis dataKey="name" stroke="#94a3b8" style={{ fontSize: "10px" }} />
                 <YAxis stroke="#94a3b8" style={{ fontSize: "12px" }} />
-                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }} />
+                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }} labelFormatter={(label, items) => items[0]?.payload?.fullName || label} />
                 <Bar dataKey="views" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -257,7 +282,7 @@ export default function AnalyticsOverview() {
                 {productPerformance.map((product, idx) => (
                   <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50">
                     <td className="font-black text-brand py-3">#{idx + 1}</td>
-                    <td className="font-bold text-slate-700 py-3">{product.name}</td>
+                    <td className="font-bold text-slate-700 py-3">{product.fullName}</td>
                     <td className="text-right text-green-600 font-black">{product.sales}</td>
                     <td className="text-right text-purple-600 font-black">{product.views}</td>
                     <td className="text-right text-yellow-500 font-black">⭐ {product.rating}</td>

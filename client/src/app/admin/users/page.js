@@ -154,7 +154,7 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto custom-scrollbar">
+        <div className="w-full overflow-x-auto custom-scrollbar">
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-200">

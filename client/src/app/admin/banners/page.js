@@ -164,7 +164,7 @@ export default function BannersPage() {
         </div>
       ) : (
 
-      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-sm overflow-x-auto shadow-sm">
         <table className="w-full text-left">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>

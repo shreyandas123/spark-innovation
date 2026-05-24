@@ -55,7 +55,7 @@ export default function TopReferrers() {
   return (
     <div className="space-y-6">
       {/* Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Top Referrers Comparison</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data.topReferrers}>

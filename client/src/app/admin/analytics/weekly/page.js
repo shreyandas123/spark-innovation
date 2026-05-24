@@ -57,7 +57,7 @@ export default function WeeklyComparison() {
   return (
     <div className="space-y-6">
       {/* Combined Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Weekly Trend Comparison</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data.weeklyComparison}>
@@ -75,7 +75,7 @@ export default function WeeklyComparison() {
       </div>
 
       {/* Session Duration Trend */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Avg Session Duration Trend</h2>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={data.weeklyComparison}>
@@ -84,7 +84,7 @@ export default function WeeklyComparison() {
             <YAxis stroke="#94a3b8" label={{ value: "Duration (seconds)", angle: -90, position: "insideLeft" }} />
             <Tooltip
               contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "4px" }}
-              formatter={(value) => `${value}s`}
+              formatter={(value) => `${parseFloat(value || 0).toFixed(1)}s`}
             />
             <Line type="monotone" dataKey="avgDuration" stroke="#ec4899" strokeWidth={2} dot={{ fill: "#ec4899", r: 4 }} />
           </LineChart>
@@ -124,7 +124,7 @@ export default function WeeklyComparison() {
                     <span className="text-sm font-bold text-slate-600">{week.sessions}</span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <span className="text-sm font-bold text-slate-600">{week.avgDuration}s</span>
+                    <span className="text-sm font-bold text-slate-600">{parseFloat(week.avgDuration || 0).toFixed(1)}s</span>
                   </td>
                 </tr>
               ))}

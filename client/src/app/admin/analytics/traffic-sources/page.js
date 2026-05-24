@@ -60,7 +60,7 @@ export default function TrafficSources() {
   return (
     <div className="space-y-6">
       {/* Pie Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Traffic Distribution</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -84,7 +84,7 @@ export default function TrafficSources() {
       </div>
 
       {/* Bar Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Traffic by Source</h2>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={data.trafficSources}>
@@ -128,7 +128,7 @@ export default function TrafficSources() {
                     <span className="text-sm font-black text-brand-blue">{source.value.toLocaleString()}</span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <span className="text-sm font-bold text-slate-600">{source.percentage.toFixed(1)}%</span>
+                    <span className="text-sm font-bold text-slate-600">{parseFloat(source.percentage || 0).toFixed(1)}%</span>
                   </td>
                 </tr>
               ))}

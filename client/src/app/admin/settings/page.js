@@ -447,7 +447,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="bg-slate-50 border border-slate-200 rounded-sm p-6">
-                  <h4 className="font-black text-sm text-slate-900 uppercase tracking-widest mb-4">What's Required?</h4>
+                  <h4 className="font-black text-sm text-slate-900 uppercase tracking-widest mb-4">What&apos;s Required?</h4>
                   <ul className="space-y-3 text-[10px] text-slate-600 list-disc list-inside">
                     <li>A Google account with access to Google Analytics</li>
                     <li>A Google Analytics property set up for your website</li>
@@ -624,8 +624,7 @@ function QrCodeTab({ settings, setSettings, token, showToast }) {
 
             <div
               ref={containerRef}
-              className="relative mx-auto select-none touch-none overflow-hidden bg-slate-200 rounded-sm"
-              style={{ maxWidth: 500 }}
+              className="relative mx-auto select-none touch-none overflow-hidden bg-slate-200 rounded-sm w-full max-w-[500px]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img

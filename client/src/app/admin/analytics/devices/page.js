@@ -60,7 +60,7 @@ export default function DeviceCategories() {
   return (
     <div className="space-y-6">
       {/* Pie Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Device Distribution</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -84,7 +84,7 @@ export default function DeviceCategories() {
       </div>
 
       {/* Bar Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Sessions by Device</h2>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={data.deviceCategories}>
@@ -128,7 +128,7 @@ export default function DeviceCategories() {
                     <span className="text-sm font-black text-brand-blue">{device.sessions.toLocaleString()}</span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <span className="text-sm font-bold text-slate-600">{device.percentage.toFixed(1)}%</span>
+                    <span className="text-sm font-bold text-slate-600">{parseFloat(device.percentage || 0).toFixed(1)}%</span>
                   </td>
                 </tr>
               ))}

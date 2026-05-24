@@ -15,6 +15,15 @@ import { Eye, Clock, Users } from "lucide-react";
 import { fetchAnalyticsData } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 
+const formatDuration = (value) => {
+  const seconds = parseFloat(value || 0);
+  if (isNaN(seconds)) return "0s";
+  if (seconds < 60) return `${seconds.toFixed(1)}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.round(seconds % 60);
+  return `${mins}m ${secs}s`;
+};
+
 export default function TopPages() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -55,7 +64,7 @@ export default function TopPages() {
   return (
     <div className="space-y-6">
       {/* Chart */}
-      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
+      <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm w-full overflow-hidden min-w-0">
         <h2 className="text-lg font-black text-brand-blue uppercase tracking-tight mb-6">Page Views Comparison</h2>
         <ResponsiveContainer width="100%" height={350}>
           <BarChart data={data.topPages}>
@@ -107,7 +116,7 @@ export default function TopPages() {
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Clock size={14} className="text-slate-400" />
-                      <span className="text-sm text-slate-600 font-medium">{page.avgTime}</span>
+                      <span className="text-sm text-slate-600 font-medium">{formatDuration(page.avgTime)}</span>
                     </div>
                   </td>
                 </tr>

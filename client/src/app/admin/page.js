@@ -152,9 +152,9 @@ export default function AdminDashboard() {
               View Full Analytics <ArrowUpRight size={14} />
             </Link>
           </div>
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-6 w-full overflow-hidden min-w-0">
             {/* Users & Sessions Chart */}
-            <div className="bg-slate-50 p-4 rounded-sm">
+            <div className="bg-slate-50 p-4 rounded-sm w-full overflow-hidden min-w-0">
               <h3 className="text-sm font-black text-slate-700 uppercase tracking-wide mb-4">Users & Sessions (30 Days)</h3>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={analyticsData.usersOverTime}>
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Traffic Sources Chart */}
-            <div className="bg-slate-50 p-4 rounded-sm">
+            <div className="bg-slate-50 p-4 rounded-sm w-full overflow-hidden min-w-0">
               <h3 className="text-sm font-black text-slate-700 uppercase tracking-wide mb-4">Traffic Sources</h3>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
               View All <ArrowUpRight size={14} />
             </Link>
           </div>
-          <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
+          <div className="bg-white border border-slate-200 rounded-sm overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>

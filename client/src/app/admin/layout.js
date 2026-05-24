@@ -128,7 +128,7 @@ export default function AdminLayout({ children }) {
         </aside>
 
         {}
-        <main className="flex-1 lg:ml-64 min-h-screen">
+        <main className="flex-1 lg:ml-64 min-h-screen max-w-full overflow-x-hidden">
           <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-3 md:px-8 py-3 md:py-4 flex justify-between items-center">
             <div className="flex items-center gap-3 md:gap-4">
               <button 
