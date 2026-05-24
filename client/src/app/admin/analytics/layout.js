@@ -53,9 +53,9 @@ export default function AnalyticsLayout({ children }) {
       </aside>
 
       {/* Mobile Analytics Navigation */}
-      <div className="lg:hidden mb-6">
-        <div className="overflow-x-auto custom-scrollbar">
-          <div className="flex gap-2 pb-2">
+      <div className="lg:hidden mb-6 w-full max-w-full overflow-hidden">
+        <div className="overflow-x-auto custom-scrollbar w-full">
+          <div className="flex gap-2 pb-2 min-w-max">
             {analyticsItems.map((item) => (
               <Link
                 key={item.href}
@@ -74,7 +74,7 @@ export default function AnalyticsLayout({ children }) {
       </div>
 
       {/* Main Content */}
-      <main className="lg:col-span-3 space-y-6">
+      <main className="lg:col-span-3 space-y-6 min-w-0 w-full overflow-hidden">
         {children}
       </main>
     </div>

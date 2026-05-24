@@ -149,20 +149,22 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 md:space-y-8 animate-reveal">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-slate-900 p-6 md:p-8 rounded-sm border border-white/5">
-        <div className="max-w-2xl">
-          <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-            <Globe className="text-brand shrink-0" size={24} />
-            <span className="truncate">Command Center <span className="text-brand mx-1">/</span> Site Identity</span>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-slate-900 p-4 sm:p-6 md:p-8 rounded-sm border border-white/5">
+        <div className="w-full max-w-2xl">
+          <h2 className="text-base sm:text-xl md:text-2xl font-black text-white uppercase tracking-tight flex flex-wrap items-center gap-2 sm:gap-3">
+            <Globe className="text-brand shrink-0" size={20} />
+            <span>Command Center</span>
+            <span className="text-brand font-medium">/</span>
+            <span className="text-white/95">Site Identity</span>
           </h2>
-          <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2 leading-relaxed">
+          <p className="text-[8px] sm:text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-[0.1em] sm:tracking-[0.3em] mt-2 leading-relaxed">
             Configure your global presence and brand assets.
           </p>
         </div>
         <button 
           onClick={handleSaveSettings}
           disabled={isSaving}
-          className="w-full lg:w-auto flex items-center justify-center gap-3 bg-brand text-white px-8 py-4 rounded-sm font-black uppercase tracking-[0.2em] text-[10px] hover:bg-brand-dark transition-all shadow-xl shadow-brand/20 disabled:opacity-50 group"
+          className="w-full lg:w-auto flex items-center justify-center gap-3 bg-brand text-white px-8 py-4 rounded-sm font-black uppercase tracking-[0.2em] text-[10px] hover:bg-brand-dark transition-all shadow-xl shadow-brand/20 disabled:opacity-50 group animate-reveal"
         >
           {isSaving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} className="group-hover:scale-110 transition-transform" />} 
           {isSaving ? "Finalizing..." : "Publish Changes"}
