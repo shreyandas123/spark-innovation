@@ -125,16 +125,6 @@ export default function ProductSlider() {
           <div className="hidden md:block absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-slate-50/50 to-transparent pointer-events-none z-10" />
         </div>
       </div>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </section>
   );
 }

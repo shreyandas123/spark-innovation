@@ -81,7 +81,7 @@ export default function Navbar() {
       <div className={`container-wide transition-all duration-300 ${isScrolled ? "py-2" : "py-3 md:py-4"}`}>
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 relative flex items-center justify-center">
+            <div className="w-7 h-7 relative flex items-center justify-center shrink-0">
               <Image 
                 src={settings?.logo || "/favicon.ico"} 
                 alt={`${settings?.websiteName || "Spark Innovations"} Logo`} 
@@ -90,10 +90,17 @@ export default function Navbar() {
                 sizes="32px" 
               />
             </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-[17px] font-black uppercase tracking-tight text-brand-blue">
-                KUTCHINA
-              </span>
+            <div className="flex flex-col leading-none justify-center">
+              <div className="relative h-[22px] w-[91px]">
+                <Image
+                  src="/images/kutchina-logo.jpg"
+                  alt="Kutchina Logo"
+                  fill
+                  className="object-contain object-left"
+                  sizes="91px"
+                  priority
+                />
+              </div>
               <span className="text-[8px] font-black uppercase tracking-[0.12em] text-brand mt-0.5">
                 Spark Innovations
               </span>
