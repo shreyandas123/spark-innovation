@@ -31,6 +31,16 @@ import {
   ResponsiveContainer
 } from "recharts";
 
+const formatDateString = (dateStr) => {
+  if (!dateStr || dateStr.length !== 8) return dateStr;
+  const year = dateStr.substring(0, 4);
+  const month = dateStr.substring(4, 6);
+  const day = dateStr.substring(6, 8);
+  const date = new Date(`${year}-${month}-${day}`);
+  if (isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState([
     { label: "Total Products", value: "0", icon: <Package size={24} />, color: "bg-blue-500", trend: "Loading..." },
@@ -165,10 +175,11 @@ export default function AdminDashboard() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 10 }} tickFormatter={formatDateString} />
                   <YAxis stroke="#94a3b8" tick={{ fontSize: 10 }} />
                   <Tooltip
                     contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "4px" }}
+                    labelFormatter={formatDateString}
                   />
                   <Area
                     type="monotone"
