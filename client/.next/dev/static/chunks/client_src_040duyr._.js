@@ -285,11 +285,11 @@ const ToastContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$projec
 function ToastProvider(t0) {
     _s();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(13);
-    if ($[0] !== "2a85a48ad3fda2918ef6579c4e4c79c024243bfccf8a8818084417ca9dfcdb13") {
+    if ($[0] !== "bcc6db9e48c30911d94e8d29848a3b42afecfa7ca042a8d6924bfac469406d02") {
         for(let $i = 0; $i < 13; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "2a85a48ad3fda2918ef6579c4e4c79c024243bfccf8a8818084417ca9dfcdb13";
+        $[0] = "bcc6db9e48c30911d94e8d29848a3b42afecfa7ca042a8d6924bfac469406d02";
     }
     const { children } = t0;
     let t1;
@@ -478,11 +478,11 @@ _c = ToastProvider;
 function useToast() {
     _s1();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(1);
-    if ($[0] !== "2a85a48ad3fda2918ef6579c4e4c79c024243bfccf8a8818084417ca9dfcdb13") {
+    if ($[0] !== "bcc6db9e48c30911d94e8d29848a3b42afecfa7ca042a8d6924bfac469406d02") {
         for(let $i = 0; $i < 1; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "2a85a48ad3fda2918ef6579c4e4c79c024243bfccf8a8818084417ca9dfcdb13";
+        $[0] = "bcc6db9e48c30911d94e8d29848a3b42afecfa7ca042a8d6924bfac469406d02";
     }
     const context = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"])(ToastContext);
     if (!context) {
@@ -1760,11 +1760,11 @@ _c = SettingsProvider;
 const useSettings = ()=>{
     _s1();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(1);
-    if ($[0] !== "69bcda161b391107af807ffbd452a21fc478e079607659d158462eea7d5313bb") {
+    if ($[0] !== "d9911929c98562825c95e8cba169237e7236518300a3914fbd6191d180fd7d11") {
         for(let $i = 0; $i < 1; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "69bcda161b391107af807ffbd452a21fc478e079607659d158462eea7d5313bb";
+        $[0] = "d9911929c98562825c95e8cba169237e7236518300a3914fbd6191d180fd7d11";
     }
     const context = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"])(SettingsContext);
     if (!context) {
@@ -1803,11 +1803,11 @@ var _s = __turbopack_context__.k.signature();
 // Custom SVG Brand Icons since they are missing in the current lucide-react version
 const FacebookIcon = (t0)=>{
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(4);
-    if ($[0] !== "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec") {
+    if ($[0] !== "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0") {
         for(let $i = 0; $i < 4; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec";
+        $[0] = "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0";
     }
     const { size } = t0;
     let t1;
@@ -1850,11 +1850,11 @@ const FacebookIcon = (t0)=>{
 _c = FacebookIcon;
 const InstagramIcon = (t0)=>{
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(6);
-    if ($[0] !== "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec") {
+    if ($[0] !== "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0") {
         for(let $i = 0; $i < 6; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec";
+        $[0] = "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0";
     }
     const { size } = t0;
     let t1;
@@ -1929,11 +1929,11 @@ const InstagramIcon = (t0)=>{
 _c1 = InstagramIcon;
 const TwitterIcon = (t0)=>{
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(4);
-    if ($[0] !== "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec") {
+    if ($[0] !== "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0") {
         for(let $i = 0; $i < 4; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec";
+        $[0] = "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0";
     }
     const { size } = t0;
     let t1;
@@ -1976,11 +1976,11 @@ const TwitterIcon = (t0)=>{
 _c2 = TwitterIcon;
 const YoutubeIcon = (t0)=>{
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(5);
-    if ($[0] !== "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec") {
+    if ($[0] !== "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0") {
         for(let $i = 0; $i < 5; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec";
+        $[0] = "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0";
     }
     const { size } = t0;
     let t1;
@@ -2036,11 +2036,11 @@ const YoutubeIcon = (t0)=>{
 _c3 = YoutubeIcon;
 const LinkedinIcon = (t0)=>{
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(6);
-    if ($[0] !== "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec") {
+    if ($[0] !== "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0") {
         for(let $i = 0; $i < 6; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec";
+        $[0] = "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0";
     }
     const { size } = t0;
     let t1;
@@ -2113,11 +2113,11 @@ _c4 = LinkedinIcon;
 function TopBar() {
     _s();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(50);
-    if ($[0] !== "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec") {
+    if ($[0] !== "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0") {
         for(let $i = 0; $i < 50; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "c7aebb787eae6535c339423f473c049f05a4e99fe3bde7feaf9a0ab51695ecec";
+        $[0] = "1383bbcf87d188ec722032c3612702b071a4998d3f82554988252b518f8afdf0";
     }
     const { settings } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$src$2f$contexts$2f$SettingsContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSettings"])();
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
@@ -2703,7 +2703,7 @@ function Navbar() {
                             className: "flex items-center gap-2 group",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "w-7 h-7 relative flex items-center justify-center",
+                                    className: "w-7 h-7 relative flex items-center justify-center shrink-0",
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                         src: settings?.logo || "/favicon.ico",
                                         alt: `${settings?.websiteName || "Spark Innovations"} Logo`,
@@ -2721,11 +2721,22 @@ function Navbar() {
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex flex-col leading-none",
+                                    className: "flex flex-col leading-none justify-center",
                                     children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "text-[17px] font-black uppercase tracking-tight text-brand-blue",
-                                            children: "KUTCHINA"
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "relative h-[22px] w-[91px]",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                src: "/images/kutchina-logo.jpg",
+                                                alt: "Kutchina Logo",
+                                                fill: true,
+                                                className: "object-contain object-left",
+                                                sizes: "91px",
+                                                priority: true
+                                            }, void 0, false, {
+                                                fileName: "[project]/client/src/components/layout/Navbar.js",
+                                                lineNumber: 87,
+                                                columnNumber: 17
+                                            }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/client/src/components/layout/Navbar.js",
                                             lineNumber: 86,
@@ -3558,11 +3569,11 @@ var _s = __turbopack_context__.k.signature();
 function Footer() {
     _s();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(26);
-    if ($[0] !== "95916a88949d4d6672d9b8a00942faf619528173ae827d305caf051f546e2c53") {
+    if ($[0] !== "8362dc7b02f9fb599f8c28e0f1f16d12d4fc6f5ffe0008cd2743b74af5f9409b") {
         for(let $i = 0; $i < 26; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "95916a88949d4d6672d9b8a00942faf619528173ae827d305caf051f546e2c53";
+        $[0] = "8362dc7b02f9fb599f8c28e0f1f16d12d4fc6f5ffe0008cd2743b74af5f9409b";
     }
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
     const { settings } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$src$2f$contexts$2f$SettingsContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSettings"])();
@@ -3637,11 +3648,11 @@ function Footer() {
             className: "lg:col-span-1",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex items-center gap-3 mb-10 group cursor-default",
+                    className: "flex items-center gap-3 mb-6 md:mb-10 group cursor-default",
                     children: [
                         t3,
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "text-2xl font-black uppercase tracking-tighter",
+                            className: "text-xl md:text-2xl font-black uppercase tracking-tighter",
                             children: [
                                 "Spark ",
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3650,13 +3661,13 @@ function Footer() {
                                 }, void 0, false, {
                                     fileName: "[project]/client/src/components/layout/Footer.js",
                                     lineNumber: 59,
-                                    columnNumber: 184
+                                    columnNumber: 203
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/client/src/components/layout/Footer.js",
                             lineNumber: 59,
-                            columnNumber: 113
+                            columnNumber: 121
                         }, this)
                     ]
                 }, void 0, true, {
@@ -3665,12 +3676,12 @@ function Footer() {
                     columnNumber: 41
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                    className: "text-slate-400 text-sm leading-relaxed mb-10",
+                    className: "text-slate-400 text-xs md:text-sm leading-relaxed mb-6 md:mb-10",
                     children: __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$src$2f$lib$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SITE_CONFIG"].description
                 }, void 0, false, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
                     lineNumber: 59,
-                    columnNumber: 244
+                    columnNumber: 263
                 }, this)
             ]
         }, void 0, true, {
@@ -3685,7 +3696,7 @@ function Footer() {
     let t5;
     if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
         t5 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-            className: "text-xs font-black uppercase tracking-[0.4em] text-brand mb-10",
+            className: "text-xs font-black uppercase tracking-[0.4em] text-brand mb-6 md:mb-10",
             children: "Support"
         }, void 0, false, {
             fileName: "[project]/client/src/components/layout/Footer.js",
@@ -3700,14 +3711,14 @@ function Footer() {
     let t7;
     if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
         t6 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center",
+            className: "w-10 h-10 md:w-12 md:h-12 bg-white/5 border border-white/10 flex items-center justify-center shrink-0",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$phone$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Phone$3e$__["Phone"], {
-                size: 18,
-                className: "text-brand"
+                size: 16,
+                className: "text-brand md:w-[18px] md:h-[18px]"
             }, void 0, false, {
                 fileName: "[project]/client/src/components/layout/Footer.js",
                 lineNumber: 74,
-                columnNumber: 104
+                columnNumber: 129
             }, this)
         }, void 0, false, {
             fileName: "[project]/client/src/components/layout/Footer.js",
@@ -3732,25 +3743,25 @@ function Footer() {
     let t9;
     if ($[9] !== t8) {
         t9 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex items-center gap-5 cursor-default",
+            className: "flex items-center gap-4 md:gap-5 cursor-default",
             children: [
                 t6,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     children: [
                         t7,
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            className: "font-black text-white",
+                            className: "font-black text-white text-sm md:text-base",
                             children: t8
                         }, void 0, false, {
                             fileName: "[project]/client/src/components/layout/Footer.js",
                             lineNumber: 85,
-                            columnNumber: 79
+                            columnNumber: 88
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
                     lineNumber: 85,
-                    columnNumber: 70
+                    columnNumber: 79
                 }, this)
             ]
         }, void 0, true, {
@@ -3764,65 +3775,69 @@ function Footer() {
         t9 = $[10];
     }
     let t10;
-    let t11;
     if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
         t10 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center",
+            className: "w-10 h-10 md:w-12 md:h-12 bg-white/5 border border-white/10 flex items-center justify-center shrink-0",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Mail$3e$__["Mail"], {
-                size: 18,
-                className: "text-brand"
+                size: 16,
+                className: "text-brand md:w-[18px] md:h-[18px]"
             }, void 0, false, {
                 fileName: "[project]/client/src/components/layout/Footer.js",
-                lineNumber: 94,
-                columnNumber: 105
+                lineNumber: 93,
+                columnNumber: 130
             }, this)
         }, void 0, false, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 94,
+            lineNumber: 93,
             columnNumber: 11
         }, this);
+        $[11] = t10;
+    } else {
+        t10 = $[11];
+    }
+    let t11;
+    if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
         t11 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
             className: "text-[9px] font-black uppercase tracking-widest text-brand/60 mb-1",
             children: "Email Inquiry"
         }, void 0, false, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 95,
+            lineNumber: 100,
             columnNumber: 11
         }, this);
-        $[11] = t10;
         $[12] = t11;
     } else {
-        t10 = $[11];
         t11 = $[12];
     }
     const t12 = settings?.email || __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$src$2f$lib$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SITE_CONFIG"].email;
     let t13;
     if ($[13] !== t12) {
         t13 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex items-center gap-5 cursor-default",
+            className: "flex items-center gap-4 md:gap-5 cursor-default",
             children: [
                 t10,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "min-w-0",
                     children: [
                         t11,
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            className: "font-black text-white",
+                            className: "font-black text-white text-sm md:text-base truncate",
                             children: t12
                         }, void 0, false, {
                             fileName: "[project]/client/src/components/layout/Footer.js",
-                            lineNumber: 105,
-                            columnNumber: 82
+                            lineNumber: 108,
+                            columnNumber: 111
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 105,
-                    columnNumber: 72
+                    lineNumber: 108,
+                    columnNumber: 81
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 105,
+            lineNumber: 108,
             columnNumber: 11
         }, this);
         $[13] = t12;
@@ -3837,20 +3852,20 @@ function Footer() {
             children: [
                 t5,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "space-y-8",
+                    className: "space-y-6 md:space-y-8",
                     children: [
                         t9,
                         t13
                     ]
                 }, void 0, true, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 113,
+                    lineNumber: 116,
                     columnNumber: 46
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 113,
+            lineNumber: 116,
             columnNumber: 11
         }, this);
         $[15] = t13;
@@ -3865,25 +3880,25 @@ function Footer() {
             className: "lg:col-span-1",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                    className: "text-xs font-black uppercase tracking-[0.4em] text-brand mb-10",
+                    className: "text-xs font-black uppercase tracking-[0.4em] text-brand mb-6 md:mb-10",
                     children: "Authorized Partner"
                 }, void 0, false, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 122,
+                    lineNumber: 125,
                     columnNumber: 42
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                    className: "text-slate-400 text-sm leading-relaxed",
+                    className: "text-slate-400 text-xs md:text-sm leading-relaxed",
                     children: "Spark Innovations is a certified premium distributor of Kutchina appliances. Bringing world-class kitchen technology to your doorstep with expert support."
                 }, void 0, false, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 122,
-                    columnNumber: 144
+                    lineNumber: 125,
+                    columnNumber: 152
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 122,
+            lineNumber: 125,
             columnNumber: 11
         }, this);
         $[18] = t15;
@@ -3893,7 +3908,7 @@ function Footer() {
     let t16;
     if ($[19] !== t14) {
         t16 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 mb-24",
+            className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-20 mb-12 md:mb-24",
             children: [
                 t4,
                 t14,
@@ -3901,7 +3916,7 @@ function Footer() {
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 129,
+            lineNumber: 132,
             columnNumber: 11
         }, this);
         $[19] = t14;
@@ -3912,7 +3927,7 @@ function Footer() {
     let t17;
     if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
         t17 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-            className: "text-slate-400 text-[9px] font-black uppercase tracking-[0.3em] text-center md:text-left",
+            className: "text-slate-400 text-[10px] md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-center md:text-left",
             children: [
                 "© ",
                 currentYear,
@@ -3920,7 +3935,7 @@ function Footer() {
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 137,
+            lineNumber: 140,
             columnNumber: 11
         }, this);
         $[21] = t17;
@@ -3930,30 +3945,30 @@ function Footer() {
     let t18;
     if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
         t18 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex gap-12",
+            className: "flex gap-6 md:gap-12",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                    href: "/terms",
-                    className: "text-slate-400 text-[9px] font-black uppercase tracking-widest hover:text-white transition-colors",
+                    href: "/terms#privacy",
+                    className: "text-slate-400 text-[10px] md:text-sm font-black uppercase tracking-[0.15em] md:tracking-[0.3em] hover:text-white transition-colors",
                     children: "Privacy Policy"
                 }, void 0, false, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 144,
-                    columnNumber: 40
+                    lineNumber: 147,
+                    columnNumber: 49
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                    href: "/terms",
-                    className: "text-slate-400 text-[9px] font-black uppercase tracking-widest hover:text-white transition-colors",
+                    href: "/terms#terms",
+                    className: "text-slate-400 text-[10px] md:text-sm font-black uppercase tracking-[0.15em] md:tracking-[0.3em] hover:text-white transition-colors",
                     children: "Terms of Service"
                 }, void 0, false, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 144,
-                    columnNumber: 191
+                    lineNumber: 147,
+                    columnNumber: 242
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 144,
+            lineNumber: 147,
             columnNumber: 11
         }, this);
         $[22] = t18;
@@ -3963,11 +3978,11 @@ function Footer() {
     let t19;
     if ($[23] === Symbol.for("react.memo_cache_sentinel")) {
         t19 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-8",
+            className: "pt-8 md:pt-12 border-t border-white/10 flex flex-col items-center gap-6 md:flex-row md:justify-between md:gap-8",
             children: [
                 t17,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex items-center gap-12",
+                    className: "flex flex-col items-center gap-4 md:flex-row md:gap-12",
                     children: [
                         t18,
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3978,24 +3993,24 @@ function Footer() {
                                 className: "text-white transition-transform group-hover:-translate-y-0.5"
                             }, void 0, false, {
                                 fileName: "[project]/client/src/components/layout/Footer.js",
-                                lineNumber: 151,
-                                columnNumber: 368
+                                lineNumber: 154,
+                                columnNumber: 418
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/client/src/components/layout/Footer.js",
-                            lineNumber: 151,
-                            columnNumber: 172
+                            lineNumber: 154,
+                            columnNumber: 222
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 151,
-                    columnNumber: 125
+                    lineNumber: 154,
+                    columnNumber: 145
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 151,
+            lineNumber: 154,
             columnNumber: 11
         }, this);
         $[23] = t19;
@@ -4005,7 +4020,7 @@ function Footer() {
     let t20;
     if ($[24] !== t16) {
         t20 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$client$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
-            className: "bg-gradient-to-br from-brand-blue to-[#051c36] text-white pt-24 pb-12 relative overflow-hidden",
+            className: "bg-gradient-to-br from-brand-blue to-[#051c36] text-white pt-16 md:pt-24 pb-8 md:pb-12 relative overflow-hidden",
             children: [
                 t1,
                 t2,
@@ -4017,13 +4032,13 @@ function Footer() {
                     ]
                 }, void 0, true, {
                     fileName: "[project]/client/src/components/layout/Footer.js",
-                    lineNumber: 158,
-                    columnNumber: 134
+                    lineNumber: 161,
+                    columnNumber: 151
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/client/src/components/layout/Footer.js",
-            lineNumber: 158,
+            lineNumber: 161,
             columnNumber: 11
         }, this);
         $[24] = t16;
